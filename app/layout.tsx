@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 // import NavBar from "./components/NavBar";
 
 import NavBar from "./components/nav-bar";
+import { ChatWidget } from "@/app/components/Chat/chat-widget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
         <Providers>
           <NavBar />
           {children}
+          <ChatWidget />
         </Providers>
       </body>
     </html>
