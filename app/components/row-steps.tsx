@@ -49,7 +49,7 @@ export interface RowStepsProps extends React.HTMLAttributes<HTMLButtonElement> {
   /**
    * The custom class for the step.
    */
-  stepClassName?: string;
+  stepClassName?: string | ((index: number) => string);
   /**
    * Callback function when the step index changes.
    */

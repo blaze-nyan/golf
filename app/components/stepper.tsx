@@ -29,7 +29,7 @@ export default function Stepper() {
       currentStep={currentStep}
       onStepChange={handleStepChange}
       steps={stepsWithPaths}
-      stepClassName={(index) =>
+      stepClassName={(index: number) =>
         !canAccess(index) ? "pointer-events-none opacity-50" : ""
       }
     />
