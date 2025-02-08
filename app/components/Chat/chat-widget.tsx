@@ -56,7 +56,7 @@ export function ChatWidget() {
                 key={index}
                 className={`${
                   message.type === "user"
-                    ? "ml-auto bg-primary text-white"
+                    ? "ml-auto bg-primary-500 text-white"
                     : "mr-auto bg-gray-100"
                 } p-2 rounded-lg max-w-[80%]`}
               >
