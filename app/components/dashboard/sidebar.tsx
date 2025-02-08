@@ -1,15 +1,17 @@
 // app/components/dashboard/Sidebar.tsx
 "use client";
 
-import React from "react";
-import { Card, CardBody } from "@heroui/react";
+import React, { useState } from "react";
+import { Card, CardBody, Button } from "@heroui/react";
 import {
   Home,
   Calendar,
-  Users,
   LandPlot,
+  Users,
   Settings,
   BarChart,
+  Menu,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -49,41 +51,77 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsMobileOpen(!isMobileOpen);
+  };
 
   return (
-    <Card className="h-screen w-64 rounded-none">
-      <CardBody className="p-0">
-        {/* Logo/Brand */}
-        <Link href="/dashboard" className="p-4 border-b">
-          <h1 className="text-xl font-bold">Golf Admin</h1>
-        </Link>
+    <>
+      {/* Mobile Toggle Button */}
+      <div className="fixed top-4 left-4 z-50 lg:hidden">
+        <Button isIconOnly variant="light" onPress={toggleSidebar}>
+          {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </Button>
+      </div>
 
-        {/* Menu Items */}
-        <div className="p-2">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.path;
+      {/* Backdrop */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
 
-            return (
-              <Link key={item.path} href={item.path}>
-                <div
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg mb-1
-                    transition-colors duration-200
-                    ${
-                      isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-default-100"
-                    }
-                  `}
-                >
-                  {item.icon}
-                  <span>{item.name}</span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </CardBody>
-    </Card>
+      {/* Sidebar */}
+      <aside
+        className={`
+        fixed top-0 left-0 h-full w-64 z-50
+        transform transition-transform duration-300 ease-in-out
+        lg:translate-x-0 lg:static lg:h-screen
+        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+      `}
+      >
+        <Card className="h-full rounded-none">
+          <CardBody className="p-0 overflow-y-auto">
+            {/* Logo/Brand */}
+            <div className="p-4 border-b">
+              <h1 className="text-xl font-bold">Golf Admin</h1>
+            </div>
+
+            {/* Menu Items */}
+            <nav className="p-2">
+              {menuItems.map((item) => {
+                const isActive = pathname === item.path;
+
+                return (
+                  <Link
+                    key={item.path}
+                    href={item.path}
+                    onClick={() => setIsMobileOpen(false)}
+                  >
+                    <div
+                      className={`
+                      flex items-center gap-3 px-4 py-3 rounded-lg mb-1
+                      transition-colors duration-200 cursor-pointer
+                      ${
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-default-100"
+                      }
+                    `}
+                    >
+                      {item.icon}
+                      <span>{item.name}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </nav>
+          </CardBody>
+        </Card>
+      </aside>
+    </>
   );
 }
