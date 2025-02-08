@@ -35,7 +35,9 @@ export default function RootLayout({
         <Providers>
           <div className="flex flex-row">
             <Sidebar />
-            <main className="flex-1 p-6">{children}</main>
+            <main className="flex-1 p-4 lg:p-6 ml-0  mt-16 lg:mt-0">
+              {children}
+            </main>
           </div>
         </Providers>
       </body>
