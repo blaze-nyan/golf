@@ -86,9 +86,9 @@ export default function Sidebar() {
         <Card className="h-full rounded-none">
           <CardBody className="p-0 overflow-y-auto">
             {/* Logo/Brand */}
-            <div className="p-4 border-b">
+            <Link href="/dashboard" className="p-4 border-b">
               <h1 className="text-xl font-bold">Golf Admin</h1>
-            </div>
+            </Link>
 
             {/* Menu Items */}
             <nav className="p-2">
