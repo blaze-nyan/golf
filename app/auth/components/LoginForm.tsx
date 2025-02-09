@@ -1,28 +1,69 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const [isVisible, setIsVisible] = React.useState(false);
+  const router = useRouter();
+  const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    remember: false,
+  });
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("handleSubmit");
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post("/api/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.data.success) {
+        // Store clientId if needed
+        if (formData.remember) {
+          localStorage.setItem("clientId", response.data.clientId);
+          console.log(response.data.clientId);
+        }
+        // Redirect to dashboard or home page
+        router.push("/");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
-        <p className="pb-4 text-left text-3xl font-semibold">
-          Log In
-          <span aria-label="emoji" className="ml-2" role="img">
-            👋
-          </span>
-        </p>
+        <p className="pb-4 text-center text-3xl font-semibold">Log In</p>
+
+        {error && (
+          <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
+        )}
+
         <Form
           className="flex flex-col gap-4"
           validationBehavior="native"
@@ -36,7 +77,11 @@ export default function LoginForm() {
             placeholder="Enter your email"
             type="email"
             variant="bordered"
+            value={formData.email}
+            onChange={handleInputChange}
+            disabled={isLoading}
           />
+
           <Input
             isRequired
             endContent={
@@ -60,17 +105,31 @@ export default function LoginForm() {
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
             variant="bordered"
+            value={formData.password}
+            onChange={handleInputChange}
+            disabled={isLoading}
           />
           <div className="flex w-full items-center justify-between px-1 py-2">
-            <Checkbox defaultSelected name="remember" size="sm">
+            <Checkbox
+              name="remember"
+              size="sm"
+              isSelected={formData.remember}
+              onChange={handleInputChange}
+              disabled={isLoading}
+            >
               Remember me
             </Checkbox>
             <Link className="text-default-500" href="#" size="sm">
               Forgot password?
             </Link>
           </div>
-          <Button className="w-full" color="primary" type="submit">
-            Log In
+          <Button
+            className="w-full"
+            color="primary"
+            type="submit"
+            isLoading={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Log In"}
           </Button>
         </Form>
         <p className="text-center text-small">

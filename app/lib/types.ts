@@ -28,3 +28,9 @@ export interface GolfCourse {
   golfCourseHoles: number[];
   golfCourseNotes: undefined[];
 }
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  surname: string;
+}

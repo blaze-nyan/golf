@@ -1,6 +1,6 @@
 // app/lib/api.ts
 import axios from "axios";
-import { GolfCourse, RawGolfCourse } from "./types";
+import { GolfCourse, RawGolfCourse, SignUpRequest } from "./types";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -9,6 +9,9 @@ const headers = {
     hg_pass: "nGXUF1i^57I^ao^o",
   }),
   "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 export const getGolfCoursesRequest = async () => {
@@ -43,4 +46,14 @@ export const getGolfCourses = async (): Promise<GolfCourse[]> => {
     golfCourseHoles: course["Golf Course Holes"],
     golfCourseNotes: course["Golf Course Notes"],
   }));
+};
+
+export const signUp = async (userData: SignUpRequest) => {
+  try {
+    const response = await axios.post("/api/signup", userData);
+    return response.data;
+  } catch (error) {
+    console.error("Error in signup:", error);
+    throw error;
+  }
 };
