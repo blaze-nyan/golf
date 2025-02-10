@@ -1,7 +1,25 @@
-import React from "react";
+// app/profile/page.tsx
+"use client";
 
-const page = () => {
-  return <div>Profile Page</div>;
-};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Spinner } from "@heroui/react";
 
-export default page;
+export default function ProfileRedirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const clientId = localStorage.getItem("clientId");
+    if (clientId) {
+      router.push(`/profile/${clientId}`);
+    } else {
+      router.push("/auth/login");
+    }
+  }, [router]);
+
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <Spinner size="lg" />
+    </div>
+  );
+}
