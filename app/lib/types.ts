@@ -34,3 +34,41 @@ export interface SignUpRequest {
   firstName: string;
   surname: string;
 }
+
+export interface ClientInfo {
+  "Client ID": number;
+  "Create New"?: boolean;
+  "Client Code"?: string;
+  Title?: string;
+  "First Name"?: string;
+  Surname?: string;
+  "Given Name"?: string;
+  Company?: string;
+  Gender?: string;
+}
+export interface ClientImage {
+  "Client ID": number;
+  "Image ID": number;
+  "Image UID"?: string;
+  Description: string;
+  "Image Usage": number;
+  "Record Marked Deleted": boolean;
+}
+
+export interface ProfileData {
+  "Client ID": number;
+  "Client Code": string;
+  Title: string;
+  "First Name": string;
+  Surname: string;
+  "Given Name": string;
+  Company: string;
+  Gender: string;
+  "Birth Date": number;
+  Language: string;
+  Nationality: string;
+  "Passport Number": string;
+  "ID Number": string;
+  "Passport or ID": string;
+  Designation: string;
+}

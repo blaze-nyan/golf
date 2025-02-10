@@ -38,14 +38,16 @@ export default function LoginForm() {
         password: formData.password,
       });
 
-      if (response.data.success) {
-        // Store clientId if needed
-        if (formData.remember) {
-          localStorage.setItem("clientId", response.data.clientId);
-          console.log(response.data.clientId);
-        }
+      console.log("Login response:", response.data); // For debugging
+
+      if (response.data.clientId) {
+        // Always store clientId, use remember for persistence duration
+        localStorage.setItem("clientId", response.data.clientId.toString());
+
         // Redirect to dashboard or home page
-        router.push("/");
+        router.push("/profile");
+      } else {
+        setError("Login failed - no client ID received");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

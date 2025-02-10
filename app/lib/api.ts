@@ -1,7 +1,13 @@
 // app/lib/api.ts
 import axios from "axios";
-import { GolfCourse, RawGolfCourse, SignUpRequest } from "./types";
-const BASE_URL = "https://ixschool.cimso.xyz";
+import {
+  GolfCourse,
+  RawGolfCourse,
+  SignUpRequest,
+  ProfileData,
+  ClientInfo,
+} from "./types";
+export const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
     "Client Login ID": "CiMSO.dev",
@@ -54,6 +60,72 @@ export const signUp = async (userData: SignUpRequest) => {
     return response.data;
   } catch (error) {
     console.error("Error in signup:", error);
+    throw error;
+  }
+};
+
+// app/lib/api.ts
+export const getClientInfo = async (clientId: number): Promise<ProfileData> => {
+  try {
+    // Call our Next.js API route instead of external API directly
+    const response = await axios.get(`/api/profile?clientId=${clientId}`);
+    return response.data.payload;
+  } catch (error) {
+    console.error("Error fetching client info:", error);
+    throw error;
+  }
+};
+
+export const updateClientInfo = async (clientInfo: ClientInfo) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/set_client_request`,
+      {
+        hg_code: "ixschool",
+        payload: clientInfo,
+      },
+      { headers }
+    );
+    return response.data.payload;
+  } catch (error) {
+    console.error("Error updating client info:", error);
+    throw error;
+  }
+};
+
+export const setClientImage = async (clientId: number) => {
+  try {
+    const response = await axios.post("/api/profile/image", {
+      Client_ID: clientId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error setting client image:", error);
+    throw error;
+  }
+};
+
+export const uploadBinaryObject = async (imageUID: string, file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("imageUID", imageUID);
+
+    const response = await axios.post("/api/profile/image/binary", formData);
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+};
+export const getClientImage = async (clientId: number) => {
+  try {
+    const response = await axios.post("/api/profile/image/get", {
+      Client_ID: clientId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting client image:", error);
     throw error;
   }
 };

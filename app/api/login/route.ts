@@ -15,6 +15,10 @@ const headers = {
 export async function POST(request: Request) {
   try {
     const userData = await request.json();
+    console.log("Sending login request with:", {
+      email: userData.email,
+      headers: headers,
+    });
 
     const response = await axios.post(
       `${BASE_URL}/authenticate_user_request`,
@@ -27,18 +31,26 @@ export async function POST(request: Request) {
       },
       { headers }
     );
+    console.log("Login response:", response.data);
 
-    const clientId = response.data.payload.Client_ID;
-    if (clientId === 0) {
+    // Check the response structure and get Client ID
+    const clientId = response.data.payload["Client ID"];
+
+    if (!clientId || clientId === 0) {
       return NextResponse.json(
         { error: "Authentication failed" },
         { status: 401 }
       );
     }
 
-    return NextResponse.json({ clientId, success: true });
-  } catch (error) {
-    console.error("Error in login:", error);
+    // Now we're using the clientId in the response
+    return NextResponse.json({
+      success: true,
+      clientId, // Include the clientId in the response
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Login error:", error.response?.data || error);
     return NextResponse.json({ error: "Login failed" }, { status: 500 });
   }
 }
