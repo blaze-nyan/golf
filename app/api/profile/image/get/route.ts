@@ -2,6 +2,7 @@
 // app/api/profile/image/get/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
+import { log } from "console";
 
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
@@ -29,12 +30,32 @@ export async function POST(request: Request) {
     );
 
     // Process the response according to the structure
+    
     const clientImages = response.data.payload["Clients Images"];
     if (clientImages && clientImages.length > 0) {
       const clientImageInfo = clientImages[0]; // Get first client's images
-      const mainProfileImage = clientImageInfo.Images.find(
-        (img: any) => img["Image Usage"] === 1
-      );
+      const mainProfileImage = clientImageInfo.Images
+      .slice()
+      .reverse()
+      .find((img: any) => img["Image Usage"] === 1 && img["Record Marked Deleted"] === false)
+
+      if (mainProfileImage){
+        const response = await axios.post(
+          `${BASE_URL}/binary_object_request`, // Updated endpoint
+          {
+            hg_code: "ixschool",
+            payload: {
+              "Object Unique ID": mainProfileImage["Image UID"],
+            },
+          },
+          { headers }
+        );
+        const clientImageBinary = response.data;
+        return NextResponse.json({
+          success: true,
+          imageInfo: clientImageBinary,
+        });
+      }
 
       return NextResponse.json({
         success: true,
