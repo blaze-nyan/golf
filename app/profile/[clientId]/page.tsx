@@ -170,7 +170,18 @@ export default function ProfilePage() {
     }
   };
 
+    const handleInputChange = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (profileData) {
+      setProfileData({
+        ...profileData,
+        [field]: e.target.value,
+      });
+    }
+  };
+
   const handleSave = async () => {
+
+    console.log("FRONT")
     if (!profileData) return;
 
     try {
@@ -249,6 +260,7 @@ export default function ProfilePage() {
                 label="Title"
                 defaultSelectedKeys={[profileData["Title"]]}
                 disabled={!isEditing}
+                onChange={handleInputChange("Title")}
               >
                 {titles.map((title) => (
                   <SelectItem key={title} value={title}>
@@ -261,6 +273,7 @@ export default function ProfilePage() {
                 label="Gender"
                 defaultSelectedKeys={[profileData["Gender"]]}
                 disabled={!isEditing}
+                onChange={handleInputChange("Gender")}
               >
                 {genders.map((gender) => (
                   <SelectItem key={gender.value} value={gender.value}>
@@ -273,24 +286,28 @@ export default function ProfilePage() {
                 label="First Name"
                 defaultValue={profileData["First Name"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("First Name")}
               />
 
               <Input
                 label="Surname"
                 defaultValue={profileData["Surname"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("Surname")}
               />
 
               <Input
                 label="Given Name"
                 defaultValue={profileData["Given Name"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("Given Name")}
               />
 
               <Input
                 label="Company"
                 defaultValue={profileData["Company"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("Company")}
               />
             </div>
           </CardBody>
