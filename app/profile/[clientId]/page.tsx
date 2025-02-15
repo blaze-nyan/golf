@@ -30,6 +30,7 @@ import {
   BASE_URL,
 } from "@/app/lib/api";
 import Image from "next/image";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface ProfileData {
   "Client ID": number;
@@ -44,7 +45,9 @@ interface ProfileData {
 export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();  
+  const [isOpenBookings, setIsOpenBookings] = useState(false);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
@@ -69,6 +72,10 @@ export default function ProfilePage() {
       label: "Female",
     },
   ];
+
+  const toggleCollapseBookings = () => {
+    setIsOpenBookings(!isOpenBookings);
+  };
 
   const arrayBufferToBase64 = (buffer: String) => {
     return `data:image/jpeg;base64,${buffer}`;
@@ -181,7 +188,6 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
 
-    console.log("FRONT")
     if (!profileData) return;
 
     try {
@@ -195,7 +201,7 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-[90vh] items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
@@ -213,10 +219,10 @@ export default function ProfilePage() {
     <div className="container mx-auto px-4 py-8">
       <div className="grid gap-6 md:grid-cols-3">
         {/* Profile Summary Card */}
-        <Card className="md:col-span-1">
+        <Card className="md:col-span-1 p-5">
           <CardBody className="items-center gap-4 text-center">
             <Avatar
-              className="h-20 w-20 text-large"
+              className="h-32 w-32 text-large"
               src={
                 profileImage ? `${profileImage}` : undefined
               }
@@ -229,18 +235,23 @@ export default function ProfilePage() {
               onPress={onOpen}
             >
               <Upload size={16} />
-            </Button>
-            <div>
+            </Button><div>
               <h2 className="text-xl font-semibold">
-                {profileData["First Name"]} {profileData["Surname"]}
+              {profileData["Title"]} {profileData["First Name"]} {profileData["Surname"]}
               </h2>
-              <p className="text-default-500">{profileData["Client ID"]}</p>
+              <p className="text-default-500">{profileData["Given Name"]}</p>
+
+              <div className="mt-4">
+                <p className="text-sm text-default-400">
+                  <strong>Company:</strong> {profileData["Company"]}
+                </p>
+              </div>
             </div>
           </CardBody>
         </Card>
 
         {/* Profile Details Card */}
-        <Card className="md:col-span-2">
+        <Card className="md:col-span-2 p-5">
           <CardHeader className="flex justify-between">
             <h3 className="text-lg font-semibold">Profile Details</h3>
             <Button
@@ -313,8 +324,35 @@ export default function ProfilePage() {
           </CardBody>
         </Card>
 
+        <Card className="md:col-span-3 p-5 py-3">
+          <CardHeader className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Golf Bookings</h3>
+            <Button variant="flat" onPress={toggleCollapseBookings} size="sm">
+              {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            </Button>
+          </CardHeader>
+          {isOpenBookings && (
+            <CardBody>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div>
+                  <p className="text-small text-default-500">Member Since</p>
+                  <p>January 2024</p>
+                </div>
+                <div>
+                  <p className="text-small text-default-500">Last Login</p>
+                  <p>Today</p>
+                </div>
+                <div>
+                  <p className="text-small text-default-500">Status</p>
+                  <p className="text-success">Active</p>
+                </div>
+              </div>
+            </CardBody>
+          )}
+        </Card>
+
         {/* Additional Info Card */}
-        <Card className="md:col-span-3">
+        <Card className="md:col-span-3 p-5 py-3">
           <CardHeader>
             <h3 className="text-lg font-semibold">Account Information</h3>
           </CardHeader>
