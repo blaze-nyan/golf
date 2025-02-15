@@ -77,18 +77,14 @@ export const getClientInfo = async (clientId: number): Promise<ProfileData> => {
 };
 
 export const updateClientInfo = async (clientInfo: ClientInfo) => {
+  console.log(clientInfo);
   try {
-    const response = await axios.post(
-      `${BASE_URL}/set_client_request`,
-      {
-        hg_code: "ixschool",
-        payload: clientInfo,
-      },
-      { headers }
-    );
-    return response.data.payload;
+    const response = await axios.post("/api/profile/update", {
+      Client_Info: clientInfo,
+    });
+    return response.data;
   } catch (error) {
-    console.error("Error updating client info:", error);
+    console.error("Error setting client image:", error);
     throw error;
   }
 };
