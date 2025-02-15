@@ -69,34 +69,40 @@ export default function ProfilePage() {
       label: "Female",
     },
   ];
+
+  const arrayBufferToBase64 = (buffer: String) => {
+    return `data:image/jpeg;base64,${buffer}`;
+  };
+
   useEffect(() => {
     const fetchProfileAndImage = async () => {
       try {
         setIsLoading(true);
         const clientId = params.clientId;
-
+  
         if (!clientId) {
           router.push("/auth/login");
           return;
         }
-
+  
         const parsedClientId = parseInt(clientId as string);
         if (isNaN(parsedClientId)) {
           throw new Error("Invalid client ID");
         }
-
+  
         // Fetch both profile and image data
         const [profileData, imageData] = await Promise.all([
           getClientInfo(parsedClientId),
           getClientImage(parsedClientId),
         ]);
-
-        setProfileData(profileData);
-
-        console.log("Image Data:", imageData); // Debug log
-        if (imageData.success && imageData.imageInfo?.["Image UID"]) {
-          setProfileImage(imageData.imageInfo["Image UID"]);
+  
+        setProfileData(profileData); // This ensures profileData is set before it's used.
+  
+        if (imageData.success && imageData.imageInfo) {
+          const base64Image = arrayBufferToBase64(imageData.imageInfo);
+          setProfileImage(base64Image);
         }
+  
       } catch (err) {
         setError("Failed to load profile data");
         console.error("Error:", err);
@@ -104,9 +110,56 @@ export default function ProfilePage() {
         setIsLoading(false);
       }
     };
-
+  
     fetchProfileAndImage();
   }, [params.clientId, router]);
+  
+  const handleImageUpload = async () => {
+    if (!selectedFile || !profileData) return;  // Ensure profileData is present before using it
+  
+    try {
+      setIsUploading(true);
+  
+      // First, get the image UID
+      const imageResponse = await setClientImage(profileData["Client ID"]);
+  
+      if (imageResponse.imageUID) {
+        // Then upload the binary data
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("imageUID", imageResponse.imageUID);
+  
+        await axios.post("/api/profile/image/binary", formData);
+      }
+  
+      onClose();
+  
+      // After uploading the image, refetch the profile and image data
+      const clientId = params.clientId;
+      if (!clientId) return;
+      const parsedClientId = parseInt(clientId as string);
+      if (isNaN(parsedClientId)) return;
+  
+      // Fetch updated profile and image data
+      const [updatedProfileData, updatedImageData] = await Promise.all([
+        getClientInfo(parsedClientId),    // Fetch updated profile data
+        getClientImage(parsedClientId),   // Fetch updated image data
+      ]);
+  
+      setProfileData(updatedProfileData); // Update profile data
+  
+      if (updatedImageData.success && updatedImageData.imageInfo) {
+        const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
+        setProfileImage(base64Image); // Update the profile image state
+      }
+  
+    } catch (err) {
+      setError("Failed to upload image");
+      console.error(err);
+    } finally {
+      setIsUploading(false); // Stop the uploading state
+    }
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -117,34 +170,18 @@ export default function ProfilePage() {
     }
   };
 
-  const handleImageUpload = async () => {
-    if (!selectedFile || !profileData) return;
-
-    try {
-      setIsUploading(true);
-
-      // First, get the image UID
-      const imageResponse = await setClientImage(profileData["Client ID"]);
-
-      if (imageResponse.imageUID) {
-        // Then upload the binary data
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-        formData.append("imageUID", imageResponse.imageUID);
-
-        await axios.post("/api/profile/image/binary", formData);
-      }
-
-      onClose();
-    } catch (err) {
-      setError("Failed to upload image");
-      console.error(err);
-    } finally {
-      setIsUploading(false);
+    const handleInputChange = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (profileData) {
+      setProfileData({
+        ...profileData,
+        [field]: e.target.value,
+      });
     }
   };
 
   const handleSave = async () => {
+
+    console.log("FRONT")
     if (!profileData) return;
 
     try {
@@ -181,7 +218,7 @@ export default function ProfilePage() {
             <Avatar
               className="h-20 w-20 text-large"
               src={
-                profileImage ? `${BASE_URL}/images/${profileImage}` : undefined
+                profileImage ? `${profileImage}` : undefined
               }
               icon={<User size={40} />}
             />
@@ -223,6 +260,7 @@ export default function ProfilePage() {
                 label="Title"
                 defaultSelectedKeys={[profileData["Title"]]}
                 disabled={!isEditing}
+                onChange={handleInputChange("Title")}
               >
                 {titles.map((title) => (
                   <SelectItem key={title} value={title}>
@@ -235,6 +273,7 @@ export default function ProfilePage() {
                 label="Gender"
                 defaultSelectedKeys={[profileData["Gender"]]}
                 disabled={!isEditing}
+                onChange={handleInputChange("Gender")}
               >
                 {genders.map((gender) => (
                   <SelectItem key={gender.value} value={gender.value}>
@@ -247,24 +286,28 @@ export default function ProfilePage() {
                 label="First Name"
                 defaultValue={profileData["First Name"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("First Name")}
               />
 
               <Input
                 label="Surname"
                 defaultValue={profileData["Surname"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("Surname")}
               />
 
               <Input
                 label="Given Name"
                 defaultValue={profileData["Given Name"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("Given Name")}
               />
 
               <Input
                 label="Company"
                 defaultValue={profileData["Company"]}
                 isReadOnly={!isEditing}
+                onChange={handleInputChange("Company")}
               />
             </div>
           </CardBody>
