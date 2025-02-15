@@ -72,3 +72,10 @@ export interface ProfileData {
   "Passport or ID": string;
   Designation: string;
 }
+
+export type GolfBookingType = {
+  "Golf Booking Type ID": number;
+  Description: string;
+  "Number of Holes": number;
+  "Available Online": boolean;
+};
