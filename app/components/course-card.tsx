@@ -1,29 +1,41 @@
 "use client";
 
-import type { CardProps } from "@heroui/react";
-
 import React from "react";
 import { Card, Image, CardBody } from "@heroui/react";
 
-export default function CourseCard(props: CardProps) {
+interface CourseCardProps {
+  course: any;
+}
+
+export default function CourseCard({ course }: CourseCardProps) {
   return (
-    <Card className="w-full max-w-[520px]" {...props}>
-      <CardBody className="flex flex-row flex-wrap p-0 sm:flex-nowrap">
+    <Card className="w-full max-w-[90%] transition-all duration-300 hover:scale-[1.02] ">
+      <CardBody className="flex flex-row flex-wrap p-5 sm:flex-nowrap">
         <Image
           removeWrapper
-          alt="Acme Creators"
-          className="h-auto w-full flex-none object-cover object-top md:w-48"
-          src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/hero-card-complete.jpeg"
+          alt={course.golfCourseName}
+          className="h-auto w-full flex-none object-cover object-top md:w-[25%]"
+          src={course.golfCourseImageUid || "https://media.istockphoto.com/id/176834848/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%81%E0%B8%AD%E0%B8%A5%E0%B9%8C%E0%B8%9F%E0%B8%AA%E0%B8%B5%E0%B9%80%E0%B8%82%E0%B8%B5%E0%B8%A2%E0%B8%A7%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%97%E0%B8%B5%E0%B8%81%E0%B8%A5%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%99%E0%B8%8A%E0%B9%88%E0%B8%A7%E0%B8%87%E0%B8%9A%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B9%81%E0%B8%AA%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%94.jpg?s=1024x1024&w=is&k=20&c=gDNRJfz9zoIpb2VkGUTJ7bSnXGKk7AgNHLVBf1kAT8E="}
         />
-        <div className="px-4 py-5">
-          <h3 className="text-large font-medium">{props.title}</h3>
-          <div className="flex flex-col gap-3 pt-2 text-small text-default-400">
-            <p>
-              {props.content ||
-                "Visit creators.acme.com to sign up today and start earning credits from your fans and followers."}
-            </p>
-            <p>Acme supports YouTube, Twitch, Vimeo and more!</p>
+        <div className="px-5 py-3">
+          <h2 className="text-3xl font-medium">{course.golfCourseName}</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
+              <strong>Holes:</strong> {course.numberOfHoles}
+            </span>
+            <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+              <strong>Par:</strong> {course.golfCoursePar}
+            </span>
+            <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm">
+              <strong>Virtual:</strong> {course.isVirtual ? "Yes" : "No"}
+            </span>
           </div>
+          <div>
+            <p className="text-m mt-3">
+              {course.golfCourseDescription || "Nestled in the heart of lush greenery, Hackathon Golf Club offers an exceptional golfing experience for players of all skill levels. This 18-hole, par-72 championship course is designed to challenge and inspire, featuring strategically placed bunkers, rolling fairways, and scenic water hazards. \n\nWith a picturesque landscape and meticulously maintained greens, golfers can enjoy a serene yet competitive round of golf. The course also provides state-of-the-art facilities, including a driving range, putting greens, and a fully equipped clubhouse with dining and relaxation areas.\n\nWhether you\'re a seasoned golfer looking for a challenge or a newcomer wanting to enjoy a round with friends, Hackathon Golf Club promises an unforgettable experience."}
+            </p>
+          </div>
+
         </div>
       </CardBody>
     </Card>
