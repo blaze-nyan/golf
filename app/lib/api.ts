@@ -125,3 +125,324 @@ export const getClientImage = async (clientId: number) => {
     throw error;
   }
 };
+
+
+
+//Get Golf Booking Types Request
+export async function getGolfBookingTypes(){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_booking_types_requests`,
+      {
+        hg_code: "ixschool",
+        payload: {},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Get Golf Courses Request
+export async function getGolfCourse(){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_courses_request`,
+      {
+        hg_code: "ixschool",
+        payload: {},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+//Get Golf Course Availability Request
+export async function getGolfCourseAvailability(GolfCourseID:string,day:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_course_availability_request`,
+      {
+        hg_code: "ixschool",
+        payload: {"Golf Course ID":GolfCourseID, "Day":day},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+//Get Golf Day Guests Request
+export async function getGolfCourseAvailabilityResponse(){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_day_guests_request`,
+      {
+        hg_code: "ixschool",
+        payload: {},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+
+
+//Set Golf Course Date Lock Request
+export async function setGolfCourseDateLock(BookerID:string,GolfCourseID:string,Crossover:string,LockMinute:string){
+  const response = await axios.post(
+      `${BASE_URL}/set_golf_course_date_lock_request`,
+      {
+        hg_code: "ixschool",
+        payload: {"Booker ID":BookerID, "Golf Course ID":GolfCourseID, Crossover, "Lock Minute":LockMinute},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+//Get Recent Golfers For Client Request
+export async function getRecentGolfersForClient(ClientID:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_recent_golfers_for_client_request`,
+      {
+        hg_code: "ixschool",
+        payload: {"Client ID":ClientID},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+//Get Golf Bookings For Client Request
+//Gets all bookings of a client of the same booking status from X day to Y day
+export async function getGolfBookingsForClient(ClientID:string,BookkingStatuses:string,FromDay:string,UntilBeforeDay:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_bookings_for_client_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Client ID":ClientID, "Booking Statuses":BookkingStatuses, "From Day":FromDay, "Until Before Day":UntilBeforeDay},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Gets the golf booking using an ID
+export async function getstheGolfBooking(GolfBookingID:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_booking_request`,
+      {
+        hg_code: "ixschool",
+        payload:{},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Set Golf Booking Request
+export async function setGolfBooking(GolfBookingID:string, GolfBookingDisplay:string,BookerID:string,BookerDisplay:string,Notes:string,BookingStatus:String, RoomBookingID:string,CancelMinute:string,CancelReason:string, CancelStaffDisplay:string,GolfBookingTypeID:string, GolfCourseID:string,  Crossover:string,StartMinute:string, GolfShotgun:string , CurrentyCode:string, GolferList:string,ChargesList:string ){
+  const response = await axios.post(
+      `${BASE_URL}/set_golf_booking_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID, "Golf Booking Display":GolfBookingDisplay, "Booker ID":BookerID, "Booker Display":BookerDisplay, Notes, "Booking Status":BookingStatus, "Room Booking ID":RoomBookingID, "Cancel Minute":CancelMinute, "Cancel Reason":CancelReason, "Cancel Staff Display":CancelStaffDisplay, "Golf Booking Type ID":GolfBookingTypeID, "Golf Course ID":GolfCourseID, Crossover, "Start Minute":StartMinute, "Golf Shotgun ID":GolfShotgun, "Currency Code":CurrentyCode, "Golfer List":GolferList, "Charges List":ChargesList},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Gets the total amount of payment for the booking by using golf booking id and client id.
+export async function getTheTotalAmountOfPpaymentForTheBooking(GolfBookingID:string,ClientID:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_payment_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID, "Client ID":ClientID},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+//Sets the payment, done after the client has paid the payment.
+export async function SetThepPaymentForTheBooking(  
+  GolfBookingID: string,
+  ClientID: string,
+  ClientAccountID: string,
+  TotalPaymentAmount: string,
+  PaymentReference: string,
+  LocationID: string,
+  GeneralLedgerID: string,
+  PaymentItemIDs: string[]
+){
+  const response = await axios.post(
+      `${BASE_URL}/set_golf_payment_request`,
+      {
+        hg_code: "ixschool",
+        payload: {
+          "Golf Booking ID": GolfBookingID,
+          "Client ID": ClientID,
+          "Client Account ID": ClientAccountID,
+          "Total Payment Amount": TotalPaymentAmount,
+          "Payment Reference": PaymentReference,
+          "Location ID": LocationID,
+          "General Ledger ID": GeneralLedgerID,
+          "Payment Item IDs": PaymentItemIDs,
+        },
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+// Get Golf Effective Course Request
+// Gets what the actual course the golfer will play on. In case of a 9 hole course being requested for 18 holes it will join //two golf courses together. Not relevant for us since we only have one course.
+
+
+export async function getGolfEffectiveCourse(SourceCourseID:string,GolfBookingTypeID:string, StartMinute:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_effective_course_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Source Course ID":SourceCourseID, "Golf Booking Type ID":GolfBookingTypeID, "Start Minute":StartMinute},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Get golf booking items associated with the golf booking.
+export async function getGolfBookingItems(GolfBookingID:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_booking_items_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Sets golf booking items to golf booking id.
+export async function setGolfBookingItems(GolfBookingID:string,GolfBookingItems:string){
+  const response = await axios.post(
+      `${BASE_URL}/set_golf_booking_items_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID, "Golf Booking Items":GolfBookingItems},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Set Golf Booking Lock Request
+//Set a lock to prevent the golf booking for being edited by other sources.
+export async function setGolfBookingLock(GolfBookingID:string,GolfBookingItems:string){
+  const response = await axios.post(
+      `${BASE_URL}/set_golf_booking_lock_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID, "Set Lock":GolfBookingItems},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+
+//Gets whether or not client is part of Handicap Network of Africa. Can be used to check whether or not the client is handicapped useful for tournaments.
+export async function getHnaLookup(GolfBookingID:string,GolfBookingItems:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_hna_lookup_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID, "Set Lock":GolfBookingItems},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Gets golf booking details using a list of golf booking ids and golf shotgun ids. Shotguns are like tournaments which might not be relevant for us.
+export async function makeFolfBookingPrepayment(GolfBookingID:string,ClientID:string,Amount:string,OverridePaymentMethodID:string,WithholdTaxScheduleID:string,){
+  const response = await axios.post(
+      `${BASE_URL}/make_golf_booking_prepayment_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID," Client ID":ClientID, Amount, "Override Payment Method ID":OverridePaymentMethodID, "Withhold Tax Schedule ID":WithholdTaxScheduleID},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Requests the change logs for any number of golf bookings. [Change Log Modified From Minute, Change Log Modified Until Before Minute, Change Log Modified From Second, Change Log Modified Until Before Second, Golf Booking Modified From Minute, Golf Booking Modified Until Before Minute] can be specified optionally.
+
+
+export async function getGolfBookingChangeLog(GolfBookingID:string){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_booking_change_log_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Booking ID":GolfBookingID},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
+
+//Requests a list of golf shotguns. 
+export async function getGolfShotguns(GolfShotgunID:string,GolfCourseID:string,GolfBookingTypeID:string,FromDay:string,UntilBeforeDay:string,){
+  const response = await axios.post(
+      `${BASE_URL}/get_golf_shotguns_request`,
+      {
+        hg_code: "ixschool",
+        payload:{"Golf Shotgun ID":GolfShotgunID, "Golf Course ID":GolfCourseID, "Golf Booking Type ID":GolfBookingTypeID, "From Day":FromDay, "Until Before Day":UntilBeforeDay},
+      },
+      { headers }
+  )
+  console.log(response)
+  if(!response.data.payload) return (undefined) ;
+  return response.data.payload;
+}
