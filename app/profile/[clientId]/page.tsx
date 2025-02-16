@@ -27,7 +27,6 @@ import {
   updateClientInfo,
   setClientImage,
   getClientImage,
-  BASE_URL,
 } from "@/app/lib/api";
 import Image from "next/image";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -72,12 +71,12 @@ export default function ProfilePage() {
       label: "Female",
     },
   ];
-
+]
   const toggleCollapseBookings = () => {
     setIsOpenBookings(!isOpenBookings);
   };
-
-  const arrayBufferToBase64 = (buffer: String) => {
+]
+  const arrayBufferToBase64 = (buffer: string) => {
     return `data:image/jpeg;base64,${buffer}`;
   };
 
@@ -86,30 +85,29 @@ export default function ProfilePage() {
       try {
         setIsLoading(true);
         const clientId = params.clientId;
-  
+
         if (!clientId) {
           router.push("/auth/login");
           return;
         }
-  
+
         const parsedClientId = parseInt(clientId as string);
         if (isNaN(parsedClientId)) {
           throw new Error("Invalid client ID");
         }
-  
+
         // Fetch both profile and image data
         const [profileData, imageData] = await Promise.all([
           getClientInfo(parsedClientId),
           getClientImage(parsedClientId),
         ]);
-  
+
         setProfileData(profileData); // This ensures profileData is set before it's used.
-  
+
         if (imageData.success && imageData.imageInfo) {
           const base64Image = arrayBufferToBase64(imageData.imageInfo);
           setProfileImage(base64Image);
         }
-  
       } catch (err) {
         setError("Failed to load profile data");
         console.error("Error:", err);
@@ -117,49 +115,48 @@ export default function ProfilePage() {
         setIsLoading(false);
       }
     };
-  
+
     fetchProfileAndImage();
   }, [params.clientId, router]);
-  
+
   const handleImageUpload = async () => {
-    if (!selectedFile || !profileData) return;  // Ensure profileData is present before using it
-  
+    if (!selectedFile || !profileData) return; // Ensure profileData is present before using it
+
     try {
       setIsUploading(true);
-  
+
       // First, get the image UID
       const imageResponse = await setClientImage(profileData["Client ID"]);
-  
+
       if (imageResponse.imageUID) {
         // Then upload the binary data
         const formData = new FormData();
         formData.append("file", selectedFile);
         formData.append("imageUID", imageResponse.imageUID);
-  
+
         await axios.post("/api/profile/image/binary", formData);
       }
-  
+
       onClose();
-  
+
       // After uploading the image, refetch the profile and image data
       const clientId = params.clientId;
       if (!clientId) return;
       const parsedClientId = parseInt(clientId as string);
       if (isNaN(parsedClientId)) return;
-  
+
       // Fetch updated profile and image data
       const [updatedProfileData, updatedImageData] = await Promise.all([
-        getClientInfo(parsedClientId),    // Fetch updated profile data
-        getClientImage(parsedClientId),   // Fetch updated image data
+        getClientInfo(parsedClientId), // Fetch updated profile data
+        getClientImage(parsedClientId), // Fetch updated image data
       ]);
-  
+
       setProfileData(updatedProfileData); // Update profile data
-  
+
       if (updatedImageData.success && updatedImageData.imageInfo) {
         const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
         setProfileImage(base64Image); // Update the profile image state
       }
-  
     } catch (err) {
       setError("Failed to upload image");
       console.error(err);
@@ -177,17 +174,18 @@ export default function ProfilePage() {
     }
   };
 
-    const handleInputChange = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (profileData) {
-      setProfileData({
-        ...profileData,
-        [field]: e.target.value,
-      });
-    }
-  };
+  const handleInputChange =
+    (field: keyof ProfileData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      if (profileData) {
+        setProfileData({
+          ...profileData,
+          [field]: e.target.value,
+        });
+      }
+    };
 
   const handleSave = async () => {
-
     if (!profileData) return;
 
     try {
