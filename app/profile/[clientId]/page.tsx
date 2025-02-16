@@ -71,11 +71,9 @@ export default function ProfilePage() {
       label: "Female",
     },
   ];
-]
   const toggleCollapseBookings = () => {
     setIsOpenBookings(!isOpenBookings);
   };
-]
   const arrayBufferToBase64 = (buffer: string) => {
     return `data:image/jpeg;base64,${buffer}`;
   };
