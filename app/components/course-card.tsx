@@ -32,7 +32,7 @@ export default function CourseCard({ course }: CourseCardProps) {
           </div>
           <div>
             <p className="text-m mt-3">
-              {course.golfCourseDescription || "Nestled in the heart of lush greenery, Hackathon Golf Club offers an exceptional golfing experience for players of all skill levels. This 18-hole, par-72 championship course is designed to challenge and inspire, featuring strategically placed bunkers, rolling fairways, and scenic water hazards. \n\nWith a picturesque landscape and meticulously maintained greens, golfers can enjoy a serene yet competitive round of golf. The course also provides state-of-the-art facilities, including a driving range, putting greens, and a fully equipped clubhouse with dining and relaxation areas.\n\nWhether you\'re a seasoned golfer looking for a challenge or a newcomer wanting to enjoy a round with friends, Hackathon Golf Club promises an unforgettable experience."}
+              {course.golfCourseDescription || "Nestled in the heart of lush greenery, Hackathon Golf Club offers an exceptional golfing experience for players of all skill levels. This 18-hole, par-72 championship course is designed to challenge and inspire, featuring strategically placed bunkers, rolling fairways, and scenic water hazards. \n\nWith a picturesque landscape and meticulously maintained greens, golfers can enjoy a serene yet competitive round of golf..."}
             </p>
           </div>
 

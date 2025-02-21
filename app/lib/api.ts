@@ -20,25 +20,10 @@ const headers = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-export const getGolfCoursesRequest = async () => {
-  try {
-    const response = await axios.post(
-      `${BASE_URL}/get_golf_courses_request`,
-      {
-        hg_code: "ixschool",
-        payload: {},
-      },
-      { headers }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching golf courses:", error);
-    throw error;
-  }
-};
 export const getGolfCourses = async (): Promise<GolfCourse[]> => {
-  const response = await getGolfCoursesRequest();
-  return response.payload["Golf Courses"].map((course: RawGolfCourse) => ({
+  const response = await axios.get("/api/courses/get_all", {
+  });
+  return response.data.payload["Golf Courses"].map((course: RawGolfCourse) => ({
     golfCourseId: course["Golf Course ID"],
     golfCourseName: course["Golf Course Name"],
     golfCourseDescription: course["Golf Course Description"],
@@ -53,6 +38,31 @@ export const getGolfCourses = async (): Promise<GolfCourse[]> => {
     golfCourseNotes: course["Golf Course Notes"],
   }));
 };
+
+export const getGolfCourseSingle = async (golf_course_id: any): Promise<GolfCourse | null> => {
+  const response = await axios.get("/api/courses/get_all");
+  const courses: RawGolfCourse[] = response.data.payload["Golf Courses"];
+
+  const course = courses.find((course) => course["Golf Course ID"] === Number(golf_course_id));
+
+  if (!course) return null;
+
+  return {
+    golfCourseId: course["Golf Course ID"],
+    golfCourseName: course["Golf Course Name"],
+    golfCourseDescription: course["Golf Course Description"],
+    golfCourseFeeStockId: course["Golf Course Fee Stock ID"],
+    allowCrossOver: course["Allow Cross Over"],
+    numberOfHoles: course["Number of Holes"],
+    golfCoursePar: course["Golf Course Par"],
+    isVirtual: course["Is Virtual"],
+    golfCourseImageUid: course["Golf Course Image UID"],
+    golfCourseStockStatusId: course["Golf Course Stock Status ID"],
+    golfCourseHoles: course["Golf Course Holes"],
+    golfCourseNotes: course["Golf Course Notes"],
+  };
+};
+
 
 export const signUp = async (userData: SignUpRequest) => {
   try {
@@ -126,8 +136,6 @@ export const getClientImage = async (clientId: number) => {
   }
 };
 
-
-
 //Get Golf Booking Types Request
 export async function getGolfBookingTypes(){
   const response = await axios.post(
@@ -143,36 +151,19 @@ export async function getGolfBookingTypes(){
   return response.data.payload;
 }
 
-//Get Golf Courses Request
-export async function getGolfCourse(){
-  const response = await axios.post(
-      `${BASE_URL}/get_golf_courses_request`,
-      {
-        hg_code: "ixschool",
-        payload: {},
-      },
-      { headers }
-  )
-  console.log(response)
-  if(!response.data.payload) return (undefined) ;
-  return response.data.payload;
-}
-
-
 //Get Golf Course Availability Request
-export async function getGolfCourseAvailability(GolfCourseID:string,day:string){
-  const response = await axios.post(
-      `${BASE_URL}/get_golf_course_availability_request`,
-      {
-        hg_code: "ixschool",
-        payload: {"Golf Course ID":GolfCourseID, "Day":day},
-      },
-      { headers }
-  )
-  console.log(response)
-  if(!response.data.payload) return (undefined) ;
-  return response.data.payload;
-}
+export async function getGolfCourseAvailability(GolfCourseID:any,day:any){
+  try {
+    const response = await axios.post("/api/courses/course_availability", {
+      ["Golf Course ID"]: GolfCourseID,
+      Day: day
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting client image:", error);
+    throw error;
+  }
+};
 
 
 //Get Golf Day Guests Request

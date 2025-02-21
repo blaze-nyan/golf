@@ -10,16 +10,16 @@ export const STEPS = [
     path: (courseId: string) => `/golfcourse/${courseId}`,
   },
   {
-    title: "Hole",
+    title: "Time",
     path: (courseId: string) => `/golfcourse/${courseId}/hole`,
   },
   {
-    title: "Other Services",
+    title: "Details",
     path: (courseId: string) => `/golfcourse/${courseId}/other-services`,
   },
 
   {
-    title: "Booking",
+    title: "Payment",
     path: (courseId: string) => `/golfcourse/${courseId}/booking`,
   },
   {
