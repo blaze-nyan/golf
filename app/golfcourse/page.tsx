@@ -47,8 +47,23 @@ export default function GolfCoursesPage() {
           golfCourseNotes: [],
         };
 
+        const comingSoonCourse2: GolfCourse = {
+          golfCourseId: -2,
+          golfCourseName: "Coming Soon...",
+          golfCourseDescription: "New exciting course on the way!",
+          golfCourseFeeStockId: 0,
+          allowCrossOver: false,
+          numberOfHoles: 18,
+          golfCoursePar: 72,
+          isVirtual: false,
+          golfCourseImageUid: "", // Optionally, add a placeholder image UID
+          golfCourseStockStatusId: 0,
+          golfCourseHoles: [],
+          golfCourseNotes: [],
+        };
+
         // Append the placeholder course to the courses array
-        setCourses([...data, comingSoonCourse]);
+        setCourses([...data, comingSoonCourse, comingSoonCourse2]);
       } catch (error) {
         console.error("Error fetching golf courses:", error);
       } finally {

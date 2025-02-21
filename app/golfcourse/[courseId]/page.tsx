@@ -4,6 +4,7 @@ import { NextButton } from "../components/NextButton";
 import { DatePicker, Image } from "@heroui/react";
 import { STEPS, useProgress } from "@/app/golfcourse/context/progress-context";
 import { getGolfCourseSingle } from "@/app/lib/api";
+import { Spinner } from "@heroui/react";
 
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
@@ -47,7 +48,7 @@ const placeholderGolfCourse = {
 
 
 const CoursePage = () => {
-  const { currentStep, canAccess, courseId } = useProgress();
+  const { currentStep, canAccess, courseId, setBookingDetails } = useProgress();
   const [golfCourse, setGolfCourse] = useState<any | null>();
   const [selectedHole, setSelectedHole] = useState<string | null>(null);
   
@@ -67,11 +68,22 @@ const CoursePage = () => {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    if (golfCourse) {
+      setBookingDetails((prevBookingDetails: any) => ({
+        ...prevBookingDetails,
+        courseName: golfCourse.golfCourseName,
+      }));
+    }
+  }, [golfCourse]);
 
   if (!golfCourse) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-[100%]">
+        <Spinner size="lg" />
+      </div>
+    );
   }
-
 
   return (
     <div className="max-w-[100%] mx-auto space-y-4">

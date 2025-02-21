@@ -34,12 +34,26 @@ type ProgressContextType = {
   courseId: string;
   completeStep: (step: number) => void;
   canAccess: (step: number) => boolean;
+  bookingDetails: any,
+  setBookingDetails: (bookingDetails: any) => void,
 };
 
 const ProgressContext = createContext<ProgressContextType | null>(null);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [maxCompletedStep, setMaxCompletedStep] = useState(-1);
+  
+  const [bookingDetails, setBookingDetails] = useState({
+    courseImageUID: "",
+    courseName: "",
+    teeDate: null,
+    teeTime: null,
+    numberOfGolfers: null,
+    caddies: null,
+    golfCart: null,
+    foodAndDrinks: null,
+  });
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -62,6 +76,24 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [courseId]);
+
+  useEffect(() => {
+    console.log("TEST")
+    if (courseId) {
+      console.log("TESTME TOO")
+      const savedBookingDetails = localStorage.getItem(`bookingDetails_${courseId}`);
+      console.log(savedBookingDetails)
+      if (savedBookingDetails) {
+        setBookingDetails(JSON.parse(savedBookingDetails));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (courseId) {
+      localStorage.setItem(`bookingDetails_${courseId}`, JSON.stringify(bookingDetails));
+    }
+  }, [bookingDetails, courseId]);
 
   // Save progress to localStorage whenever it changes
   useEffect(() => {
@@ -98,6 +130,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         courseId,
         completeStep,
         canAccess,
+        bookingDetails,
+        setBookingDetails,
       }}
     >
       {children}
