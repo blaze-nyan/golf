@@ -5,6 +5,7 @@ import { DatePicker, Image } from "@heroui/react";
 import { STEPS, useProgress } from "@/app/golfcourse/context/progress-context";
 import { getGolfCourseSingle } from "@/app/lib/api";
 import { Spinner } from "@heroui/react";
+import GolfFeesTable from "@/app/components/golf-fee-table";
 
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
@@ -45,7 +46,6 @@ const placeholderGolfCourse = {
     "Dress code is enforced; collared shirts and golf shoes required.",
   ],
 };
-
 
 const CoursePage = () => {
   const { currentStep, canAccess, courseId, setBookingDetails } = useProgress();
@@ -119,6 +119,7 @@ const CoursePage = () => {
       />
       <p className="text-xl text-gray-600">{golfCourse.golfCourseDescription || placeholderGolfCourse.golfCourseDescription}</p>
 
+      <GolfFeesTable></GolfFeesTable>
       <div className="space-y-4">
 
         <div className="">

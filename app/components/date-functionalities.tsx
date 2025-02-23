@@ -82,6 +82,7 @@ export const convertToDateEncodingCustom = (date: any): number => {
     const msPerDay = 86400000; // Milliseconds per day
     return new Date(startDate.getTime() + excelDate * msPerDay); // Convert to JavaScript date
   };
+  
 
   export const dateToString = (teeDate: any) => {
     return new Date(teeDate).toLocaleDateString('en-US', {

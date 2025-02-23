@@ -47,23 +47,8 @@ export default function GolfCoursesPage() {
           golfCourseNotes: [],
         };
 
-        const comingSoonCourse2: GolfCourse = {
-          golfCourseId: -2,
-          golfCourseName: "Coming Soon...",
-          golfCourseDescription: "New exciting course on the way!",
-          golfCourseFeeStockId: 0,
-          allowCrossOver: false,
-          numberOfHoles: 18,
-          golfCoursePar: 72,
-          isVirtual: false,
-          golfCourseImageUid: "", // Optionally, add a placeholder image UID
-          golfCourseStockStatusId: 0,
-          golfCourseHoles: [],
-          golfCourseNotes: [],
-        };
-
         // Append the placeholder course to the courses array
-        setCourses([...data, comingSoonCourse, comingSoonCourse2]);
+        setCourses([...data, comingSoonCourse]);
       } catch (error) {
         console.error("Error fetching golf courses:", error);
       } finally {
@@ -77,7 +62,7 @@ export default function GolfCoursesPage() {
   return (
     <div className="flex flex-col items-center justify-center mt-10 gap-4">
       {/* Section for explanation about golf courses */}
-      <section className="text-center mb-10 max-w-4xl">
+      <section className="text-center mb-5 max-w-4xl">
         <h2 className="text-4xl font-semibold">Discover Our Golf Courses</h2>
         <p className="text-lg text-gray-600 mt-3">
           We offer a wide selection of beautifully designed golf courses that cater to players of all skill levels. Whether you’re looking for a challenging championship course or a relaxing day on the links, our courses promise an unforgettable experience. Our facilities include stunning fairways, state-of-the-art driving ranges, and clubhouses equipped with everything you need for a great round of golf.
@@ -89,7 +74,7 @@ export default function GolfCoursesPage() {
 
       {/* Dropdown Icon to indicate scrolling down */}
       {!loading && (
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-2">
           <Icon
             icon="mdi:chevron-down"
             className="text-4xl cursor-pointer animate-bounce"
@@ -99,7 +84,7 @@ export default function GolfCoursesPage() {
 
       {/* Loading state */}
       {loading ? (
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-5">
         <Spinner size="lg" />
       </div>
       ) : (

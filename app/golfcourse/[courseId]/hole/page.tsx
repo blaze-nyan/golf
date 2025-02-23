@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, Badge, Button, Divider, TimeInput, DateInput } from "@heroui/react";
+import { Card, Badge, Button, Divider, TimeInput, DateInput, Select, SelectItem } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 // components
@@ -17,8 +17,8 @@ const placeholderData =
     {
       "Tee Minute": 374,
       "Crossover Minute": 476,
-      "Available": [1, 2],
-      "Crossover Available": [1, 2],
+      "Available": [],
+      "Crossover Available": [],
       "Available Online": true,
       "Availability ID": -2147483647,
       "Availability Description": "AM",
@@ -33,7 +33,7 @@ const placeholderData =
     {
       "Tee Minute": 382,
       "Crossover Minute": 484,
-      "Available": [1, 2],
+      "Available": [],
       "Crossover Available": [1, 2],
       "Available Online": true,
       "Availability ID": -2147483647,
@@ -109,11 +109,14 @@ const page = () => {
   const today = parseDate(new Date().toISOString().split("T")[0]);
 
   const [selectedDate, setSelectedDate] = useState(today);
+  const [bookingType, setBookingType] = useState(1);
 
   const { currentStep, canAccess, courseId, setBookingDetails } = useProgress();
   const [availableTeeTimes, setAvailableTeeTimes] = useState(placeholderData);
 
   const [selectedTimeCode, setSelectedTimeCode] = useState<number | null>(null);
+
+  const titles = ["9 Hole", "18 Hole"]; // Options for booking type
 
   const handleCardClick = (timeCode: number) => {
     setSelectedTimeCode(timeCode === selectedTimeCode ? null : timeCode);
@@ -127,6 +130,15 @@ const page = () => {
       }));
     }
   }, [selectedTimeCode]);
+
+  useEffect(() => {
+    if (bookingType) {
+      setBookingDetails((prevBookingDetails: any) => ({
+        ...prevBookingDetails,
+        bookingType: bookingType,
+      }));
+    }
+  }, [bookingType]);
 
   useEffect(() => {
     if (selectedDate) {
@@ -168,6 +180,11 @@ const page = () => {
     fetchCourses();
   };
 
+  const handleBookingTypeChange = (event: any) => {
+    const value = event.target.value;
+    setBookingType(value === "9 Hole" ? 1 : 2); // Update the booking type value based on selection
+  };
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -185,8 +202,23 @@ const page = () => {
   return (
     <div className="space-y-5">
 
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Select Booking Time</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Select Booking</h1>
       <div className="flex space-x-4">
+        <div className="flex flex-col w-36"> 
+          <Select
+            label="Booking Type"
+            defaultSelectedKeys={[bookingType === 1 ? "9 Hole" : "18 Hole"]}
+            onChange={handleBookingTypeChange}
+            className="w-full"
+          >
+            {titles.map((title: any) => (
+              <SelectItem key={title} value={title}>
+                {title}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+
         <DatePicker 
           isRequired 
           className="max-w-[284px]" 
@@ -231,10 +263,19 @@ const page = () => {
         <span className="px-4 mx-2 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
         {endTime.hour % 12 === 0 ? 12 : endTime.hour % 12}:{endTime.minute < 10 ? '0' : ''}{endTime.minute} {endTime.hour < 12 ? 'AM' : 'PM'}
         </span> 
+        , for a        
+        <span className="px-4 mx-2 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
+          {bookingType == 1? "9-Hole": "18-Hole"}
+        </span> 
+        booking.
       </h1>
       <div className="max-w-[900px] max-h-[255px] p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2 overflow-y-auto bg-gray-50 rounded-md">
         {availableTeeTimes.map((data, index) => {
           if (!compareTime(data['Tee Minute'], startTime, endTime)){
+            return null
+          }          
+          
+          if (!data['Available'].includes(bookingType)){
             return null
           }
           
@@ -257,7 +298,7 @@ const page = () => {
                   <Icon icon="mdi:account" className="text-4xl" />
                 </div>
                 <span className="px-2 font-semibold text-small">
-                  {`${data["Golf Bookings"].length + data["Crossover Golf Bookings"].length}/${data["Online Golfer Count"]} Booked`}
+                  {`${data["Online Golfer Count"]} Maximum.`}
                 </span>
               </div>
             </div>

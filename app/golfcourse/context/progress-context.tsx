@@ -46,12 +46,15 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [bookingDetails, setBookingDetails] = useState({
     courseImageUID: "",
     courseName: "",
+    bookingType: null,
     teeDate: null,
     teeTime: null,
     numberOfGolfers: null,
-    caddies: null,
-    golfCart: null,
-    foodAndDrinks: null,
+    numberOfnonPlayers: null,
+    "Golf Cart": null,
+    "Caddies": null,
+    "Food & Drinks": null,
+    price: 0,
   });
 
   const pathname = usePathname();
