@@ -154,7 +154,7 @@ const OtherServicesPage = () => {
             golferList.map((golfer, index) => (
               <span
                 key={index}
-                className="bg-green-700 text-white px-3 py-1 rounded-full text-sm"
+                className="border-green-700 text-green-700 px-3 py-1 rounded-full text-sm"
               >
                 {golfer}
               </span>

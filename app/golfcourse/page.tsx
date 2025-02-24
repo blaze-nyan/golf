@@ -47,8 +47,38 @@ export default function GolfCoursesPage() {
           golfCourseNotes: [],
         };
 
+        const comingSoonCourse1: GolfCourse = { 
+          golfCourseId: 123,
+          golfCourseName: "The Highland Links",
+          golfCourseDescription: "A picturesque course nestled in the foothills, offering scenic views of the surrounding valleys and rugged terrain. Perfect for both seasoned golfers and newcomers alike, this course will challenge your skills and reward you with beautiful landscapes.",
+          golfCourseFeeStockId: 0,
+          allowCrossOver: false,
+          numberOfHoles: 18,
+          golfCoursePar: 72,
+          isVirtual: false,
+          golfCourseImageUid: "", 
+          golfCourseStockStatusId: 0,
+          golfCourseHoles: [],
+          golfCourseNotes: [],
+        };
+        
+        const comingSoonCourse2: GolfCourse = { 
+          golfCourseId: -134,
+          golfCourseName: "Sunset Bay Golf Club",
+          golfCourseDescription: "Located along the coastline, this course offers breathtaking sunset views over the bay. With a mix of water hazards and rolling fairways, it's a course that will keep you on your toes while offering a relaxing atmosphere.",
+          golfCourseFeeStockId: 0,
+          allowCrossOver: false,
+          numberOfHoles: 18,
+          golfCoursePar: 70,
+          isVirtual: false,
+          golfCourseImageUid: "", 
+          golfCourseStockStatusId: 0,
+          golfCourseHoles: [],
+          golfCourseNotes: [],
+        };
+
         // Append the placeholder course to the courses array
-        setCourses([...data, comingSoonCourse]);
+        setCourses([comingSoonCourse1, ...data, comingSoonCourse2, comingSoonCourse]);
       } catch (error) {
         console.error("Error fetching golf courses:", error);
       } finally {
@@ -60,7 +90,7 @@ export default function GolfCoursesPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center mt-10 gap-4">
+    <div className="flex flex-col items-center justify-center my-10 mx-5 mb-20 gap-4 ">
       {/* Section for explanation about golf courses */}
       <section className="text-center mb-5 max-w-4xl">
         <h2 className="text-4xl font-semibold">Discover Our Golf Courses</h2>

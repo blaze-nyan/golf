@@ -6,13 +6,14 @@ import { STEPS, useProgress } from "@/app/golfcourse/context/progress-context";
 import { getGolfCourseSingle } from "@/app/lib/api";
 import { Spinner } from "@heroui/react";
 import GolfFeesTable from "@/app/components/golf-fee-table";
+import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
 
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
   golfCourseId: 1,
   golfCourseName: "Sunny Meadows Golf Club",
   golfCourseDescription:
-    "A beautiful 18-hole course with scenic views and challenging holes.",
+    "Nestled in the heart of lush greenery, Hackathon Golf Course offers an exceptional golfing experience for players of all skill levels. This 18-hole, par-72 championship course is designed to challenge and inspire, featuring strategically placed bunkers, rolling fairways, and scenic water hazards. \n\nWith a picturesque landscape and meticulously maintained greens, golfers can enjoy a serene yet competitive round of golf...",
   golfCourseFeeStockId: 12345,
   allowCrossOver: true,
   numberOfHoles: 18,
@@ -93,23 +94,13 @@ const CoursePage = () => {
 
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center">
-          <span className="px-4 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
+          <span className="px-4 py-2 border border-green-500 text-green-500 text-sm font-semibold rounded-full shadow-s">
             Number of Holes: {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
           </span>
         </div>
         <div className="flex items-center">
-          <span className="px-4 py-2 bg-yellow-100 text-yellow-700 text-sm font-semibold rounded-full shadow-md">
+        <span className="px-4 py-2 border border-green-600 text-green-600 text-sm font-semibold rounded-full shadow-s">
             Golf Course Par: {golfCourse.golfCoursePar || placeholderGolfCourse.numberOfHoles}
-          </span>
-        </div>
-        <div className="flex items-center">
-          <span className="px-4 py-2 bg-purple-100 text-purple-700 text-sm font-semibold rounded-full shadow-md">
-            {golfCourse.isVirtual ? "Virtual" : "Non-Virtual"}
-          </span>
-        </div>
-        <div className="flex items-center">
-          <span className="px-4 py-2 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full shadow-md">
-            {golfCourse.allowCrossOver ? "Cross Over" : "Non-Cross Over"}
           </span>
         </div>
       </div>
@@ -117,9 +108,9 @@ const CoursePage = () => {
       <Image
         removeWrapper
         className="h-auto w-full flex-none object-cover object-top md:w-[100%]"
-        src={"https://media.istockphoto.com/id/176834848/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%81%E0%B8%AD%E0%B8%A5%E0%B9%8C%E0%B8%9F%E0%B8%AA%E0%B8%B5%E0%B9%80%E0%B8%82%E0%B8%B5%E0%B8%A2%E0%B8%A7%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%97%E0%B8%B5%E0%B8%81%E0%B8%A5%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%99%E0%B8%8A%E0%B9%88%E0%B8%A7%E0%B8%87%E0%B8%9A%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B9%81%E0%B8%AA%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%94.jpg?s=1024x1024&w=is&k=20&c=gDNRJfz9zoIpb2VkGUTJ7bSnXGKk7AgNHLVBf1kAT8E="}
+        src={usePlaceholderGolfCourseImageLink()}
       />
-      <p className="text-xl text-gray-600">{golfCourse.golfCourseDescription || placeholderGolfCourse.golfCourseDescription}</p>
+      <p className="text-lg text-gray-600">{golfCourse.golfCourseDescription || placeholderGolfCourse.golfCourseDescription}</p>
 
       <GolfFeesTable></GolfFeesTable>
       <div className="space-y-4">
