@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Card, Modal, ModalContent, Image } from "@heroui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { dateToString, convertExcelDateToJSDate, convertMinutesToTimeWithAMPM } from "./date-functionalities";
+import { usePlaceholderGolfCourseImageLink } from "../lib/general";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking })
                 <div className="flex gap-3 border-b border-gray-300 py-2">
                   <Image
                     className="h-32 w-32 rounded-md object-cover"
-                    src={"https://media.istockphoto.com/id/176834848/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%81%E0%B8%AD%E0%B8%A5%E0%B9%8C%E0%B8%9F%E0%B8%AA%E0%B8%B5%E0%B9%80%E0%B8%82%E0%B8%B5%E0%B8%A2%E0%B8%A7%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%97%E0%B8%B5%E0%B8%81%E0%B8%A5%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%99%E0%B8%8A%E0%B9%88%E0%B8%A7%E0%B8%87%E0%B8%9A%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B9%81%E0%B8%AA%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%94.jpg?s=1024x1024&w=is&k=20&c=gDNRJfz9zoIpb2VkGUTJ7bSnXGKk7AgNHLVBf1kAT8E="}
+                    src={usePlaceholderGolfCourseImageLink()}
                     alt="Course"
                   />
                   <div className="my-3 space-y-2">
