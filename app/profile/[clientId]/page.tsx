@@ -112,8 +112,6 @@ export default function ProfilePage() {
           setProfileImage(base64Image);
         }
         
-        const bookings = await fetchData("bookings");
-        bookings.filter(booking => booking.clientID === clientID)
 
       } catch (err) {
         setError("Failed to load profile data");
