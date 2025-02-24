@@ -30,6 +30,7 @@ import {
 } from "@/app/lib/api";
 import Image from "next/image";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { fetchData } from "@/app/lib/api-placeholder-db";
 
 interface ProfileData {
   "Client ID": number;
@@ -54,8 +55,10 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [bookingData, setBookingData] = useState<[] | null>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const titles = ["Mr", "Mrs", "Ms", "Dr", "Prof"];
   const genders = [
     {
@@ -71,6 +74,8 @@ export default function ProfilePage() {
       label: "Female",
     },
   ];
+
+
   const toggleCollapseBookings = () => {
     setIsOpenBookings(!isOpenBookings);
   };
@@ -106,14 +111,17 @@ export default function ProfilePage() {
           const base64Image = arrayBufferToBase64(imageData.imageInfo);
           setProfileImage(base64Image);
         }
+        
+        const bookings = await fetchData("bookings");
+        bookings.filter(booking => booking.clientID === clientID)
+
       } catch (err) {
         setError("Failed to load profile data");
         console.error("Error:", err);
       } finally {
         setIsLoading(false);
       }
-    };
-
+      };
     fetchProfileAndImage();
   }, [params.clientId, router]);
 

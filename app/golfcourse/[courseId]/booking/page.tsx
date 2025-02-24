@@ -21,9 +21,10 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@heroui/react";
+import { postData } from "@/app/lib/api-placeholder-db";
 
 const page = () => {
-  const { bookingDetails } = useProgress(); // Access bookingDetails from context
+  const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
   const [paymentType, setPaymentType] = useState<"prepayment" | "fullPayment">("fullPayment");
   const [amountToPay, setAmountToPay] = useState(bookingDetails.price);
 
@@ -35,6 +36,8 @@ const page = () => {
 
   // Modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: errorModalOpen, onOpen: onErrorOpen, onClose: onErrorClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   useEffect(() => {
     if (paymentType === "prepayment") {
@@ -44,22 +47,38 @@ const page = () => {
     }
   }, [paymentType, bookingDetails.price]);
 
+  
+
   const handlePaymentTypeChange = (type: "prepayment" | "fullPayment") => {
     setPaymentType(type);
   };
 
+  useEffect(() => {
+    setBookingDetails((prevBookingDetails: any) => ({
+        ...prevBookingDetails,
+        paymentType: paymentType,
+    }));
+  }, [paymentType]);
+
+  useEffect(() => {
+    setBookingDetails((prevBookingDetails: any) => ({
+        ...prevBookingDetails,
+        paid: amountToPay,
+    }));
+  }, [amountToPay]);
+
   // Simple validation function (you can improve it)
   const validateCreditCard = () => {
     if (cardNumber.length < 16) {
-      alert("Card number must be 16 digits.");
+      onErrorOpen();
       return false;
     }
     if (!expiryDate.match(/^\d{2}\/\d{2}$/)) {
-      alert("Expiry date must be in MM/YY format.");
+      onErrorOpen();
       return false;
     }
     if (cvv.length < 3) {
-      alert("CVV must be 3 digits.");
+      onErrorOpen();
       return false;
     }
     return true;
@@ -68,6 +87,12 @@ const page = () => {
   const handleSubmit = () => {
     if (validateCreditCard()) {
       onOpen(); // Open the success modal on successful payment
+      console.log(bookingDetails)
+      postData("bookings", bookingDetails)
+      setIsLoading(true); // Show loading spinner
+      setTimeout(() => {
+        setIsLoading(false); // Simulate loading completion after a delay
+      }, 3000); // 3 seconds delay to simulate loading time
     }
   };
 
@@ -77,7 +102,7 @@ const page = () => {
 
       {/* Payment Type Selection */}
       <div className="space-y-3">
-        <h2 className="text-xl font-semibold">Select Payment Type</h2>
+        <h2 className="text-xl font-semibold" >Select Payment Type</h2>
         <div className="flex gap-4">
           <Button
             className={`w-full ${paymentType === "prepayment" ? "bg-green-700 text-white" : "bg-gray-200"}`}
@@ -110,6 +135,15 @@ const page = () => {
           <h2 className="text-xl font-semibold mb-4">Credit Card Details</h2>
         </CardHeader>
         <CardBody>
+          {/* Select Payment Method */}
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-1 visible" >Select Payment Method</label>
+            <Select placeholder="Select a payment method" aria-label="Select a payment method">
+              <SelectItem value="visa">Visa</SelectItem>
+              <SelectItem value="mastercard">MasterCard</SelectItem>
+              <SelectItem value="amex">American Express</SelectItem>
+            </Select>
+          </div>
           {/* Card Number */}
           <div className="mb-4">
             <label className="block text-sm font-semibold mb-1">Card Number</label>
@@ -160,27 +194,38 @@ const page = () => {
             />
           </div>
 
-          {/* Select Payment Method */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">Select Payment Method</label>
-            <Select>
-              <SelectItem value="visa">Visa</SelectItem>
-              <SelectItem value="mastercard">MasterCard</SelectItem>
-              <SelectItem value="amex">American Express</SelectItem>
-            </Select>
-          </div>
-
-          {/* Loading Spinner */}
-          {false && <Spinner />} {/* You can display this based on loading state */}
         </CardBody>
 
-        {/* Submit Button */}
+        {/* Modal for Payment Success */}
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalContent>
-            <ModalHeader>Payment Success</ModalHeader>
-            <ModalBody>Your payment has been successfully processed.</ModalBody>
+            <ModalHeader>Payment</ModalHeader>
+            <ModalBody className="w-[100%]">
+              {isLoading ? (
+                <div className="w-[100%] h-[100%] flex justify-center items-center">
+                  <Spinner />
+                </div>
+              ) : (
+                <div>Your payment has been successfully processed.</div>
+              )}
+            </ModalBody>
             <ModalFooter>
-              <NextButton />
+              {!isLoading && <NextButton />}
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        {/* Modal for Error */}
+        <Modal isOpen={errorModalOpen} onClose={onErrorClose}>
+          <ModalContent>
+            <ModalHeader>Error</ModalHeader>
+            <ModalBody>
+              <div>There is an issue with the card details provided. Please check and try again.</div>
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={onErrorClose} className="bg-red-500 text-white">
+                OK
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, Badge, Button, Divider, TimeInput, DateInput, Select, SelectItem } from "@heroui/react";
+import { Card, Badge, Button, Divider, TimeInput, DateInput, Select, SelectItem, Spinner } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 // components
@@ -12,98 +12,96 @@ import { getGolfCourseAvailability } from "@/app/lib/api";
 import { parseDate, CalendarDate, today, Time } from "@internationalized/date";
 import { compareTime, convertCalendarDateToNumber, convertMinutesToTimeWithAMPM, convertCalendarDateToEncoding } from "@/app/components/date-functionalities";
 
-const placeholderData = 
-  [
-    {
-      "Tee Minute": 374,
-      "Crossover Minute": 476,
-      "Available": [],
-      "Crossover Available": [],
-      "Available Online": true,
-      "Availability ID": -2147483647,
-      "Availability Description": "AM",
-      "Availability Blocking": false,
-      "Online Golfer Count": 4,
-      "Is Shotgun Availability": false,
-      "Golf Bookings": [
-      ],
-      "Crossover Golf Bookings": [
-      ]
-    },
-    {
-      "Tee Minute": 382,
-      "Crossover Minute": 484,
-      "Available": [],
-      "Crossover Available": [1, 2],
-      "Available Online": true,
-      "Availability ID": -2147483647,
-      "Availability Description": "AM",
-      "Availability Blocking": false,
-      "Online Golfer Count": 4,
-      "Is Shotgun Availability": false,
-      "Golf Bookings": [
-      ],
-      "Crossover Golf Bookings": []
-    },
-    {
-      "Tee Minute": 390,
-      "Crossover Minute": 492,
-      "Available": [1, 2],
-      "Crossover Available": [1, 2],
-      "Available Online": true,
-      "Availability ID": -2147483647,
-      "Availability Description": "AM",
-      "Availability Blocking": false,
-      "Online Golfer Count": 4,
-      "Is Shotgun Availability": false,
-      "Golf Bookings": [
-        {
-          "Booking ID": 103,
-          "Golfer Name": "Emily White",
-          "Booking Status": "Confirmed",
-          "Booking Time": "2025-02-18T08:30:00Z"
-        }
-      ],
-      "Crossover Golf Bookings": []
-    },
-    {
-      "Tee Minute": 398,
-      "Crossover Minute": 500,
-      "Available": [1, 2],
-      "Crossover Available": [1, 2],
-      "Available Online": true,
-      "Availability ID": -2147483647,
-      "Availability Description": "AM",
-      "Availability Blocking": false,
-      "Online Golfer Count": 4,
-      "Is Shotgun Availability": false,
-      "Golf Bookings": [],
-      "Crossover Golf Bookings": [
-      ]
-    },
-    {
-      "Tee Minute": 406,
-      "Crossover Minute": 508,
-      "Available": [1, 2],
-      "Crossover Available": [1, 2],
-      "Available Online": true,
-      "Availability ID": -2147483647,
-      "Availability Description": "AM",
-      "Availability Blocking": false,
-      "Online Golfer Count": 4,
-      "Is Shotgun Availability": false,
-      "Golf Bookings": [
-        {
-          "Booking ID": 104,
-          "Golfer Name": "Alice Green",
-          "Booking Status": "Pending",
-          "Booking Time": "2025-02-18T09:30:00Z"
-        }
-      ],
-      "Crossover Golf Bookings": []
-    }
-  ]
-
+const placeholderData =  [
+  {
+    "Tee Minute": 374,
+    "Crossover Minute": 476,
+    "Available": [],
+    "Crossover Available": [],
+    "Available Online": true,
+    "Availability ID": -2147483647,
+    "Availability Description": "AM",
+    "Availability Blocking": false,
+    "Online Golfer Count": 4,
+    "Is Shotgun Availability": false,
+    "Golf Bookings": [
+    ],
+    "Crossover Golf Bookings": [
+    ]
+  },
+  {
+    "Tee Minute": 382,
+    "Crossover Minute": 484,
+    "Available": [],
+    "Crossover Available": [1, 2],
+    "Available Online": true,
+    "Availability ID": -2147483647,
+    "Availability Description": "AM",
+    "Availability Blocking": false,
+    "Online Golfer Count": 4,
+    "Is Shotgun Availability": false,
+    "Golf Bookings": [
+    ],
+    "Crossover Golf Bookings": []
+  },
+  {
+    "Tee Minute": 390,
+    "Crossover Minute": 492,
+    "Available": [1, 2],
+    "Crossover Available": [1, 2],
+    "Available Online": true,
+    "Availability ID": -2147483647,
+    "Availability Description": "AM",
+    "Availability Blocking": false,
+    "Online Golfer Count": 4,
+    "Is Shotgun Availability": false,
+    "Golf Bookings": [
+      {
+        "Booking ID": 103,
+        "Golfer Name": "Emily White",
+        "Booking Status": "Confirmed",
+        "Booking Time": "2025-02-18T08:30:00Z"
+      }
+    ],
+    "Crossover Golf Bookings": []
+  },
+  {
+    "Tee Minute": 398,
+    "Crossover Minute": 500,
+    "Available": [1, 2],
+    "Crossover Available": [1, 2],
+    "Available Online": true,
+    "Availability ID": -2147483647,
+    "Availability Description": "AM",
+    "Availability Blocking": false,
+    "Online Golfer Count": 4,
+    "Is Shotgun Availability": false,
+    "Golf Bookings": [],
+    "Crossover Golf Bookings": [
+    ]
+  },
+  {
+    "Tee Minute": 406,
+    "Crossover Minute": 508,
+    "Available": [1, 2],
+    "Crossover Available": [1, 2],
+    "Available Online": true,
+    "Availability ID": -2147483647,
+    "Availability Description": "AM",
+    "Availability Blocking": false,
+    "Online Golfer Count": 4,
+    "Is Shotgun Availability": false,
+    "Golf Bookings": [
+      {
+        "Booking ID": 104,
+        "Golfer Name": "Alice Green",
+        "Booking Status": "Pending",
+        "Booking Time": "2025-02-18T09:30:00Z"
+      }
+    ],
+    "Crossover Golf Bookings": []
+  }
+]    
 
 const page = () => {
   const today = parseDate(new Date().toISOString().split("T")[0]);
@@ -115,6 +113,8 @@ const page = () => {
   const [availableTeeTimes, setAvailableTeeTimes] = useState(placeholderData);
 
   const [selectedTimeCode, setSelectedTimeCode] = useState<number | null>(null);
+
+  const [isLoading, setLoading] = useState(true);
 
   const titles = ["9 Hole", "18 Hole"]; // Options for booking type
 
@@ -149,11 +149,31 @@ const page = () => {
     }
   }, [selectedDate]);
 
+  useEffect(() => {
+    // Set min date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Set date to tomorrow
+    const minDate = parseDate(tomorrow.toISOString().split("T")[0]);
+    fetchCourses()
+    setSelectedDate(minDate);
+  }, []);
+
   const [startTime, setStartTime] = useState(new Time(6, 0));
   const [endTime, setEndTime] = useState(new Time(17, 0));
   const minTime = '06:00 AM'; // Minimum time (6:00 AM)
   const maxTime = '05:00 PM'; // Maximum time (4:00 PM)
 
+  const fetchCourses = async () => {
+    try {
+      const data = await getGolfCourseAvailability(courseId, convertCalendarDateToNumber(selectedDate));
+      console.log(data);
+      setAvailableTeeTimes(data.availabilities);
+      setLoading(false)
+    } catch (error) {
+      console.error("Error fetching golf courses:", error);
+      setLoading(false)
+    }
+  };
 
   const handleStartTimeChange = (value: any) => {
       setStartTime(value);
@@ -164,19 +184,9 @@ const page = () => {
   };
 
   const handleDateChange = (newDate: any) => {
-
+    
+    setLoading(true)
     setSelectedDate(newDate);
-
-    const fetchCourses = async () => {
-      try {
-        const data = await getGolfCourseAvailability(courseId, convertCalendarDateToNumber(selectedDate));
-        console.log(data);
-        setAvailableTeeTimes(data.availabilities);
-      } catch (error) {
-        console.error("Error fetching golf courses:", error);
-      }
-    };
-  
     fetchCourses();
   };
 
@@ -224,6 +234,7 @@ const page = () => {
           className="max-w-[284px]" 
           label="Booking Date" 
           value={selectedDate}
+          minValue={selectedDate}
           defaultValue={selectedDate}
           onChange={handleDateChange}
         />
@@ -269,6 +280,12 @@ const page = () => {
         </span> 
         booking.
       </h1>
+      {isLoading? 
+      <>
+      <div className="w-[900px] h-[255px] flex flex-col align-middle items-center justify-center">
+        <Spinner></Spinner>
+      </div>
+      </>:
       <div className="max-w-[900px] max-h-[255px] p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2 overflow-y-auto bg-gray-50 rounded-md">
         {availableTeeTimes.map((data, index) => {
           if (!compareTime(data['Tee Minute'], startTime, endTime)){
@@ -305,7 +322,7 @@ const page = () => {
           </Card>
 
         )})}
-      </div>
+      </div>}
       <NextButton />
     
     </div>

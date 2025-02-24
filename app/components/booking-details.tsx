@@ -31,7 +31,7 @@ const BookingDetails = () => {
               {bookingDetails.courseName || "Course Name Placeholder"}
             </span>
             <span className="text-gray-500 text-sm mt-1">
-              Course UID: {bookingDetails.courseImageUID || "N/A"}
+              {bookingDetails.courseLocation || "N/A"}
             </span>
           </div>
         </div>

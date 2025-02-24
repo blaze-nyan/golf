@@ -23,14 +23,14 @@ const OtherServicesPage = () => {
   const { setBookingDetails, bookingDetails } = useProgress();
 
   useEffect(() => {
-    // Retrieve the clientID from local storage
     const clientID = localStorage.getItem("clientId");
-
+    setBookingDetails((prevBookingDetails: any) => ({
+      ...prevBookingDetails,
+      clientID: clientID,
+    }));
     if (clientID) {
-      // Fetch client info using the clientID
       getClientInfo(Number(clientID)).then((clientInfo) => {
         setGolferList([clientInfo["Given Name"]])
-        // Extract and set the display name
         console.log(clientInfo)
       });
     }
@@ -67,9 +67,10 @@ const OtherServicesPage = () => {
         numberOfnonPlayers: numNonPlayers,
         "Golf Cart": numGolfCarts,
         "Food & Drinks": numFoodDrinks,
+        "Golfer Names": golferList,
         price: calculatedPrice,
     }));
-}, [numGolfers, numCaddies, numGolfCarts, numFoodDrinks, numNonPlayers, setBookingDetails]);
+}, [numGolfers, numCaddies, numGolfCarts, numFoodDrinks, numNonPlayers, setBookingDetails, golferList]);
 
 
   const handleNumGolfersChange = (change: number) => {

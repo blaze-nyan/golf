@@ -73,6 +73,7 @@ const CoursePage = () => {
       setBookingDetails((prevBookingDetails: any) => ({
         ...prevBookingDetails,
         courseName: golfCourse.golfCourseName,
+        courseLocation: "52 347 Phahonyothin Rd, Tambon Lak Hok, Amphoe Mueang Pathum Thani"
       }));
     }
   }, [golfCourse]);

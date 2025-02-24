@@ -10,14 +10,13 @@ export const STEPS = [
     path: (courseId: string) => `/golfcourse/${courseId}`,
   },
   {
-    title: "Time",
+    title: "Booking",
     path: (courseId: string) => `/golfcourse/${courseId}/hole`,
   },
   {
     title: "Details",
     path: (courseId: string) => `/golfcourse/${courseId}/other-services`,
   },
-
   {
     title: "Payment",
     path: (courseId: string) => `/golfcourse/${courseId}/booking`,
@@ -45,8 +44,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   
   const [bookingDetails, setBookingDetails] = useState({
     courseImageUID: "",
+    courseLocation: "",
     courseName: "",
     bookingType: null,
+    clientID: null,
     teeDate: null,
     teeTime: null,
     numberOfGolfers: null,
@@ -54,6 +55,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     "Golf Cart": null,
     "Caddies": null,
     "Food & Drinks": null,
+    "Golfer Names": [],
+    status: "prepaid",
+    paymentType: null,
+    paid: 0,
     price: 0,
   });
 
@@ -81,9 +86,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, [courseId]);
 
   useEffect(() => {
-    console.log("TEST")
     if (courseId) {
-      console.log("TESTME TOO")
       const savedBookingDetails = localStorage.getItem(`bookingDetails_${courseId}`);
       console.log(savedBookingDetails)
       if (savedBookingDetails) {
@@ -98,7 +101,6 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, [bookingDetails, courseId]);
 
-  // Save progress to localStorage whenever it changes
   useEffect(() => {
     if (courseId && maxCompletedStep >= 0) {
       localStorage.setItem(
@@ -108,7 +110,6 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, [maxCompletedStep, courseId]);
 
-  // Redirect if trying to access a step that's not available
   useEffect(() => {
     if (courseId && currentStep > maxCompletedStep + 1) {
       const allowedPath =

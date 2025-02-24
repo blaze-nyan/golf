@@ -9,7 +9,7 @@ interface CourseCardProps {
 
 export default function CourseCard({ course }: CourseCardProps) {
   return (
-    <Card className="w-full max-w-[90%] transition-all duration-300 hover:scale-[1.02] ">
+    <Card className="w-full max-w-[90%] transition-all duration-300 hover:scale-[1.01] ">
       <CardBody className="flex flex-row flex-wrap p-5 sm:flex-nowrap">
         <Image
           removeWrapper
