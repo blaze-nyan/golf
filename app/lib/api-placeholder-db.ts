@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const APIDatabase = "http://localhost:3001";
 
-export const fetchData: [] = async (apiRoute: String) => {
+export const fetchData = async (apiRoute: String) => {
   try {
     const response = await axios.get(`${APIDatabase}/${apiRoute}`);
     console.log(response.data);

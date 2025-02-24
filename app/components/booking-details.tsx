@@ -44,10 +44,10 @@ const BookingDetails = () => {
             <Icon icon="mdi-golf" /> Booking Type: {bookingDetails.bookingType == 1? "9-Hole":"18-Hole"}
           </span>
           <span className="font-semibold text-medium text-gray-700 flex items-center gap-2">
-            <Icon icon="mdi-calendar" /> Tee Date: {dateToString(convertExcelDateToJSDate(bookingDetails.teeDate)) || "Select a date"}
+            <Icon icon="mdi-calendar" /> Tee Date: {bookingDetails.teeDate? dateToString(convertExcelDateToJSDate(bookingDetails.teeDate)) : "Select a date"}
           </span>
           <span className="font-semibold text-medium text-gray-700 mt-2 flex items-center gap-2">
-            <Icon icon="mdi-clock" /> Tee Time: {convertMinutesToTimeWithAMPM(bookingDetails.teeTime) || "Select a time"}
+            <Icon icon="mdi-clock" /> Tee Time: {bookingDetails.teeTime? convertMinutesToTimeWithAMPM(bookingDetails.teeTime) : "Select a time"}
           </span>
         </div>
 

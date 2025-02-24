@@ -43,6 +43,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [maxCompletedStep, setMaxCompletedStep] = useState(-1);
   
   const [bookingDetails, setBookingDetails] = useState({
+    courseId: "",
     courseImageUID: "",
     courseLocation: "",
     courseName: "",

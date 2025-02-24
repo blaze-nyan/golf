@@ -4,6 +4,7 @@
 import Stepper from "@/app/components/stepper";
 import { ProgressProvider, useProgress } from "../context/progress-context";
 import BookingDetails from "@/app/components/booking-details";
+import AuthRedirect from "@/app/components/auth-redirect";
 
 export default function GolfCourseLayout({
   children,
@@ -12,6 +13,7 @@ export default function GolfCourseLayout({
 }) {
   return (
     <ProgressProvider>
+      <AuthRedirect></AuthRedirect>
       <div className="flex flex-col min-h-[60%] m-20 mb-5 mt-3">
         <Stepper />
         <ProgressConsumer>{children}</ProgressConsumer>

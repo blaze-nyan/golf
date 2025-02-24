@@ -11,6 +11,7 @@ import {DateRangePicker} from "@heroui/date-picker";
 import { getGolfCourseAvailability } from "@/app/lib/api";
 import { parseDate, CalendarDate, today, Time } from "@internationalized/date";
 import { compareTime, convertCalendarDateToNumber, convertMinutesToTimeWithAMPM, convertCalendarDateToEncoding } from "@/app/components/date-functionalities";
+import { fetchData } from "@/app/lib/api-placeholder-db";
 
 const placeholderData =  [
   {
@@ -104,9 +105,13 @@ const placeholderData =  [
 ]    
 
 const page = () => {
-  const today = parseDate(new Date().toISOString().split("T")[0]);
 
-  const [selectedDate, setSelectedDate] = useState(today);
+  const today = new Date();
+  today.setDate(today.getDate() + 2); // Adds one day to today's date
+
+  const formattedDate = parseDate(today.toISOString().split("T")[0]);
+
+  const [selectedDate, setSelectedDate] = useState(formattedDate);
   const [bookingType, setBookingType] = useState(1);
 
   const { currentStep, canAccess, courseId, setBookingDetails } = useProgress();
@@ -121,6 +126,7 @@ const page = () => {
   const handleCardClick = (timeCode: number) => {
     setSelectedTimeCode(timeCode === selectedTimeCode ? null : timeCode);
   };
+
 
   useEffect(() => {
     if (selectedTimeCode) {
@@ -145,14 +151,16 @@ const page = () => {
       setBookingDetails((prevBookingDetails: any) => ({
         ...prevBookingDetails,
         teeDate: convertCalendarDateToEncoding(selectedDate),
+        teeTime: null,
       }));
+      setSelectedTimeCode(null);
     }
   }, [selectedDate]);
 
   useEffect(() => {
     // Set min date to tomorrow
     const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1); // Set date to tomorrow
+    tomorrow.setDate(tomorrow.getDate() + 2); // Set date to tomorrow
     const minDate = parseDate(tomorrow.toISOString().split("T")[0]);
     fetchCourses()
     setSelectedDate(minDate);
@@ -208,6 +216,35 @@ const page = () => {
     fetchCourses();
   }, []);
 
+  //Temporary
+  const [unavailableTeeDates, setUnavailableTeeDates] = useState<any>({});
+  const [unavailableTeeTimes, setUnavailableTeeTimes] = useState<number[]>([]);
+
+  
+  useEffect(() => {
+    const fetchBookings = async () => {
+      const bookings = await fetchData("bookings"); // Assuming fetchData is defined elsewhere
+      const result = bookings.reduce((acc: { [x: string]: any[]; }, booking: { teeDate: any; teeTime: any; }) => {
+        const { teeDate, teeTime } = booking;
+        if (!acc[teeDate]) {
+          acc[teeDate] = [];
+        }
+        acc[teeDate].push(teeTime);
+        return acc;
+      }, {});
+  
+      setUnavailableTeeDates(result); // Set unavailable tee dates after processing
+    };
+  
+    fetchBookings(); // Call the fetchBookings function
+  }, []);
+  
+  useEffect(() => {
+    if (selectedDate) {
+      const encodedDate = convertCalendarDateToEncoding(selectedDate); // Assuming the function is defined elsewhere
+      setUnavailableTeeTimes(unavailableTeeDates[encodedDate] || []); // Set tee times for the selected date
+    }
+  }, [selectedDate, unavailableTeeDates]); // This will rerun when selectedDate or unavailableTeeDates changes
 
   return (
     <div className="space-y-5">
@@ -234,7 +271,7 @@ const page = () => {
           className="max-w-[284px]" 
           label="Booking Date" 
           value={selectedDate}
-          minValue={selectedDate}
+          minValue={formattedDate}
           defaultValue={selectedDate}
           onChange={handleDateChange}
         />
@@ -297,12 +334,17 @@ const page = () => {
           }
           
           return(
-          <Card  
+          <Card
             key={index}
             className={`p-2 cursor-pointer transition-transform duration-200 h-[115px] 
-              ${selectedTimeCode === data["Tee Minute"] ? "bg-green-200 scale-105" : "hover:scale-105"}`}
+              ${selectedTimeCode === data["Tee Minute"] ? "bg-green-200 scale-105" : "hover:scale-105"}
+              ${unavailableTeeTimes.includes(data["Tee Minute"]) ? "opacity-50 pointer-events-none" : ""}`}
           >
-            <div onClick={() => handleCardClick(data["Tee Minute"])}>
+            <div onClick={() => {
+              if (!unavailableTeeTimes.includes(data["Tee Minute"])) {
+                handleCardClick(data["Tee Minute"]);
+              }
+            }}>
               <div className="flex mb-1">
                 <div className={`w-full flex items-center justify-center rounded-md p-1 ${selectedTimeCode === data["Tee Minute"] ? "bg-green-200" : "bg-green-100"}`}>
                   <span className="px-2 font-semibold">

@@ -72,6 +72,7 @@ const CoursePage = () => {
     if (golfCourse) {
       setBookingDetails((prevBookingDetails: any) => ({
         ...prevBookingDetails,
+        courseId: courseId,
         courseName: golfCourse.golfCourseName,
         courseLocation: "52 347 Phahonyothin Rd, Tambon Lak Hok, Amphoe Mueang Pathum Thani"
       }));
