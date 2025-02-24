@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 
 const AuthRedirect = () => {
   const [isClient, setIsClient] = useState(false);
-  const router = useRouter(); // Use the new `useRouter` from `next/navigation`
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);

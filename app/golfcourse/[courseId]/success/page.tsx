@@ -10,14 +10,20 @@ import {
   convertMinutesToTimeWithAMPM,
   convertExcelDateToJSDate,
 } from "../../../components/date-functionalities";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const { bookingDetails, currentStep } = useProgress();
   const isSectionDisabled = (step: any) => currentStep < step;
+  const router = useRouter();
 
   // State for triggering confetti
   const [showConfetti, setShowConfetti] = useState(false);
 
+  const goToProfile = () => {
+    router.push("/profile");
+  };
+  
   useEffect(() => {
     // Trigger the confetti effect once the page has successfully loaded
     setShowConfetti(true);
@@ -29,6 +35,7 @@ const Page = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
 
   return (
     <div>
@@ -98,7 +105,7 @@ const Page = () => {
           </SectionWrapper>
           <Button
             className="w-full bg-green-700 text-white py-2 rounded-md mt-4 hover:bg-green-800"
-            onClick={() => window.location.href = "http://localhost:3000/profile"}
+            onClick={goToProfile}
           >
             Back to Profile
           </Button>
