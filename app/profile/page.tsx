@@ -18,7 +18,7 @@ export default function ProfileRedirect() {
   }, [router]);
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-[90vh] items-center justify-center">
       <Spinner size="lg" />
     </div>
   );

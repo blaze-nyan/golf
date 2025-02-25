@@ -12,32 +12,27 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-export async function GET(request: Request) {
+// interface AxiosResponse<T = any> {
+//   data: T;
+//   status: number;
+//   statusText: string;
+//   headers: any;
+//   config: any;
+//   request?: any;
+// }
+
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const clientId = searchParams.get("clientId");
-
-    if (!clientId) {
-      return NextResponse.json(
-        { error: "Client ID is required" },
-        { status: 400 }
-      );
-    }
-
     const response = await axios.post(
-      `${BASE_URL}/get_client_request`,
+      `${BASE_URL}/get_golf_courses_request`,
       {
         hg_code: "ixschool",
-        payload: {
-          "Client ID": parseInt(clientId), // Make sure we're sending as number
-        },
+        payload: {},
       },
       { headers }
     );
 
     // Response will have the same structure as your Postman response
-
-    console.log(response.data);
     // It includes Title, First Name, Surname, Given Name, Company, Gender, etc.
     return NextResponse.json(response.data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

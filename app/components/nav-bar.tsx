@@ -21,6 +21,7 @@ import ProfileIcon from "./profile-icon";
 import { cn } from "@heroui/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { checkClientId } from "../lib/general";
 const links = [
   { href: "/golfcourse", label: "Golf" },
   { href: "/f&b", label: "F&B" },
@@ -31,6 +32,10 @@ const links = [
 export default function NavBar(props: NavbarProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  if (pathname.startsWith("/dashboard")) {
+    return <></>;
+  }
 
   return (
     <Navbar
@@ -65,17 +70,19 @@ export default function NavBar(props: NavbarProps) {
 
       {/* Right Content */}
       <NavbarContent className="hidden md:flex" justify="end">
+        {checkClientId()? <ProfileIcon />
+        :
+          
         <NavbarItem className="ml-2 !flex gap-2">
-          {/* <Button
-            as={NextLink}
-            href="/auth/login"
-            color="primary"
-            variant="flat"
-          >
-            Login
-          </Button> */}
-          <ProfileIcon />
-        </NavbarItem>
+        <Button
+          as={NextLink}
+          href="/auth/login"
+          color="primary"
+          variant="flat"
+        >
+          Login to Book
+        </Button>
+      </NavbarItem>}
       </NavbarContent>
 
       <NavbarMenuToggle className="text-default-400 md:hidden" />
