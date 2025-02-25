@@ -1,7 +1,6 @@
 // app/api/profile/image/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-import { log } from "console";
 
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
@@ -21,21 +20,22 @@ export async function POST(request: Request) {
       {
         hg_code: "ixschool",
         payload: {
-            'Client ID': Client_Info["Client ID"],
-            "Title": Client_Info.Title,
-            "Gender": Client_Info.Gender,
-            "First Name": Client_Info["First Name"],
-            "Surname": Client_Info.Surname,
-            "Given Name": Client_Info["Given Name"],
-            "Company": Client_Info.Company,
-            "Communication List": Client_Info["Communication List"],
+          "Client ID": Client_Info["Client ID"],
+          Title: Client_Info.Title,
+          Gender: Client_Info.Gender,
+          "First Name": Client_Info["First Name"],
+          Surname: Client_Info.Surname,
+          "Given Name": Client_Info["Given Name"],
+          Company: Client_Info.Company,
+          "Communication List": Client_Info["Communication List"],
         },
       },
       { headers }
     );
-    console.log(Client_Info["Communication List"])
+    console.log(response);
+    console.log(Client_Info["Communication List"]);
     return NextResponse.json({
-      success: true
+      success: true,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
