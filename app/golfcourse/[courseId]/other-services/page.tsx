@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -31,12 +32,12 @@ const OtherServicesPage = () => {
     if (clientID) {
       getClientInfo(Number(clientID)).then((clientInfo) => {
         setGolferList([
-          clientInfo["Given Name"] !== "" 
-            ? clientInfo["Given Name"] 
-            : `${clientInfo["First Name"]} ${clientInfo["Surname"]}`
+          clientInfo["Given Name"] !== ""
+            ? clientInfo["Given Name"]
+            : `${clientInfo["First Name"]} ${clientInfo["Surname"]}`,
         ]);
-      
-        console.log(clientInfo)
+
+        console.log(clientInfo);
       });
     }
   }, []);
@@ -57,36 +58,47 @@ const OtherServicesPage = () => {
   }, [numGolfers]);
 
   useEffect(() => {
-    const calculatedPrice = numGolfers * feeForDay +
-        numNonPlayers * 100 +
-        numCaddies * 300 +
-        numGolfCarts * 500 +
-        numFoodDrinks * 300;
+    const calculatedPrice =
+      numGolfers * feeForDay +
+      numNonPlayers * 100 +
+      numCaddies * 300 +
+      numGolfCarts * 500 +
+      numFoodDrinks * 300;
 
     settotalPrice(calculatedPrice);
 
     setBookingDetails((prevBookingDetails: any) => ({
-        ...prevBookingDetails,
-        numberOfGolfers: numGolfers,
-        Caddies: numCaddies,
-        numberOfnonPlayers: numNonPlayers,
-        "Golf Cart": numGolfCarts,
-        "Food & Drinks": numFoodDrinks,
-        "Golfer Names": golferList,
-        price: calculatedPrice,
+      ...prevBookingDetails,
+      numberOfGolfers: numGolfers,
+      Caddies: numCaddies,
+      numberOfnonPlayers: numNonPlayers,
+      "Golf Cart": numGolfCarts,
+      "Food & Drinks": numFoodDrinks,
+      "Golfer Names": golferList,
+      price: calculatedPrice,
     }));
-}, [numGolfers, numCaddies, numGolfCarts, numFoodDrinks, numNonPlayers, setBookingDetails, golferList]);
+  }, [
+    numGolfers,
+    numCaddies,
+    numGolfCarts,
+    numFoodDrinks,
+    numNonPlayers,
+    setBookingDetails,
+    golferList,
+  ]);
 
-
-  const handleNumGolfersChange = (change: number) => {
-    setNumGolfers((prev) => Math.min(4, Math.max(1, prev + change)));
-  };
+  // const handleNumGolfersChange = (change: number) => {
+  //   setNumGolfers((prev) => Math.min(4, Math.max(1, prev + change)));
+  // };
 
   const handleNonPlayerChange = (change: number) => {
     setNonPlayers((prev) => Math.max(0, prev + change));
   };
 
-  const handleServiceChange = (service: "caddies" | "golfCarts" | "foodDrinks", change: number) => {
+  const handleServiceChange = (
+    service: "caddies" | "golfCarts" | "foodDrinks",
+    change: number
+  ) => {
     if (service === "golfCarts") {
       setNumGolfCarts((prev) => Math.max(numGolfers, prev + change)); // Ensure Golf Carts >= Golfers
     } else if (service === "caddies") {
@@ -112,11 +124,12 @@ const OtherServicesPage = () => {
     }
   };
 
-  const dayOfWeek = convertExcelDateToJSDate(bookingDetails.teeDate)
-  .toLocaleDateString('en-US', { weekday: 'long' }) as keyof typeof golfFees;
+  const dayOfWeek = convertExcelDateToJSDate(
+    bookingDetails.teeDate
+  ).toLocaleDateString("en-US", { weekday: "long" }) as keyof typeof golfFees;
 
-  var feeForDay = golfFees[dayOfWeek];
-  if (bookingDetails.bookingType == 2){
+  let feeForDay = golfFees[dayOfWeek];
+  if (bookingDetails.bookingType == 2) {
     feeForDay = golfFees18Hole[dayOfWeek];
   }
 
@@ -170,33 +183,33 @@ const OtherServicesPage = () => {
 
       {/* New Golfer Modal */}
       {isGolferModalOpen && (
-        <Modal isOpen={isGolferModalOpen} onClose={() => setGolferModalOpen(false)}>
-        <ModalContent className="max-w-sm mx-auto">
-          <ModalHeader>Add New Golfer</ModalHeader>
-          <ModalBody>
-            <Input
-              value={newGolferName}
-              onChange={(e) => setNewGolferName(e.target.value)}
-              placeholder="Enter Golfer's Name"
-              className="w-full"
-            />
-          </ModalBody>
-          <ModalFooter className="space-x-3">
-            <Button
-              onClick={handleAddGolfer}
-              className="bg-green-800 text-white"
-            >
-              Add Golfer
-            </Button>
-            <Button
-              onClick={() => setGolferModalOpen(false)}
-              className=""
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        <Modal
+          isOpen={isGolferModalOpen}
+          onClose={() => setGolferModalOpen(false)}
+        >
+          <ModalContent className="max-w-sm mx-auto">
+            <ModalHeader>Add New Golfer</ModalHeader>
+            <ModalBody>
+              <Input
+                value={newGolferName}
+                onChange={(e) => setNewGolferName(e.target.value)}
+                placeholder="Enter Golfer's Name"
+                className="w-full"
+              />
+            </ModalBody>
+            <ModalFooter className="space-x-3">
+              <Button
+                onClick={handleAddGolfer}
+                className="bg-green-800 text-white"
+              >
+                Add Golfer
+              </Button>
+              <Button onClick={() => setGolferModalOpen(false)} className="">
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       )}
 
       {/* Guests */}
@@ -225,7 +238,7 @@ const OtherServicesPage = () => {
           </div>
         </div>
       </div>
-    
+
       {/* Services */}
       <div className="space-y-4">
         {/* Caddies */}
@@ -302,9 +315,7 @@ const OtherServicesPage = () => {
       </div>
 
       {/* Total Price */}
-      <div className="mt-3 text-lg text-right">
-        Total: {totalPrice} THB
-      </div>
+      <div className="mt-3 text-lg text-right">Total: {totalPrice} THB</div>
 
       <NextButton />
     </div>

@@ -7,8 +7,6 @@ import {
   Calendar,
   LandPlot,
   Users,
-  Settings,
-  BarChart,
   Menu,
   X,
   CircleDollarSign,

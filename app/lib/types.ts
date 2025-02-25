@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/lib/types.ts
 export interface RawGolfCourse {
   "Golf Course ID": number;

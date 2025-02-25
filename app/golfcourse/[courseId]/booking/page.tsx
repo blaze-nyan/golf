@@ -1,4 +1,6 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
 
 import React, { useState, useEffect } from "react";
 //components
@@ -12,7 +14,6 @@ import {
   Input,
   Select,
   SelectItem,
-  Avatar,
   Spinner,
   Modal,
   ModalContent,
@@ -25,7 +26,9 @@ import { postData } from "@/app/lib/api-placeholder-db";
 
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
-  const [paymentType, setPaymentType] = useState<"prepayment" | "fullPayment">("fullPayment");
+  const [paymentType, setPaymentType] = useState<"prepayment" | "fullPayment">(
+    "fullPayment"
+  );
   const [amountToPay, setAmountToPay] = useState(bookingDetails.price);
 
   // Credit card form state
@@ -36,7 +39,11 @@ const page = () => {
 
   // Modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: errorModalOpen, onOpen: onErrorOpen, onClose: onErrorClose } = useDisclosure();
+  const {
+    isOpen: errorModalOpen,
+    onOpen: onErrorOpen,
+    onClose: onErrorClose,
+  } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false); // Loading state
 
   useEffect(() => {
@@ -47,23 +54,21 @@ const page = () => {
     }
   }, [paymentType, bookingDetails.price]);
 
-  
-
   const handlePaymentTypeChange = (type: "prepayment" | "fullPayment") => {
     setPaymentType(type);
   };
 
   useEffect(() => {
     setBookingDetails((prevBookingDetails: any) => ({
-        ...prevBookingDetails,
-        paymentType: paymentType,
+      ...prevBookingDetails,
+      paymentType: paymentType,
     }));
   }, [paymentType]);
 
   useEffect(() => {
     setBookingDetails((prevBookingDetails: any) => ({
-        ...prevBookingDetails,
-        paid: amountToPay,
+      ...prevBookingDetails,
+      paid: amountToPay,
     }));
   }, [amountToPay]);
 
@@ -87,8 +92,8 @@ const page = () => {
   const handleSubmit = () => {
     if (validateCreditCard()) {
       onOpen(); // Open the success modal on successful payment
-      console.log(bookingDetails)
-      postData("bookings", bookingDetails)
+      console.log(bookingDetails);
+      postData("bookings", bookingDetails);
       setIsLoading(true); // Show loading spinner
       setTimeout(() => {
         setIsLoading(false); // Simulate loading completion after a delay
@@ -102,16 +107,24 @@ const page = () => {
 
       {/* Payment Type Selection */}
       <div className="space-y-3">
-        <h2 className="text-xl font-semibold" >Select Payment Type</h2>
+        <h2 className="text-xl font-semibold">Select Payment Type</h2>
         <div className="flex gap-4">
           <Button
-            className={`w-full ${paymentType === "prepayment" ? "bg-green-700 text-white" : "bg-gray-200"}`}
+            className={`w-full ${
+              paymentType === "prepayment"
+                ? "bg-green-700 text-white"
+                : "bg-gray-200"
+            }`}
             onClick={() => handlePaymentTypeChange("prepayment")}
           >
             Prepayment (30% of total)
           </Button>
           <Button
-            className={`w-full ${paymentType === "fullPayment" ? "bg-green-700 text-white" : "bg-gray-200"}`}
+            className={`w-full ${
+              paymentType === "fullPayment"
+                ? "bg-green-700 text-white"
+                : "bg-gray-200"
+            }`}
             onClick={() => handlePaymentTypeChange("fullPayment")}
           >
             Full Payment (100% of total)
@@ -129,9 +142,8 @@ const page = () => {
         </CardBody>
       </Card>
 
-      
       <div className="text-red-600 font-bold text-md p-4 border border-red-500 rounded-md my-1">
-                  There will be no refund after payment is made.
+        There will be no refund after payment is made.
       </div>
 
       {/* Credit Card Input Form */}
@@ -142,8 +154,13 @@ const page = () => {
         <CardBody>
           {/* Select Payment Method */}
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1 visible" >Select Payment Method</label>
-            <Select placeholder="Select a payment method" aria-label="Select a payment method">
+            <label className="block text-sm font-semibold mb-1 visible">
+              Select Payment Method
+            </label>
+            <Select
+              placeholder="Select a payment method"
+              aria-label="Select a payment method"
+            >
               <SelectItem value="visa">Visa</SelectItem>
               <SelectItem value="mastercard">MasterCard</SelectItem>
               <SelectItem value="amex">American Express</SelectItem>
@@ -151,7 +168,9 @@ const page = () => {
           </div>
           {/* Card Number */}
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">Card Number</label>
+            <label className="block text-sm font-semibold mb-1">
+              Card Number
+            </label>
             <Input
               type="text"
               value={cardNumber}
@@ -165,7 +184,9 @@ const page = () => {
           {/* Expiry Date and CVV */}
           <div className="flex gap-4 mb-4">
             <div className="w-1/2">
-              <label className="block text-sm font-semibold mb-1">Expiry Date (MM/YY)</label>
+              <label className="block text-sm font-semibold mb-1">
+                Expiry Date (MM/YY)
+              </label>
               <Input
                 type="text"
                 value={expiryDate}
@@ -189,7 +210,9 @@ const page = () => {
 
           {/* Cardholder Name */}
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">Cardholder Name</label>
+            <label className="block text-sm font-semibold mb-1">
+              Cardholder Name
+            </label>
             <Input
               type="text"
               value={cardHolderName}
@@ -198,7 +221,6 @@ const page = () => {
               placeholder="Cardholder Name"
             />
           </div>
-
         </CardBody>
 
         {/* Modal for Payment Success */}
@@ -214,9 +236,7 @@ const page = () => {
                 <div>Your payment has been successfully processed.</div>
               )}
             </ModalBody>
-            <ModalFooter>
-              {!isLoading && <NextButton />}
-            </ModalFooter>
+            <ModalFooter>{!isLoading && <NextButton />}</ModalFooter>
           </ModalContent>
         </Modal>
 
@@ -225,7 +245,10 @@ const page = () => {
           <ModalContent>
             <ModalHeader>Error</ModalHeader>
             <ModalBody>
-              <div>There is an issue with the card details provided. Please check and try again.</div>
+              <div>
+                There is an issue with the card details provided. Please check
+                and try again.
+              </div>
             </ModalBody>
             <ModalFooter>
               <Button onClick={onErrorClose} className="bg-red-500 text-white">
@@ -235,7 +258,12 @@ const page = () => {
           </ModalContent>
         </Modal>
 
-        <Button onClick={handleSubmit} className="w-full bg-green-700 text-white">Submit Payment</Button>
+        <Button
+          onClick={handleSubmit}
+          className="w-full bg-green-700 text-white"
+        >
+          Submit Payment
+        </Button>
       </Card>
 
       {/* Next Button */}

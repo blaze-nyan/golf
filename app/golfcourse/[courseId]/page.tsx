@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState } from "react";
 import { NextButton } from "../components/NextButton";
-import { DatePicker, Image } from "@heroui/react";
-import { STEPS, useProgress } from "@/app/golfcourse/context/progress-context";
+import { Image } from "@heroui/react";
+import { useProgress } from "@/app/golfcourse/context/progress-context";
 import { getGolfCourseSingle } from "@/app/lib/api";
 import { Spinner } from "@heroui/react";
 import GolfFeesTable from "@/app/components/golf-fee-table";
@@ -49,14 +50,13 @@ const placeholderGolfCourse = {
 };
 
 const CoursePage = () => {
-  const { currentStep, canAccess, courseId, setBookingDetails } = useProgress();
+  const { courseId, setBookingDetails } = useProgress(); //currentStep, canAccess,
   const [golfCourse, setGolfCourse] = useState<any | null>();
   const [selectedHole, setSelectedHole] = useState<string | null>(null);
-  
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-
         const data = await getGolfCourseSingle(courseId);
         // Append the placeholder course to the courses array
 
@@ -75,7 +75,8 @@ const CoursePage = () => {
         ...prevBookingDetails,
         courseId: courseId,
         courseName: golfCourse.golfCourseName,
-        courseLocation: "52 347 Phahonyothin Rd, Tambon Lak Hok, Amphoe Mueang Pathum Thani"
+        courseLocation:
+          "52 347 Phahonyothin Rd, Tambon Lak Hok, Amphoe Mueang Pathum Thani",
       }));
     }
   }, [golfCourse]);
@@ -87,20 +88,26 @@ const CoursePage = () => {
       </div>
     );
   }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const image = () => usePlaceholderGolfCourseImageLink();
 
   return (
     <div className="max-w-[100%] mx-auto space-y-4">
-      <h1 className="text-3xl font-bold text-gray-800">{golfCourse.golfCourseName || placeholderGolfCourse.numberOfHoles}</h1>
+      <h1 className="text-3xl font-bold text-gray-800">
+        {golfCourse.golfCourseName || placeholderGolfCourse.numberOfHoles}
+      </h1>
 
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center">
           <span className="px-4 py-2 border border-green-500 text-green-500 text-sm font-semibold rounded-full shadow-s">
-            Number of Holes: {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
+            Number of Holes:{" "}
+            {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
           </span>
         </div>
         <div className="flex items-center">
-        <span className="px-4 py-2 border border-green-600 text-green-600 text-sm font-semibold rounded-full shadow-s">
-            Golf Course Par: {golfCourse.golfCoursePar || placeholderGolfCourse.numberOfHoles}
+          <span className="px-4 py-2 border border-green-600 text-green-600 text-sm font-semibold rounded-full shadow-s">
+            Golf Course Par:{" "}
+            {golfCourse.golfCoursePar || placeholderGolfCourse.numberOfHoles}
           </span>
         </div>
       </div>
@@ -108,13 +115,16 @@ const CoursePage = () => {
       <Image
         removeWrapper
         className="h-auto w-full flex-none object-cover object-top md:w-[100%]"
-        src={usePlaceholderGolfCourseImageLink()}
+        src={image()}
+        alt="image"
       />
-      <p className="text-lg text-gray-600">{golfCourse.golfCourseDescription || placeholderGolfCourse.golfCourseDescription}</p>
+      <p className="text-lg text-gray-600">
+        {golfCourse.golfCourseDescription ||
+          placeholderGolfCourse.golfCourseDescription}
+      </p>
 
       <GolfFeesTable></GolfFeesTable>
       <div className="space-y-4">
-
         <div className="">
           <h1 className="text-xl text-gray-800 mb-2">Outward Holes</h1>
           <div className="flex flex-wrap gap-2 mb-4">
@@ -164,14 +174,26 @@ const CoursePage = () => {
                 let totalStroke = 0;
                 let totalDistance = 0;
 
-                golfCourse.golfCourseHoles[0].Row.forEach((hole: any, index: any) => {
-                  const outIndex = golfCourse.golfCourseHoles[0].Row.indexOf("Out");
-                  if (index < outIndex && !["Detail Type", "In", "Out", "Total"].includes(hole)) {
-                    totalPar += parseInt(golfCourse.golfCourseHoles[1].Row[index]);
-                    totalStroke += parseInt(golfCourse.golfCourseHoles[2].Row[index]);
-                    totalDistance += parseInt(golfCourse.golfCourseHoles[3].Row[index]);
+                golfCourse.golfCourseHoles[0].Row.forEach(
+                  (hole: any, index: any) => {
+                    const outIndex =
+                      golfCourse.golfCourseHoles[0].Row.indexOf("Out");
+                    if (
+                      index < outIndex &&
+                      !["Detail Type", "In", "Out", "Total"].includes(hole)
+                    ) {
+                      totalPar += parseInt(
+                        golfCourse.golfCourseHoles[1].Row[index]
+                      );
+                      totalStroke += parseInt(
+                        golfCourse.golfCourseHoles[2].Row[index]
+                      );
+                      totalDistance += parseInt(
+                        golfCourse.golfCourseHoles[3].Row[index]
+                      );
+                    }
                   }
-                });
+                );
 
                 const combinedData = `Total Par: ${totalPar}, Total Stroke: ${totalStroke}, Total Distance: ${totalDistance} yards`;
                 setSelectedHole(combinedData);
@@ -180,7 +202,7 @@ const CoursePage = () => {
               Outward Holes
             </button>
           </div>
-          
+
           <h1 className="text-xl text-gray-800 mb-2">Inward Holes</h1>
           <div className="flex flex-wrap gap-2">
             {golfCourse.golfCourseHoles[0].Row.map((hole: any, index: any) => {
@@ -226,14 +248,26 @@ const CoursePage = () => {
                 let totalStroke = 0;
                 let totalDistance = 0;
 
-                golfCourse.golfCourseHoles[0].Row.forEach((hole: any, index: any) => {
-                  const outIndex = golfCourse.golfCourseHoles[0].Row.indexOf("Out");
-                  if (index > outIndex && !["Detail Type", "In", "Out", "Total"].includes(hole)) {
-                    totalPar += parseInt(golfCourse.golfCourseHoles[1].Row[index]);
-                    totalStroke += parseInt(golfCourse.golfCourseHoles[2].Row[index]);
-                    totalDistance += parseInt(golfCourse.golfCourseHoles[3].Row[index]);
+                golfCourse.golfCourseHoles[0].Row.forEach(
+                  (hole: any, index: any) => {
+                    const outIndex =
+                      golfCourse.golfCourseHoles[0].Row.indexOf("Out");
+                    if (
+                      index > outIndex &&
+                      !["Detail Type", "In", "Out", "Total"].includes(hole)
+                    ) {
+                      totalPar += parseInt(
+                        golfCourse.golfCourseHoles[1].Row[index]
+                      );
+                      totalStroke += parseInt(
+                        golfCourse.golfCourseHoles[2].Row[index]
+                      );
+                      totalDistance += parseInt(
+                        golfCourse.golfCourseHoles[3].Row[index]
+                      );
+                    }
                   }
-                });
+                );
 
                 const combinedData = `Total Par: ${totalPar}, Total Stroke: ${totalStroke}, Total Distance: ${totalDistance} yards`;
                 setSelectedHole(combinedData);
@@ -246,14 +280,18 @@ const CoursePage = () => {
 
         {selectedHole && (
           <div className="mt-4">
-            <h4 className="text-lg font-semibold text-gray-800">Hole Details</h4>
+            <h4 className="text-lg font-semibold text-gray-800">
+              Hole Details
+            </h4>
             <p className="text-gray-700">{selectedHole}</p>
           </div>
         )}
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-2xl font-semibold text-gray-800">Golf Course Notes</h3>
+        <h3 className="text-2xl font-semibold text-gray-800">
+          Golf Course Notes
+        </h3>
         {golfCourse.golfCourseNotes.length > 0 ? (
           <ul className="list-disc pl-6 space-y-2 text-lg text-gray-700">
             {golfCourse.golfCourseNotes.map((note: any, index: any) => (

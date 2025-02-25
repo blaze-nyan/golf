@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // components/BookingModal.tsx
 
 import React, { useState } from "react";
 import { Button, Card, Modal, ModalContent, Image } from "@heroui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { dateToString, convertExcelDateToJSDate, convertMinutesToTimeWithAMPM } from "./date-functionalities";
+import {
+  dateToString,
+  convertExcelDateToJSDate,
+  convertMinutesToTimeWithAMPM,
+} from "./date-functionalities";
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
 import { cancelBooking } from "../lib/api-placeholder-db";
 
@@ -14,8 +19,12 @@ interface BookingModalProps {
   forceReload: any;
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking, forceReload }) => {
-
+const BookingModal: React.FC<BookingModalProps> = ({
+  isOpen,
+  onClose,
+  booking,
+  forceReload,
+}) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const cancelBookingButton = (bookingId: any) => {
@@ -31,9 +40,14 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking, f
   const closeConfirmationModal = () => {
     setIsConfirmationModalOpen(false); // Close confirmation modal
   };
+  const image = usePlaceholderGolfCourseImageLink();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-[80%] max-w-[800px] h-[80%]">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className="w-[80%] max-w-[800px] h-[80%]"
+    >
       <ModalContent className="w-[100%]">
         {booking ? (
           <div className="flex flex-col items-center space-y-4 m-0 w-[100%] h-[100%]">
@@ -43,68 +57,143 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking, f
                 Booking Details
               </div>
 
-
               <div className="p-4 text-sm text-gray-700 space-y-3 mx-5">
                 {/* Course Section */}
                 <div className="flex gap-3 border-b border-gray-300 py-2">
                   <Image
                     className="h-32 w-32 rounded-md object-cover"
-                    src={usePlaceholderGolfCourseImageLink()}
+                    src={image}
                     alt="Course"
                   />
                   <div className="my-3 space-y-2">
-                    <div className="font-semibold text-xl">{booking.courseName || "Course Name"}</div>
-                    <div className="text-gray-500">{booking.courseLocation || "N/A"}</div>
-                    <InfoItem icon="mdi-golf" label="Type" value={booking.bookingType === 1 ? "9-Hole" : "18-Hole"} />
-                    <InfoItem icon="mdi-money" label="Status" value={booking.status ? `${booking.status}` : "N/A"} />
+                    <div className="font-semibold text-xl">
+                      {booking.courseName || "Course Name"}
+                    </div>
+                    <div className="text-gray-500">
+                      {booking.courseLocation || "N/A"}
+                    </div>
+                    <InfoItem
+                      icon="mdi-golf"
+                      label="Type"
+                      value={booking.bookingType === 1 ? "9-Hole" : "18-Hole"}
+                    />
+                    <InfoItem
+                      icon="mdi-money"
+                      label="Status"
+                      value={booking.status ? `${booking.status}` : "N/A"}
+                    />
                   </div>
                 </div>
 
                 {/* Date & Time Section */}
                 <div className="grid grid-cols-2 gap-2 border-b border-gray-300 pb-3">
-                    <h3 className="font-semibold text-lg col-span-2">Tee Time:</h3>
-                  <InfoItem icon="mdi-calendar" label="Date" value={dateToString(convertExcelDateToJSDate(booking.teeDate)) || "N/A"} />
-                  <InfoItem icon="mdi-clock" label="Time" value={convertMinutesToTimeWithAMPM(booking.teeTime) || "N/A"} />
+                  <h3 className="font-semibold text-lg col-span-2">
+                    Tee Time:
+                  </h3>
+                  <InfoItem
+                    icon="mdi-calendar"
+                    label="Date"
+                    value={
+                      dateToString(convertExcelDateToJSDate(booking.teeDate)) ||
+                      "N/A"
+                    }
+                  />
+                  <InfoItem
+                    icon="mdi-clock"
+                    label="Time"
+                    value={
+                      convertMinutesToTimeWithAMPM(booking.teeTime) || "N/A"
+                    }
+                  />
                 </div>
 
                 {/* Booking Details */}
                 <div className="grid grid-cols-2 gap-2 border-b border-gray-300 pb-3">
-                    <h3 className="font-semibold text-lg col-span-2">Booking Details:</h3>
-                  <InfoItem icon="mdi-golf" label="Golfers" value={booking.numberOfGolfers} />
-                  <InfoItem icon="mdi-person" label="Guests" value={booking.numberOfnonPlayers} />
-                  <InfoItem icon="mdi-backpack" label="Caddies" value={booking.Caddies} />
-                  <InfoItem icon="mdi-car" label="Carts" value={booking["Golf Cart"]} />
-                  <InfoItem icon="mdi-food" label="Food" value={booking["Food & Drinks"]} />
+                  <h3 className="font-semibold text-lg col-span-2">
+                    Booking Details:
+                  </h3>
+                  <InfoItem
+                    icon="mdi-golf"
+                    label="Golfers"
+                    value={booking.numberOfGolfers}
+                  />
+                  <InfoItem
+                    icon="mdi-person"
+                    label="Guests"
+                    value={booking.numberOfnonPlayers}
+                  />
+                  <InfoItem
+                    icon="mdi-backpack"
+                    label="Caddies"
+                    value={booking.Caddies}
+                  />
+                  <InfoItem
+                    icon="mdi-car"
+                    label="Carts"
+                    value={booking["Golf Cart"]}
+                  />
+                  <InfoItem
+                    icon="mdi-food"
+                    label="Food"
+                    value={booking["Food & Drinks"]}
+                  />
                 </div>
 
                 {/* List of Golfers */}
-                {booking["Golfer Names"] && booking["Golfer Names"].length > 0 && (
-                  <div className="border-b grid grid-cols-2 border-gray-300 pb-3 gap-2">
-                    <h3 className="font-semibold text-lg col-span-2" >Golfers:</h3>
-                    <ul className="list-disc pl-5 space-y-1">
-                      {booking["Golfer Names"].map((golfer: string, index: number) => (
-                        <li key={index} ><strong>{golfer}</strong></li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {booking["Golfer Names"] &&
+                  booking["Golfer Names"].length > 0 && (
+                    <div className="border-b grid grid-cols-2 border-gray-300 pb-3 gap-2">
+                      <h3 className="font-semibold text-lg col-span-2">
+                        Golfers:
+                      </h3>
+                      <ul className="list-disc pl-5 space-y-1">
+                        {booking["Golfer Names"].map(
+                          (golfer: string, index: number) => (
+                            <li key={index}>
+                              <strong>{golfer}</strong>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
 
                 {/* Price */}
                 <div className="grid grid-cols-2 gap-2 border-b border-gray-300 pb-3">
-                <h3 className="font-semibold text-lg col-span-2" >Payment Info:</h3>
-                    <div className=" col-span-2">
-                    <InfoItem icon="mdi-money" label="Payment Type" value={booking.paymentType ? `${booking.paymentType}` : "N/A"} />
-                    </div>
-                  <InfoItem icon="mdi-currency-btc" label="Paid Amount" value={booking.paid ? `${booking.paid} THB` : "N/A"} />
-                  <InfoItem icon="mdi-currency-btc" label="Price" value={booking.price ? `${booking.price} THB` : "N/A"} />
+                  <h3 className="font-semibold text-lg col-span-2">
+                    Payment Info:
+                  </h3>
+                  <div className=" col-span-2">
+                    <InfoItem
+                      icon="mdi-money"
+                      label="Payment Type"
+                      value={
+                        booking.paymentType ? `${booking.paymentType}` : "N/A"
+                      }
+                    />
+                  </div>
+                  <InfoItem
+                    icon="mdi-currency-btc"
+                    label="Paid Amount"
+                    value={booking.paid ? `${booking.paid} THB` : "N/A"}
+                  />
+                  <InfoItem
+                    icon="mdi-currency-btc"
+                    label="Price"
+                    value={booking.price ? `${booking.price} THB` : "N/A"}
+                  />
                 </div>
 
                 <div className="text-red-600 font-bold text-md p-4 border border-red-500 rounded-md my-1">
                   There will be no refund after payment is made.
                 </div>
 
-                <Button onClick={onClose} className="text-white hidden sm:block" color="primary">
-                    Close
+                <Button
+                  onClick={onClose}
+                  className="text-white hidden sm:block"
+                  color="primary"
+                >
+                  Close
                 </Button>
 
                 <Button
@@ -124,18 +213,29 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking, f
         )}
       </ModalContent>
 
-      
-      <Modal isOpen={isConfirmationModalOpen} onClose={closeConfirmationModal} className="w-[80%] max-w-[400px]">
+      <Modal
+        isOpen={isConfirmationModalOpen}
+        onClose={closeConfirmationModal}
+        className="w-[80%] max-w-[400px]"
+      >
         <ModalContent className="w-[100%] p-5 text-center">
-          <h2 className="font-semibold text-lg">Are you sure you want to cancel this booking?</h2>
+          <h2 className="font-semibold text-lg">
+            Are you sure you want to cancel this booking?
+          </h2>
           <div className="text-red-600 font-bold text-md rounded-md my-1">
             This action cannot be reversed.
           </div>
           <div className="flex justify-around mt-4">
-            <Button onClick={closeConfirmationModal} className="bg-gray-500 text-white">
+            <Button
+              onClick={closeConfirmationModal}
+              className="bg-gray-500 text-white"
+            >
               No
             </Button>
-            <Button onClick={() => cancelBookingButton(booking.id)} className="bg-red-600 text-white">
+            <Button
+              onClick={() => cancelBookingButton(booking.id)}
+              className="bg-red-600 text-white"
+            >
               Yes, Cancel
             </Button>
           </div>
@@ -146,7 +246,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking, f
 };
 
 // Info Item Component
-const InfoItem = ({ icon, label, value }: { icon: string, label: string, value: string | number }) => (
+const InfoItem = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string | number;
+}) => (
   <div className="flex items-center gap-2">
     <Icon icon={icon} className="text-lg" color="primary" />
     <span>

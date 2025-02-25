@@ -1,26 +1,26 @@
 export const golfFees = {
-  "Monday": 400,
-  "Tuesday": 400,
-  "Wednesday": 400,
-  "Thursday": 400,
-  "Friday": 500,
-  "Saturday": 600,
-  "Sunday": 600
+  Monday: 400,
+  Tuesday: 400,
+  Wednesday: 400,
+  Thursday: 400,
+  Friday: 500,
+  Saturday: 600,
+  Sunday: 600,
 };
 
 export const golfFees18Hole = {
-  "Monday": 700,  // Example price for 18 hole
-  "Tuesday": 700,
-  "Wednesday": 700,
-  "Thursday": 700,
-  "Friday": 800,
-  "Saturday": 900,
-  "Sunday": 900
+  Monday: 700, // Example price for 18 hole
+  Tuesday: 700,
+  Wednesday: 700,
+  Thursday: 700,
+  Friday: 800,
+  Saturday: 900,
+  Sunday: 900,
 };
 
 const GolfFeesTable = () => {
-  const tableData9Hole = Object.entries(golfFees);  // Convert the object to an array of key-value pairs for 9 hole
-  const tableData18Hole = Object.entries(golfFees18Hole);  // Convert the object to an array of key-value pairs for 18 hole
+  const tableData9Hole = Object.entries(golfFees); // Convert the object to an array of key-value pairs for 9 hole
+  const tableData18Hole = Object.entries(golfFees18Hole); // Convert the object to an array of key-value pairs for 18 hole
 
   return (
     <div className="overflow-x-auto py-4">
@@ -32,16 +32,23 @@ const GolfFeesTable = () => {
             <tr>
               <th className="px-4 py-2 text-center border-b"> </th>
               {tableData9Hole.map(([day], index) => (
-                <th key={index} className="px-4 py-2 text-center border-b">{day}</th>
+                <th key={index} className="px-4 py-2 text-center border-b">
+                  {day}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             <tr>
               <td className="px-4 py-2 text-center border-b">Fee (THB)</td>
-              {tableData9Hole.map(([_, fee], index) => (
-                <td key={index} className="px-4 py-2 text-center border-b">{fee}</td>
-              ))}
+              {tableData9Hole.map(([_, fee], index) => {
+                console.log(_);
+                return (
+                  <td key={index} className="px-4 py-2 text-center border-b">
+                    {fee}
+                  </td>
+                );
+              })}
             </tr>
           </tbody>
         </table>
@@ -55,16 +62,23 @@ const GolfFeesTable = () => {
             <tr>
               <th className="px-4 py-2 text-center border-b"> </th>
               {tableData18Hole.map(([day], index) => (
-                <th key={index} className="px-4 py-2 text-center border-b">{day}</th>
+                <th key={index} className="px-4 py-2 text-center border-b">
+                  {day}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             <tr>
               <td className="px-4 py-2 text-center border-b">Fee (THB)</td>
-              {tableData18Hole.map(([_, fee], index) => (
-                <td key={index} className="px-4 py-2 text-center border-b">{fee}</td>
-              ))}
+              {tableData18Hole.map(([_, fee], index) => {
+                console.log(_);
+                return (
+                  <td key={index} className="px-4 py-2 text-center border-b">
+                    {fee}
+                  </td>
+                );
+              })}
             </tr>
           </tbody>
         </table>
