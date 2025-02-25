@@ -12,25 +12,24 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-interface AxiosResponse<T = any> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: any;
-  config: any;
-  request?: any;
-}
+// interface AxiosResponse<T = any> {
+//   data: T;
+//   status: number;
+//   statusText: string;
+//   headers: any;
+//   config: any;
+//   request?: any;
+// }
 
-export async  function GET(request: Request) {
+export async function GET() {
   try {
-
     const response = await axios.post(
-        `${BASE_URL}/get_golf_courses_request`,
-        {
-          hg_code: "ixschool",
-          payload: {},
-        },
-        { headers }
+      `${BASE_URL}/get_golf_courses_request`,
+      {
+        hg_code: "ixschool",
+        payload: {},
+      },
+      { headers }
     );
 
     // Response will have the same structure as your Postman response

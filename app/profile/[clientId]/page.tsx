@@ -21,7 +21,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  
 } from "@heroui/react";
 import { User, Edit2, Save, Upload } from "lucide-react";
 import {
@@ -30,12 +29,15 @@ import {
   setClientImage,
   getClientImage,
 } from "@/app/lib/api";
-import { ChevronDown, ChevronUp } from "lucide-react";
+
 import { fetchData } from "@/app/lib/api-placeholder-db";
-import { filter } from "framer-motion/client";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { convertExcelDateToJSDate, convertMinutesToTimeWithAMPM, dateToString } from "@/app/components/date-functionalities";
-import bookingDetails from "@/app/components/booking-details";
+
+import {
+  convertExcelDateToJSDate,
+  convertMinutesToTimeWithAMPM,
+  dateToString,
+} from "@/app/components/date-functionalities";
+
 import BookingModal from "@/app/components/booking-model";
 import LogoutButton from "@/app/components/logout-button";
 import Link from "next/link";
@@ -53,7 +55,7 @@ interface ProfileData {
 export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();  
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,10 +63,12 @@ export default function ProfilePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [profileImage, setProfileImage] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profileImage, setProfileImage] = useState<any | null>(null);
   const [bookingData, setBookingData] = useState([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
 
   const titles = ["Mr", "Mrs", "Ms", "Dr", "Prof"];
@@ -94,24 +98,27 @@ export default function ProfilePage() {
     }
   }, [router]);
 
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const openBookingModal = (booking: any) => {
     setSelectedBooking(booking);
-    setIsOpenBookings(true);  // Open the booking modal
+    setIsOpenBookings(true); // Open the booking modal
   };
 
   const closeBookingModal = () => {
     setIsOpenBookings(false); // Close the booking modal
-  };  
-
-  const toggleCollapseBookings = () => {
-    setIsOpenBookings(!isOpenBookings);
   };
+
+  // const toggleCollapseBookings = () => {
+  //   setIsOpenBookings(!isOpenBookings);
+  // };
   const arrayBufferToBase64 = (buffer: string) => {
     return `data:image/jpeg;base64,${buffer}`;
   };
 
-  useEffect(() => localStorage.setItem("clientImage", profileImage), [profileImage]);
+  useEffect(
+    () => localStorage.setItem("clientImage", profileImage),
+    [profileImage]
+  );
 
   useEffect(() => {
     const fetchProfileAndImage = async () => {
@@ -141,19 +148,20 @@ export default function ProfilePage() {
           const base64Image = arrayBufferToBase64(imageData.imageInfo);
           setProfileImage(base64Image);
         }
-        
-        const bookings = await fetchData("bookings");
-        const filteredBookings = bookings.filter((booking: { clientID: any }) => booking.clientID === clientId);
-        
-        setBookingData(filteredBookings)
 
+        const bookings = await fetchData("bookings");
+        const filteredBookings = bookings.filter(
+          (booking: { clientID: string }) => booking.clientID === clientId
+        );
+
+        setBookingData(filteredBookings);
       } catch (err) {
         setError("Failed to load profile data");
         console.error("Error:", err);
       } finally {
         setIsLoading(false);
       }
-      };
+    };
     fetchProfileAndImage();
   }, [params.clientId, router]);
 
@@ -212,15 +220,16 @@ export default function ProfilePage() {
     }
   };
 
-  const handleInputChange = (field: keyof ProfileData) =>
-(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-if (profileData) {
-  setProfileData({
-    ...profileData,
-    [field]: e.target.value,
-  });
-}
-  };
+  const handleInputChange =
+    (field: keyof ProfileData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      if (profileData) {
+        setProfileData({
+          ...profileData,
+          [field]: e.target.value,
+        });
+      }
+    };
 
   const handleSave = async () => {
     if (!profileData) return;
@@ -258,9 +267,7 @@ if (profileData) {
           <CardBody className="items-center gap-4 text-center">
             <Avatar
               className="h-32 w-32 text-large"
-              src={
-                profileImage ? `${profileImage}` : undefined
-              }
+              src={profileImage ? `${profileImage}` : undefined}
               icon={<User size={40} />}
             />
             <Button
@@ -270,9 +277,11 @@ if (profileData) {
               onPress={onOpen}
             >
               <Upload size={16} />
-            </Button><div>
+            </Button>
+            <div>
               <h2 className="text-xl font-semibold">
-              {profileData["Title"]} {profileData["First Name"]} {profileData["Surname"]}
+                {profileData["Title"]} {profileData["First Name"]}{" "}
+                {profileData["Surname"]}
               </h2>
               <p className="text-default-500">{profileData["Given Name"]}</p>
 
@@ -377,21 +386,26 @@ if (profileData) {
               {/* Booking Data Rows or No Data Message */}
               {bookingData.length === 0 ? (
                 <>
-                <div className="text-center text-gray-500 py-5">No Booking Available</div>
-                <div className="text-center">
-                  <Link href="/golfcourse">
-                    <Button color="primary">Go to Golf Courses</Button>
-                  </Link>
-                </div>
+                  <div className="text-center text-gray-500 py-5">
+                    No Booking Available
+                  </div>
+                  <div className="text-center">
+                    <Link href="/golfcourse">
+                      <Button color="primary">Go to Golf Courses</Button>
+                    </Link>
+                  </div>
                 </>
               ) : (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 bookingData.map((booking: any) => (
                   <div
                     key={booking.id}
                     className="grid grid-cols-3 md:grid-cols-6 gap-4 p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-300 rounded-lg"
                     onClick={() => openBookingModal(booking)}
                   >
-                    <div className="text-sm text-gray-800">{booking.courseName}</div>
+                    <div className="text-sm text-gray-800">
+                      {booking.courseName}
+                    </div>
 
                     <div className="text-sm text-gray-600 md:block hidden">
                       {booking.courseLocation.length > 50
@@ -399,10 +413,18 @@ if (profileData) {
                         : booking.courseLocation}
                     </div>
 
-                    <div className="text-sm text-gray-600">{dateToString(convertExcelDateToJSDate(booking.teeDate))}</div>
-                    <div className="text-sm text-gray-600">{convertMinutesToTimeWithAMPM(booking.teeTime)}</div>
-                    <div className="text-sm text-gray-600 hidden md:block">{booking.numberOfGolfers}</div>
-                    <div className="text-sm text-gray-600 hidden md:block">{booking.status}</div>
+                    <div className="text-sm text-gray-600">
+                      {dateToString(convertExcelDateToJSDate(booking.teeDate))}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {convertMinutesToTimeWithAMPM(booking.teeTime)}
+                    </div>
+                    <div className="text-sm text-gray-600 hidden md:block">
+                      {booking.numberOfGolfers}
+                    </div>
+                    <div className="text-sm text-gray-600 hidden md:block">
+                      {booking.status}
+                    </div>
                   </div>
                 ))
               )}
@@ -433,7 +455,7 @@ if (profileData) {
           </CardBody>
         </Card>
         <div className="md:col-span-3">
-        <LogoutButton ></LogoutButton>
+          <LogoutButton></LogoutButton>
         </div>
         {/* Use the BookingModal component */}
         <BookingModal
