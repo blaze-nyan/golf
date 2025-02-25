@@ -1,7 +1,8 @@
 // app/components/Chat/ChatWidget.tsx
 "use client";
+import getAiResponses from '@/app/lib/getAiResponse'
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { Button } from "@heroui/button";
 
@@ -14,6 +15,14 @@ export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);  // Reference to the end of messages
+
+  // Scroll to the bottom of the messages when the messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -27,11 +36,12 @@ export function ChatWidget() {
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
 
-    // Here you would integrate with your AI service
-    // For now, just echo back
+    // Get AI response
+    const aiResponse = await getAiResponses(inputMessage);  // Await the AI response
+
     const botMessage: ChatMessage = {
       type: "bot",
-      content: `Thanks for your message: ${inputMessage}`,
+      content: `${aiResponse[0]?.text}`,  // Use aiResponse properly
     };
 
     setMessages((prev) => [...prev, botMessage]);
@@ -50,9 +60,10 @@ export function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 " >
             {messages.map((message, index) => (
               <div
+                ref={messagesEndRef}
                 key={index}
                 className={`${
                   message.type === "user"
@@ -60,9 +71,31 @@ export function ChatWidget() {
                     : "mr-auto bg-gray-100"
                 } p-2 rounded-lg max-w-[80%]`}
               >
-                {message.content}
+                {message.type === "bot" ? (
+                  // Check if there are any URLs in the content and make them clickable
+                  message.content.split(" ").map((word, idx) => {
+                    const isUrl = word.startsWith("http://") || word.startsWith("https://");
+                    return isUrl ? (
+                      <a
+                        key={idx}
+                        href={word}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {word}{" "}
+                      </a>
+                    ) : (
+                      word + " "
+                    );
+                  })
+                ) : (
+                  message.content
+                )}
               </div>
             ))}
+
+            {/* This div will scroll the messages container to the bottom */}
           </div>
 
           {/* Input */}
@@ -89,7 +122,7 @@ export function ChatWidget() {
       ) : (
         <Button
           onPress={() => setIsOpen(true)}
-          className=" text-white p-3 rounded-full shadow-lg  transition-colors"
+          className="text-white p-3 rounded-full shadow-lg  transition-colors"
           color="primary"
         >
           <MessageCircle className="h-6 w-6" />
