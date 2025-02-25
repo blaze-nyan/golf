@@ -5,6 +5,7 @@ import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { fetchData } from "@/app/lib/api-placeholder-db";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -43,9 +44,12 @@ export default function LoginForm() {
       if (response.data.clientId) {
         // Always store clientId, use remember for persistence duration
         localStorage.setItem("clientId", response.data.clientId.toString());
-
-        // Redirect to dashboard or home page
-        router.push("/profile");
+        const staffList = await fetchData("staffList");
+        if(staffList.includes(response.data.clientId.toString())){
+          router.push("/dashboard");
+        }else{
+          router.push("/profile");
+        }
       } else {
         setError("Login failed - no client ID received");
       }

@@ -57,19 +57,19 @@ const BookingDetails = () => {
           className={`p-3 px-6 border-b border-gray-300 flex flex-col items-start space-y-2 ${isSectionDisabled(2) ? "opacity-50 pointer-events-none" : ""}`}
         >
           <span className="text-gray-700 text-medium flex items-center gap-2">
-            <Icon icon="mdi-golf" /> <strong>Golfers:</strong> {bookingDetails.numberOfGolfers}
+            <Icon icon="mdi-golf" /> <strong>Golfers:</strong> {bookingDetails.numberOfGolfers || 1}
           </span>
           <span className="text-gray-700 mt-2 text-medium flex items-center gap-2">
-            <Icon icon="mdi-person" /> <strong>Accompanying Persons:</strong> {bookingDetails.numberOfnonPlayers}
+            <Icon icon="mdi-person" /> <strong>Accompanying Persons:</strong> {bookingDetails.numberOfnonPlayers || 0}
           </span>
           <span className="text-gray-700 mt-2 text-medium flex items-center gap-2">
-            <Icon icon="mdi-backpack" /> <strong>Caddies:</strong> {bookingDetails["Caddies"]}
+            <Icon icon="mdi-backpack" /> <strong>Caddies:</strong> {bookingDetails["Caddies"] || 0}
           </span>
           <span className="text-gray-700 mt-2 text-medium flex items-center gap-2">
-            <Icon icon="mdi-car" /> <strong>Golf Carts:</strong> {bookingDetails["Golf Cart"]}
+            <Icon icon="mdi-car" /> <strong>Golf Carts:</strong> {bookingDetails["Golf Cart"] || 1}
           </span>
           <span className="text-gray-700 mt-2 text-medium flex items-center gap-2">
-            <Icon icon="mdi-food" /> <strong>Food & Drinks:</strong> {bookingDetails["Food & Drinks"]}
+            <Icon icon="mdi-food" /> <strong>Food & Drinks:</strong> {bookingDetails["Food & Drinks"] || 0}
           </span>
         </div>
 
@@ -78,7 +78,7 @@ const BookingDetails = () => {
           className={`p-3 px-6 border-gray-300 flex flex-col items-start space-y-2 ${isSectionDisabled(3) ? "opacity-50 pointer-events-none" : ""}`}
         >
           <span className="font-semibold text-medium text-gray-700 flex items-center gap-2">
-            <Icon icon="mdi-currency-btc" /> <strong>Total Price:</strong> {bookingDetails.price ? `${bookingDetails.price} THB` : "Price not available"}
+            <Icon icon="mdi-currency-btc" /> <strong>Total Price:</strong> {bookingDetails.price ? `${bookingDetails.price} THB` : "0 THB"}
           </span>
         </div>
       </Card>

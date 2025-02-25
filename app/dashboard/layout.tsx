@@ -28,19 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>
-          <div className="flex flex-row">
-            <Sidebar />
-            <main className="flex-1 p-4 lg:p-6 ml-0  mt-16 lg:mt-0">
-              {children}
-            </main>
-          </div>
-        </Providers>
-      </body>
-    </html>
+    <Providers>
+      <div className="flex flex-row">
+        <Sidebar />
+        <main className="flex-1 p-4 lg:p-6 ml-0  mt-16 lg:mt-0">
+          {children}
+        </main>
+      </div>
+    </Providers>
   );
 }

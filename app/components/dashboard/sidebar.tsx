@@ -1,4 +1,3 @@
-// app/components/dashboard/Sidebar.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "../logout-button";
 
 const menuItems = [
   {
@@ -76,22 +76,20 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`
-        fixed top-0 left-0 h-full w-64 z-50
+        className={`fixed top-0 left-0 h-full w-64 z-50
         transform transition-transform duration-300 ease-in-out
         lg:translate-x-0 lg:static lg:h-screen
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-      `}
+        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <Card className="h-full rounded-none">
-          <CardBody className="p-0 overflow-y-auto">
+          <CardBody className="p-0 overflow-y-auto flex flex-col h-full">
             {/* Logo/Brand */}
             <Link href="/dashboard" className="p-4 border-b">
               <h1 className="text-xl font-bold">Golf Admin</h1>
             </Link>
 
             {/* Menu Items */}
-            <nav className="p-2">
+            <nav className="flex-grow p-2">
               {menuItems.map((item) => {
                 const isActive = pathname === item.path;
 
@@ -102,15 +100,11 @@ export default function Sidebar() {
                     onClick={() => setIsMobileOpen(false)}
                   >
                     <div
-                      className={`
-                      flex items-center gap-3 px-4 py-3 rounded-lg mb-1
-                      transition-colors duration-200 cursor-pointer
-                      ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors duration-200 cursor-pointer ${
                         isActive
                           ? "bg-primary text-primary-foreground"
                           : "hover:bg-default-100"
-                      }
-                    `}
+                      }`}
                     >
                       {item.icon}
                       <span>{item.name}</span>
@@ -119,6 +113,11 @@ export default function Sidebar() {
                 );
               })}
             </nav>
+
+            {/* Logout Button (at the bottom) */}
+            <div className="p-4 border-t mt-auto">
+              <LogoutButton />
+            </div>
           </CardBody>
         </Card>
       </aside>

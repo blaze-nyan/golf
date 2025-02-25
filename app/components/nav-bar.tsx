@@ -33,6 +33,10 @@ export default function NavBar(props: NavbarProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
+  if (pathname.startsWith("/dashboard")) {
+    return <></>;
+  }
+
   return (
     <Navbar
       {...props}
@@ -76,7 +80,7 @@ export default function NavBar(props: NavbarProps) {
           color="primary"
           variant="flat"
         >
-          Login
+          Login to Book
         </Button>
       </NavbarItem>}
       </NavbarContent>

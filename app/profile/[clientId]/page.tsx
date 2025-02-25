@@ -37,6 +37,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { convertExcelDateToJSDate, convertMinutesToTimeWithAMPM, dateToString } from "@/app/components/date-functionalities";
 import bookingDetails from "@/app/components/booking-details";
 import BookingModal from "@/app/components/booking-model";
+import LogoutButton from "@/app/components/logout-button";
+import Link from "next/link";
 
 interface ProfileData {
   "Client ID": number;
@@ -92,23 +94,7 @@ export default function ProfilePage() {
     }
   }, [router]);
 
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem('clientImage');
-    localStorage.removeItem('clientId');
-    router.push("/auth/login");
-    setIsLogoutModalOpen(false);
-  };
-
-
-  const handleConfirmation = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsLogoutModalOpen(false); // Close the modal without logging out
-  };
   const openBookingModal = (booking: any) => {
     setSelectedBooking(booking);
     setIsOpenBookings(true);  // Open the booking modal
@@ -372,7 +358,6 @@ if (profileData) {
             </div>
           </CardBody>
         </Card>
-
         <Card className="md:col-span-3 p-5">
           <CardHeader>
             <h3 className="text-lg font-semibold">Bookings</h3>
@@ -389,28 +374,40 @@ if (profileData) {
                 <div className="text-sm hidden md:block">Status</div>
               </div>
 
-              {/* Booking Data Rows */}
-              {bookingData.map((booking: any) => (
-                <div
-                  key={booking.id}
-                  className="grid grid-cols-3 md:grid-cols-6 gap-4 p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-300 rounded-lg"
-                  onClick={() => openBookingModal(booking)}
-                >
-                  <div className="text-sm text-gray-800">{booking.courseName}</div>
-
-                  <div className="text-sm text-gray-600 md:block hidden">
-                    {booking.courseLocation.length > 50 ? `${booking.courseLocation.substring(0, 50)}...` : booking.courseLocation}
-                  </div>
-
-                  <div className="text-sm text-gray-600">{dateToString(convertExcelDateToJSDate(booking.teeDate))}</div>
-                  <div className="text-sm text-gray-600">{convertMinutesToTimeWithAMPM(booking.teeTime)}</div>
-                  <div className="text-sm text-gray-600 hidden md:block">{booking.numberOfGolfers}</div>
-                  <div className="text-sm text-gray-600 hidden md:block">{booking.status}</div>
+              {/* Booking Data Rows or No Data Message */}
+              {bookingData.length === 0 ? (
+                <>
+                <div className="text-center text-gray-500 py-5">No Booking Available</div>
+                <div className="text-center">
+                  <Link href="/golfcourse">
+                    <Button color="primary">Go to Golf Courses</Button>
+                  </Link>
                 </div>
-              ))}
+                </>
+              ) : (
+                bookingData.map((booking: any) => (
+                  <div
+                    key={booking.id}
+                    className="grid grid-cols-3 md:grid-cols-6 gap-4 p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-300 rounded-lg"
+                    onClick={() => openBookingModal(booking)}
+                  >
+                    <div className="text-sm text-gray-800">{booking.courseName}</div>
+
+                    <div className="text-sm text-gray-600 md:block hidden">
+                      {booking.courseLocation.length > 50
+                        ? `${booking.courseLocation.substring(0, 50)}...`
+                        : booking.courseLocation}
+                    </div>
+
+                    <div className="text-sm text-gray-600">{dateToString(convertExcelDateToJSDate(booking.teeDate))}</div>
+                    <div className="text-sm text-gray-600">{convertMinutesToTimeWithAMPM(booking.teeTime)}</div>
+                    <div className="text-sm text-gray-600 hidden md:block">{booking.numberOfGolfers}</div>
+                    <div className="text-sm text-gray-600 hidden md:block">{booking.status}</div>
+                  </div>
+                ))
+              )}
             </div>
           </CardBody>
-
         </Card>
 
         {/* Additional Info Card */}
@@ -435,32 +432,9 @@ if (profileData) {
             </div>
           </CardBody>
         </Card>
-
-          <Button
-            onClick={handleConfirmation}
-            className="bg-red-500 text-white hover:bg-red-700"
-          >
-            Logout
-          </Button>
-
-          {/* Confirmation Modal */}
-          <Modal isOpen={isLogoutModalOpen} onClose={closeModal}>
-            <ModalContent>
-              <ModalHeader>Confirm Logout</ModalHeader>
-              <ModalBody>
-                <p>Are you sure you want to log out?</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={closeModal} className="mr-2">Cancel</Button>
-                <Button
-                  onClick={handleLogout}
-                  className="bg-red-500 text-white hover:bg-red-700"
-                >
-                  Yes, Logout
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+        <div className="md:col-span-3">
+        <LogoutButton ></LogoutButton>
+        </div>
         {/* Use the BookingModal component */}
         <BookingModal
           isOpen={isOpenBookings}
@@ -507,26 +481,3 @@ if (profileData) {
     </div>
   );
 }
-
-/** Info Grid for compact layout */
-const InfoGrid = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-2 gap-2">{children}</div>
-);
-
-/** Info Item */
-const InfoItem = ({
-  icon,
-  label,
-  value,
-}: {
-  icon: string;
-  label: string;
-  value: string | number;
-}) => (
-  <div className="flex items-center gap-2">
-    <Icon icon={icon} className="text-green-600 text-lg" />
-    <span>
-      <strong>{label}:</strong> {value}
-    </span>
-  </div>
-);
