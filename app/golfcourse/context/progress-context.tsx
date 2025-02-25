@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/golfcourse/context/progress-context.tsx
 "use client";
 
@@ -33,15 +34,15 @@ type ProgressContextType = {
   courseId: string;
   completeStep: (step: number) => void;
   canAccess: (step: number) => boolean;
-  bookingDetails: any,
-  setBookingDetails: (bookingDetails: any) => void,
+  bookingDetails: any;
+  setBookingDetails: (bookingDetails: any) => void;
 };
 
 const ProgressContext = createContext<ProgressContextType | null>(null);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [maxCompletedStep, setMaxCompletedStep] = useState(-1);
-  
+
   const [bookingDetails, setBookingDetails] = useState({
     courseId: "",
     courseImageUID: "",
@@ -54,7 +55,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     numberOfGolfers: null,
     numberOfnonPlayers: null,
     "Golf Cart": null,
-    "Caddies": null,
+    Caddies: null,
     "Food & Drinks": null,
     "Golfer Names": [],
     status: "prepaid",
@@ -88,8 +89,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (courseId) {
-      const savedBookingDetails = localStorage.getItem(`bookingDetails_${courseId}`);
-      console.log(savedBookingDetails)
+      const savedBookingDetails = localStorage.getItem(
+        `bookingDetails_${courseId}`
+      );
+      console.log(savedBookingDetails);
       if (savedBookingDetails) {
         setBookingDetails(JSON.parse(savedBookingDetails));
       }
@@ -98,7 +101,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (courseId) {
-      localStorage.setItem(`bookingDetails_${courseId}`, JSON.stringify(bookingDetails));
+      localStorage.setItem(
+        `bookingDetails_${courseId}`,
+        JSON.stringify(bookingDetails)
+      );
     }
   }, [bookingDetails, courseId]);
 

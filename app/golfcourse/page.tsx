@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -47,38 +48,45 @@ export default function GolfCoursesPage() {
           golfCourseNotes: [],
         };
 
-        const comingSoonCourse1: GolfCourse = { 
+        const comingSoonCourse1: GolfCourse = {
           golfCourseId: 123,
           golfCourseName: "The Highland Links",
-          golfCourseDescription: "A picturesque course nestled in the foothills, offering scenic views of the surrounding valleys and rugged terrain. Perfect for both seasoned golfers and newcomers alike, this course will challenge your skills and reward you with beautiful landscapes.",
+          golfCourseDescription:
+            "A picturesque course nestled in the foothills, offering scenic views of the surrounding valleys and rugged terrain. Perfect for both seasoned golfers and newcomers alike, this course will challenge your skills and reward you with beautiful landscapes.",
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
           golfCoursePar: 72,
           isVirtual: false,
-          golfCourseImageUid: "", 
+          golfCourseImageUid: "",
           golfCourseStockStatusId: 0,
           golfCourseHoles: [],
           golfCourseNotes: [],
         };
-        
-        const comingSoonCourse2: GolfCourse = { 
+
+        const comingSoonCourse2: GolfCourse = {
           golfCourseId: -134,
           golfCourseName: "Sunset Bay Golf Club",
-          golfCourseDescription: "Located along the coastline, this course offers breathtaking sunset views over the bay. With a mix of water hazards and rolling fairways, it's a course that will keep you on your toes while offering a relaxing atmosphere.",
+          golfCourseDescription:
+            "Located along the coastline, this course offers breathtaking sunset views over the bay. With a mix of water hazards and rolling fairways, it's a course that will keep you on your toes while offering a relaxing atmosphere.",
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
           golfCoursePar: 70,
           isVirtual: false,
-          golfCourseImageUid: "", 
+          golfCourseImageUid: "",
           golfCourseStockStatusId: 0,
           golfCourseHoles: [],
           golfCourseNotes: [],
         };
 
         // Append the placeholder course to the courses array
-        setCourses([comingSoonCourse1, ...data, comingSoonCourse2, comingSoonCourse]);
+        setCourses([
+          comingSoonCourse1,
+          ...data,
+          comingSoonCourse2,
+          comingSoonCourse,
+        ]);
       } catch (error) {
         console.error("Error fetching golf courses:", error);
       } finally {
@@ -95,10 +103,16 @@ export default function GolfCoursesPage() {
       <section className="text-center mb-5 max-w-4xl">
         <h2 className="text-4xl font-semibold">Discover Our Golf Courses</h2>
         <p className="text-lg text-gray-600 mt-3">
-          We offer a wide selection of beautifully designed golf courses that cater to players of all skill levels. Whether you’re looking for a challenging championship course or a relaxing day on the links, our courses promise an unforgettable experience. Our facilities include stunning fairways, state-of-the-art driving ranges, and clubhouses equipped with everything you need for a great round of golf.
+          We offer a wide selection of beautifully designed golf courses that
+          cater to players of all skill levels. Whether you’re looking for a
+          challenging championship course or a relaxing day on the links, our
+          courses promise an unforgettable experience. Our facilities include
+          stunning fairways, state-of-the-art driving ranges, and clubhouses
+          equipped with everything you need for a great round of golf.
         </p>
         <p className="text-lg text-gray-600 mt-3">
-          Explore our courses below and find the perfect course for your next round!
+          Explore our courses below and find the perfect course for your next
+          round!
         </p>
       </section>
 
@@ -114,9 +128,9 @@ export default function GolfCoursesPage() {
 
       {/* Loading state */}
       {loading ? (
-      <div className="flex justify-center mb-5">
-        <Spinner size="lg" />
-      </div>
+        <div className="flex justify-center mb-5">
+          <Spinner size="lg" />
+        </div>
       ) : (
         // Golf Course Cards Section
         courses.map((course) => (
