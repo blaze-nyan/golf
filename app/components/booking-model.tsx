@@ -1,18 +1,37 @@
 // components/BookingModal.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, Modal, ModalContent, Image } from "@heroui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { dateToString, convertExcelDateToJSDate, convertMinutesToTimeWithAMPM } from "./date-functionalities";
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
+import { cancelBooking } from "../lib/api-placeholder-db";
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   booking: any | null;
+  forceReload: any;
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking }) => {
+const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking, forceReload }) => {
+
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+
+  const cancelBookingButton = (bookingId: any) => {
+    cancelBooking(bookingId);
+    forceReload();
+    setIsConfirmationModalOpen(false); // Close the confirmation modal after canceling
+  };
+
+  const openConfirmationModal = () => {
+    setIsConfirmationModalOpen(true); // Open confirmation modal when cancel is clicked
+  };
+
+  const closeConfirmationModal = () => {
+    setIsConfirmationModalOpen(false); // Close confirmation modal
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="w-[80%] max-w-[800px] h-[80%]">
       <ModalContent className="w-[100%]">
@@ -23,6 +42,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking })
               <div className="bg-green-700 text-white py-3 text-center text-lg font-bold">
                 Booking Details
               </div>
+
 
               <div className="p-4 text-sm text-gray-700 space-y-3 mx-5">
                 {/* Course Section */}
@@ -78,10 +98,22 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking })
                   <InfoItem icon="mdi-currency-btc" label="Paid Amount" value={booking.paid ? `${booking.paid} THB` : "N/A"} />
                   <InfoItem icon="mdi-currency-btc" label="Price" value={booking.price ? `${booking.price} THB` : "N/A"} />
                 </div>
+
+                <div className="text-red-600 font-bold text-md p-4 border border-red-500 rounded-md my-1">
+                  There will be no refund after payment is made.
+                </div>
+
                 <Button onClick={onClose} className="text-white hidden sm:block" color="primary">
                     Close
                 </Button>
 
+                <Button
+                  onClick={openConfirmationModal} // Pass the booking.id to cancelBooking function
+                  className="text-white hidden sm:block"
+                  color="primary"
+                >
+                  Cancel Booking
+                </Button>
               </div>
             </Card>
           </div>
@@ -91,6 +123,24 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, booking })
           </div>
         )}
       </ModalContent>
+
+      
+      <Modal isOpen={isConfirmationModalOpen} onClose={closeConfirmationModal} className="w-[80%] max-w-[400px]">
+        <ModalContent className="w-[100%] p-5 text-center">
+          <h2 className="font-semibold text-lg">Are you sure you want to cancel this booking?</h2>
+          <div className="text-red-600 font-bold text-md rounded-md my-1">
+            This action cannot be reversed.
+          </div>
+          <div className="flex justify-around mt-4">
+            <Button onClick={closeConfirmationModal} className="bg-gray-500 text-white">
+              No
+            </Button>
+            <Button onClick={() => cancelBookingButton(booking.id)} className="bg-red-600 text-white">
+              Yes, Cancel
+            </Button>
+          </div>
+        </ModalContent>
+      </Modal>
     </Modal>
   );
 };

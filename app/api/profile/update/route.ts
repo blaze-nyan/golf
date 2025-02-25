@@ -28,12 +28,12 @@ export async function POST(request: Request) {
             "Surname": Client_Info.Surname,
             "Given Name": Client_Info["Given Name"],
             "Company": Client_Info.Company,
+            "Communication List": Client_Info["Communication List"],
         },
       },
       { headers }
     );
-
-    log(response.data);
+    console.log(Client_Info["Communication List"])
     return NextResponse.json({
       success: true
     });
