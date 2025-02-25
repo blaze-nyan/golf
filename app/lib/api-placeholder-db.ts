@@ -21,3 +21,15 @@ export const postData = async (apiRoute: String, data: any) => {
   }
 };
 
+
+export const cancelBooking = async (id: any) => {
+  try {
+    const response = await axios.patch(`${APIDatabase}/bookings/${id}`, { "status": "cancelled" });
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+
+

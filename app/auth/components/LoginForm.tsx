@@ -45,7 +45,10 @@ export default function LoginForm() {
         // Always store clientId, use remember for persistence duration
         localStorage.setItem("clientId", response.data.clientId.toString());
         const staffList = await fetchData("staffList");
-        if(staffList.includes(response.data.clientId.toString())){
+        const clientIds = staffList.map((staff: { [x: string]: any; }) => staff["Client ID"]);
+        console.log(staffList)
+        console.log(clientIds)
+        if(clientIds.includes(response.data.clientId.toString())){
           router.push("/dashboard");
         }else{
           router.push("/profile");

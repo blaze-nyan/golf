@@ -11,6 +11,7 @@ import {
   BarChart,
   Menu,
   X,
+  CircleDollarSign,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,14 +39,9 @@ const menuItems = [
     path: "/dashboard/users",
   },
   {
-    name: "Analytics",
-    icon: <BarChart size={20} />,
+    name: "Revenue",
+    icon: <CircleDollarSign size={20} />,
     path: "/dashboard/analytics",
-  },
-  {
-    name: "Settings",
-    icon: <Settings size={20} />,
-    path: "/dashboard/settings",
   },
 ];
 

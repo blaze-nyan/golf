@@ -42,12 +42,20 @@ export default function ProfileIcon() {
     fetchProfileAndImage();
   }, [profileImage]);
 
+  console.log(profileImage)
+  let usedImage: string
+  if(profileImage !== "null" && profileImage){
+    usedImage = profileImage
+  }else (
+    usedImage = "/golfball.jpg"
+  )
+
   return (
     <Link href="/profile">
       <Avatar
         isBordered
         color="success"
-        src={profileImage || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgAB/ilP0kIAAAAASUVORK5CYII="}
+        src={usedImage}
       />
     </Link>
   );

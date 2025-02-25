@@ -30,7 +30,12 @@ const OtherServicesPage = () => {
     }));
     if (clientID) {
       getClientInfo(Number(clientID)).then((clientInfo) => {
-        setGolferList([clientInfo["Given Name"]])
+        setGolferList([
+          clientInfo["Given Name"] !== "" 
+            ? clientInfo["Given Name"] 
+            : `${clientInfo["First Name"]} ${clientInfo["Surname"]}`
+        ]);
+      
         console.log(clientInfo)
       });
     }
@@ -154,7 +159,7 @@ const OtherServicesPage = () => {
             golferList.map((golfer, index) => (
               <span
                 key={index}
-                className="border-green-700 text-green-700 px-3 py-1 rounded-full text-sm"
+                className="border border-green-700 text-green-700 px-3 py-1 rounded-full text-sm"
               >
                 {golfer}
               </span>

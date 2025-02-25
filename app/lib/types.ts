@@ -71,6 +71,7 @@ export interface ProfileData {
   "ID Number": string;
   "Passport or ID": string;
   Designation: string;
+  "Communication List": Array<any>;
 }
 
 export type GolfBookingType = {

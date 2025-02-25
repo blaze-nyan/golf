@@ -36,6 +36,8 @@ export async function GET(request: Request) {
     );
 
     // Response will have the same structure as your Postman response
+
+    console.log(response.data);
     // It includes Title, First Name, Surname, Given Name, Company, Gender, etc.
     return NextResponse.json(response.data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

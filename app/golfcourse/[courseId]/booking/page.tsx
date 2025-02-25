@@ -129,6 +129,11 @@ const page = () => {
         </CardBody>
       </Card>
 
+      
+      <div className="text-red-600 font-bold text-md p-4 border border-red-500 rounded-md my-1">
+                  There will be no refund after payment is made.
+      </div>
+
       {/* Credit Card Input Form */}
       <Card className="p-4">
         <CardHeader>
