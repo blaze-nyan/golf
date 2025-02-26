@@ -1,31 +1,31 @@
 import React from "react";
-import { Button } from "@heroui/react";
+// import { Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { WeatherWidget } from "./weather/weather-widget";
-
+import Link from "next/link";
+import { Button } from "@heroui/button";
 const Hero = () => {
   return (
-    <main className="container mx-auto flex flex-1 flex-col items-center  overflow-hidden px-8">
-      <section className="z-20 flex flex-col items-center justify-center gap-[18px] sm:gap-6">
-
-        <div className="text-center text-xl  leading-[1.2] tracking-tighter sm:text-[32px]">
-          <div className="bg-hero-section-title bg-clip-text ">
-            Easiest way to <br /> power global teams.
+    <main className="container mx-auto flex flex-1 flex-col items-center overflow-hidden px-4 sm:px-8 py-6 sm:py-10">
+      <section className="z-20 flex flex-col items-center justify-center gap-4 sm:gap-6 w-full max-w-3xl">
+        <div className="text-center text-xl sm:text-3xl md:text-4xl leading-[1.2] tracking-tighter">
+          <div className="bg-hero-section-title bg-clip-text">
+            Easiest way to <br className="sm:hidden" /> power global teams.
           </div>
         </div>
-        <p className="text-center font-normal leading-7 text-default-500 sm:w-[466px] sm:text-[18px]">
+        <p className="text-center font-normal text-sm sm:text-base md:text-lg leading-6 sm:leading-7 text-default-500 w-full max-w-[466px]">
           Acme makes running global teams simple. HR, Payroll, International
           Employment, contractor management and more.
         </p>
-        <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
+        {/* <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full">
           <Button
-            className="h-10 w-[163px]  px-[16px] py-[10px] text-small font-medium leading-5 text-background"
+            className="h-10 w-full sm:w-[163px] px-[16px] py-[10px] text-small font-medium leading-5 text-background"
             radius="full"
           >
             Get Started
           </Button>
           <Button
-            className="h-10 w-[163px] border-1 border-default-100 px-[16px] py-[10px] text-small font-medium leading-5"
+            className="h-10 w-full sm:w-[163px] border-1 border-default-100 px-[16px] py-[10px] text-small font-medium leading-5"
             endContent={
               <span className="pointer-events-none flex h-[22px] w-[22px] items-center justify-center rounded-full bg-default-100">
                 <Icon
@@ -40,53 +40,91 @@ const Hero = () => {
           >
             Golf Courses
           </Button>
-        </div>
+        </div> */}
+        {/* Footer CTA Section */}
+        <Button
+          as={Link}
+          href="/golfcourse"
+          color="primary"
+          endContent={
+            <span className="pointer-events-none flex h-[22px] w-[22px] items-center justify-center rounded-full ">
+              <Icon
+                className="text-white [&>path]:stroke-[1.5]"
+                icon="solar:arrow-right-linear"
+                width={20}
+              />
+            </span>
+          }
+        >
+          Book a Tee Time
+        </Button>
+        {/* <div className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 mt-16 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4">
+            Ready to get started?
+          </h2>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            Join thousands of satisfied golfers who have elevated their game
+            with our service.
+          </p>
+          <Button as={Link} href="/golfcourse" color="primary">
+            Book a Tee Time
+          </Button>
+        </div> */}
       </section>
 
-      <Button
-          className="mt-4"
-          endContent={
-            <Icon
-              className="flex-none outline-none [&>path]:stroke-[2]"
-              icon="solar:arrow-right-linear"
-              width={20}
-            />
-          }
-          radius="full"
-          variant="bordered"
-          color="primary"
-        >
-          Get the app
-        </Button>
+      {/* <Button
+        className="mt-8 sm:mt-10"
+        endContent={
+          <Icon
+            className="flex-none outline-none [&>path]:stroke-[2]"
+            icon="solar:arrow-right-linear"
+            width={20}
+          />
+        }
+        radius="full"
+        variant="bordered"
+        color="primary"
+      >
+        Get the app
+      </Button> */}
 
       {/* Weather Section */}
-      <section className="mt-10">
+      <section className="mt-8 sm:mt-10 w-full max-w-md">
         <WeatherWidget />
       </section>
 
-      {/* Next Week’s Weather Forecast Section */}
-      <section className="text-center max-w-4xl mx-auto mt-10 px-4">
-        <h2 className="text-2xl font-semibold text-gray-800">
+      {/* Next Week's Weather Forecast Section */}
+      <section className="text-center w-full max-w-4xl mx-auto mt-8 sm:mt-10 px-4">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
           Plan Your Week Ahead on the Course
         </h2>
-        <p className="text-lg text-gray-600 mt-3">
-          Stay updated with the weather forecast for the next week. Our detailed weather reports help you plan your next round of golf at [Golf Club Name].
+        <p className="text-base sm:text-lg text-gray-600 mt-2 sm:mt-3">
+          Stay updated with the weather forecast for the next week. Our detailed
+          weather reports help you plan your next round of golf at [Golf Club
+          Name].
         </p>
-        <div className="mt-6">
-          {/* Placeholder for forecast for the next 7 days */}
-          <div className="flex flex-wrap justify-center gap-4">
-            {/* Example of a day’s weather card, repeat for the next 7 days */}
-            <div className="bg-white border rounded-lg shadow-lg p-4 w-24">
-              <p className="text-xl font-semibold">Mon</p>
-              <p className="text-lg">22°C</p>
-              <p className="text-sm text-gray-500">Sunny</p>
-            </div>
-            <div className="bg-white border rounded-lg shadow-lg p-4 w-24">
-              <p className="text-xl font-semibold">Tue</p>
-              <p className="text-lg">20°C</p>
-              <p className="text-sm text-gray-500">Partly Cloudy</p>
-            </div>
-            {/* Repeat this block for other days of the week */}
+        <div className="mt-4 sm:mt-6 overflow-x-auto pb-4">
+          {/* Scrollable container for small screens */}
+          <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 min-w-min sm:min-w-0">
+            {/* Day cards */}
+            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+              <div
+                key={day}
+                className="bg-white border rounded-lg shadow-lg p-3 sm:p-4 min-w-[80px] sm:w-24 flex-shrink-0"
+              >
+                <p className="text-lg sm:text-xl font-semibold">{day}</p>
+                <p className="text-base sm:text-lg">
+                  {Math.floor(18 + Math.random() * 7)}°C
+                </p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {
+                    ["Sunny", "Cloudy", "Rainy", "Partly Cloudy"][
+                      Math.floor(Math.random() * 4)
+                    ]
+                  }
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
