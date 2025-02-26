@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useEffect } from "react";
 import { Card, TimeInput, Select, SelectItem, Spinner } from "@heroui/react";
@@ -136,7 +136,7 @@ const page = () => {
         teeTime: selectedTimeCode,
       }));
     }
-  }, [selectedTimeCode]);
+  }, [selectedTimeCode, setBookingDetails]);
 
   useEffect(() => {
     if (bookingType) {
@@ -145,7 +145,7 @@ const page = () => {
         bookingType: bookingType,
       }));
     }
-  }, [bookingType]);
+  }, [bookingType, setBookingDetails]);
 
   useEffect(() => {
     if (selectedDate) {
@@ -156,7 +156,7 @@ const page = () => {
       }));
       setSelectedTimeCode(null);
     }
-  }, [selectedDate]);
+  }, [selectedDate, setBookingDetails]);
 
   useEffect(() => {
     // Set min date to tomorrow
@@ -169,8 +169,6 @@ const page = () => {
 
   const [startTime, setStartTime] = useState(new Time(6, 0));
   const [endTime, setEndTime] = useState(new Time(17, 0));
-  // const minTime = "06:00 AM"; // Minimum time (6:00 AM)
-  // const maxTime = "05:00 PM"; // Maximum time (4:00 PM)
 
   const fetchCourses = async () => {
     try {
@@ -220,7 +218,7 @@ const page = () => {
     };
 
     fetchCourses();
-  }, []);
+  }, [courseId, selectedDate]);
 
   //Temporary
   const [unavailableTeeDates, setUnavailableTeeDates] = useState<any>({});
@@ -258,10 +256,14 @@ const page = () => {
   }, [selectedDate, unavailableTeeDates]); // This will rerun when selectedDate or unavailableTeeDates changes
 
   return (
-    <div className="space-y-5">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Select Booking</h1>
-      <div className="flex space-x-4">
-        <div className="flex flex-col w-36">
+    <div className="space-y-5 p-4 md:p-6">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+        Select Booking
+      </h1>
+
+      {/* Filters section - stack vertically on mobile, horizontal on larger screens */}
+      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 items-center ">
+        <div className="w-full md:w-[120px]">
           <Select
             label="Booking Type"
             defaultSelectedKeys={[bookingType === 1 ? "9 Hole" : "18 Hole"]}
@@ -276,69 +278,73 @@ const page = () => {
           </Select>
         </div>
 
-        <DatePicker
-          isRequired
-          className="max-w-[284px]"
-          label="Booking Date"
-          value={selectedDate}
-          minValue={formattedDate}
-          defaultValue={selectedDate}
-          onChange={handleDateChange}
-        />
-        <div className="flex flex-col">
+        <div className="w-full md:w-auto">
+          <DatePicker
+            isRequired
+            className="w-full"
+            label="Booking Date"
+            value={selectedDate}
+            minValue={formattedDate}
+            defaultValue={selectedDate}
+            onChange={handleDateChange}
+          />
+        </div>
+
+        <div className="w-full md:w-auto">
           <TimeInput
             id="start-time"
             isRequired
             value={startTime}
             onChange={handleStartTimeChange}
-            className="max-w-[284px]"
+            className="w-full"
             label="Start Time Range"
           />
         </div>
 
-        <div className="flex flex-col">
+        <div className="w-full md:w-auto">
           <TimeInput
             id="end-time"
             isRequired
             value={endTime}
             onChange={handleEndTimeChange}
-            className="max-w-[284px]"
+            className="w-full"
             label="End Time Range"
           />
         </div>
       </div>
 
-      <h1 className="text-l text-gray-800 pt-2">
-        Showing available tee times for
-        <span className="px-4 mx-2 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
-          {selectedDate.toDate("UTC").toLocaleDateString()}
-        </span>
-        between
-        <span className="px-4 mx-2 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
-          {startTime.hour % 12 === 0 ? 12 : startTime.hour % 12}:
-          {startTime.minute < 10 ? "0" : ""}
-          {startTime.minute} {startTime.hour < 12 ? "AM" : "PM"}
-        </span>
-        and
-        <span className="px-4 mx-2 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
-          {endTime.hour % 12 === 0 ? 12 : endTime.hour % 12}:
-          {endTime.minute < 10 ? "0" : ""}
-          {endTime.minute} {endTime.hour < 12 ? "AM" : "PM"}
-        </span>
-        , for a
-        <span className="px-4 mx-2 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-md">
-          {bookingType == 1 ? "9-Hole" : "18-Hole"}
-        </span>
-        booking.
-      </h1>
+      {/* Selection summary - responsive layout */}
+      <div className="text-sm md:text-base text-gray-800 pt-2">
+        <p className="mb-2">Showing available tee times for:</p>
+        <div className="flex flex-wrap gap-2 mb-2">
+          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-sm">
+            {selectedDate.toDate("UTC").toLocaleDateString()}
+          </span>
+
+          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-sm">
+            {startTime.hour % 12 === 0 ? 12 : startTime.hour % 12}:
+            {startTime.minute < 10 ? "0" : ""}
+            {startTime.minute} {startTime.hour < 12 ? "AM" : "PM"}
+            {" to "}
+            {endTime.hour % 12 === 0 ? 12 : endTime.hour % 12}:
+            {endTime.minute < 10 ? "0" : ""}
+            {endTime.minute} {endTime.hour < 12 ? "AM" : "PM"}
+          </span>
+
+          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-sm">
+            {bookingType == 1 ? "9-Hole" : "18-Hole"}
+          </span>
+        </div>
+      </div>
+
+      {/* Loading state */}
       {isLoading ? (
-        <>
-          <div className="w-[900px] h-[255px] flex flex-col align-middle items-center justify-center">
-            <Spinner></Spinner>
-          </div>
-        </>
+        <div className="w-full h-64 flex flex-col align-middle items-center justify-center">
+          <Spinner />
+        </div>
       ) : (
-        <div className="max-w-[900px] max-h-[255px] p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2 overflow-y-auto bg-gray-50 rounded-md">
+        /* Tee time grid - responsive grid with different column counts */
+        <div className="w-full max-h-[400px] md:max-h-[255px] p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-3 overflow-y-auto bg-gray-50 rounded-md">
           {availableTeeTimes.map((data, index) => {
             if (!compareTime(data["Tee Minute"], startTime, endTime)) {
               return null;
@@ -352,16 +358,16 @@ const page = () => {
               <Card
                 key={index}
                 className={`p-2 cursor-pointer transition-transform duration-200 h-[115px] 
-              ${
-                selectedTimeCode === data["Tee Minute"]
-                  ? "bg-green-200 scale-105"
-                  : "hover:scale-105"
-              }
-              ${
-                unavailableTeeTimes.includes(data["Tee Minute"])
-                  ? "opacity-50 pointer-events-none"
-                  : ""
-              }`}
+                ${
+                  selectedTimeCode === data["Tee Minute"]
+                    ? "bg-green-200 scale-105"
+                    : "hover:scale-105"
+                }
+                ${
+                  unavailableTeeTimes.includes(data["Tee Minute"])
+                    ? "opacity-50 pointer-events-none"
+                    : ""
+                }`}
               >
                 <div
                   onClick={() => {
@@ -385,10 +391,13 @@ const page = () => {
                   </div>
                   <div className="flex flex-col items-center">
                     <div>
-                      <Icon icon="mdi:account" className="text-4xl" />
+                      <Icon
+                        icon="mdi:account"
+                        className="text-3xl md:text-4xl"
+                      />
                     </div>
-                    <span className="px-2 font-semibold text-small">
-                      {`${data["Online Golfer Count"]} Maximum.`}
+                    <span className="px-2 font-semibold text-xs md:text-sm">
+                      {`${data["Online Golfer Count"]} Maximum`}
                     </span>
                   </div>
                 </div>
@@ -397,7 +406,13 @@ const page = () => {
           })}
         </div>
       )}
-      <NextButton />
+      <div className="pt-4 md:hidden">
+        <NextButton />
+      </div>
+      {/* Fixed position for next button on mobile */}
+      <div className="pt-4 hidden  bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
+        <NextButton />
+      </div>
     </div>
   );
 };

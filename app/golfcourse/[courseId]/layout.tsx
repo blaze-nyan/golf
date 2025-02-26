@@ -14,8 +14,10 @@ export default function GolfCourseLayout({
   return (
     <ProgressProvider>
       <AuthRedirect></AuthRedirect>
-      <div className="flex flex-col min-h-[60%] m-20 mb-5 mt-3">
-        <Stepper />
+      <div className="flex flex-col min-h-[60%] m-4 md:m-10 mb-5 mt-3">
+        <div className="hidden md:block">
+          <Stepper />
+        </div>
         <ProgressConsumer>{children}</ProgressConsumer>
       </div>
     </ProgressProvider>
@@ -24,7 +26,7 @@ export default function GolfCourseLayout({
 
 function ProgressConsumer({ children }: { children: React.ReactNode }) {
   const { currentStep } = useProgress();
-  
+
   return (
     <div
       className={`w-full max-w-[100%] grid grid-cols-1 transition-all duration-300 ${

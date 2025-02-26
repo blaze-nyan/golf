@@ -189,7 +189,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
 
                 <Button
-                  onClick={onClose}
+                  onPress={onClose}
                   className="text-white hidden sm:block"
                   color="primary"
                 >
@@ -197,7 +197,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
                 </Button>
 
                 <Button
-                  onClick={openConfirmationModal} // Pass the booking.id to cancelBooking function
+                  onPress={openConfirmationModal} // Pass the booking.id to cancelBooking function
                   className="text-white hidden sm:block"
                   color="primary"
                 >
@@ -227,13 +227,13 @@ const BookingModal: React.FC<BookingModalProps> = ({
           </div>
           <div className="flex justify-around mt-4">
             <Button
-              onClick={closeConfirmationModal}
+              onPress={closeConfirmationModal}
               className="bg-gray-500 text-white"
             >
               No
             </Button>
             <Button
-              onClick={() => cancelBookingButton(booking.id)}
+              onPress={() => cancelBookingButton(booking.id)}
               className="bg-red-600 text-white"
             >
               Yes, Cancel
