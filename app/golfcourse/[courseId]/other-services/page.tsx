@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -20,7 +21,7 @@ import {
 
 import { getClientInfo } from "@/app/lib/api";
 
-const OtherServicesPage = () => {
+const page = () => {
   const { setBookingDetails, bookingDetails } = useProgress();
 
   useEffect(() => {
@@ -165,7 +166,7 @@ const OtherServicesPage = () => {
       </div>
 
       {/* Golfers List as Tags */}
-      <div className="mt-2">
+      {/* <div className="mt-2">
         <div className="flex flex-wrap gap-2">
           {golferList.length === 0 ? (
             <span className="bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-sm w-32 text-center">
@@ -182,7 +183,7 @@ const OtherServicesPage = () => {
             ))
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* New Golfer Modal */}
       {isGolferModalOpen && (
@@ -202,12 +203,12 @@ const OtherServicesPage = () => {
             </ModalBody>
             <ModalFooter className="space-x-3">
               <Button
-                onClick={handleAddGolfer}
+                onPress={handleAddGolfer}
                 className="bg-green-800 text-white"
               >
                 Add Golfer
               </Button>
-              <Button onClick={() => setGolferModalOpen(false)} className="">
+              <Button onPress={() => setGolferModalOpen(false)} className="">
                 Cancel
               </Button>
             </ModalFooter>
@@ -325,4 +326,4 @@ const OtherServicesPage = () => {
   );
 };
 
-export default OtherServicesPage;
+export default page;

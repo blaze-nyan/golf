@@ -34,7 +34,7 @@ const LogoutButton = () => {
   return (
     <div>
       <Button
-        onClick={handleConfirmation}
+        onPress={handleConfirmation}
         className="bg-red-500 text-white hover:bg-red-700 w-[100%] text-medium"
       >
         Logout
@@ -48,11 +48,11 @@ const LogoutButton = () => {
             <p>Are you sure you want to log out?</p>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={closeModal} className="mr-2">
+            <Button onPress={closeModal} className="mr-2">
               Cancel
             </Button>
             <Button
-              onClick={handleLogout}
+              onPress={handleLogout}
               className="bg-red-500 text-white hover:bg-red-700"
             >
               Yes, Logout

@@ -16,8 +16,8 @@ const BookingDetails = () => {
   const isSectionDisabled = (step: any) => currentStep < step;
 
   return (
-    <div className="col-span-2 flex justify-center">
-      <Card className="p-0 hover:scale-[1.01] transition-transform duration-200 bg-white w-[80%] overflow-hidden">
+    <div className="col-span-2 flex justify-center mt-5 md:mt-0">
+      <Card className="p-0 hover:scale-[1.01] transition-transform duration-200 bg-white w-[100%] md:w-[80%] overflow-hidden">
         {/* Header Section */}
         <div className="bg-green-700 text-white py-3 text-center">
           <span className="font-semibold text-xl">Your Booking</span>

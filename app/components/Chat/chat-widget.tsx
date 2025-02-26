@@ -1,5 +1,5 @@
 "use client";
-import getAiResponse from '@/app/lib/getAiResponse';
+import getAiResponse from "@/app/lib/getAiResponse";
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Maximize, Minimize } from "lucide-react";
 import { Button } from "@heroui/button";
@@ -41,13 +41,20 @@ export function ChatWidget() {
       const aiResponse = await getAiResponse(inputMessage);
       const botMessage: ChatMessage = {
         type: "bot",
-        content: aiResponse[0]?.text || "I'm sorry, I couldn't understand that.",
+        content:
+          aiResponse[0]?.text || "I'm sorry, I couldn't understand that.",
       };
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error fetching AI response:", error);
-      setMessages((prev) => [...prev, { type: "bot", content: "Error retrieving response. Please try again." }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "bot",
+          content: "Error retrieving response. Please try again.",
+        },
+      ]);
     }
   };
 
@@ -65,7 +72,7 @@ export function ChatWidget() {
 
       const newWidth = startWidth + (moveEvent.clientX - startX);
       const newHeight = startHeight + (moveEvent.clientY - startY);
-      
+
       setSize({
         width: Math.max(320, newWidth), // Prevent too small
         height: Math.max(400, newHeight),
@@ -103,7 +110,11 @@ export function ChatWidget() {
             <div className="flex gap-2">
               {/* Maximize/Minimize Toggle */}
               <button onClick={() => setIsMaximized(!isMaximized)}>
-                {isMaximized ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+                {isMaximized ? (
+                  <Minimize className="h-5 w-5" />
+                ) : (
+                  <Maximize className="h-5 w-5" />
+                )}
               </button>
               <button onClick={() => setIsOpen(false)}>
                 <X className="h-5 w-5" />
@@ -114,23 +125,40 @@ export function ChatWidget() {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message, index) => (
-              <div key={index} className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}>
+              <div
+                key={index}
+                className={`flex ${
+                  message.type === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
                 <div ref={messagesEndRef} />
-                <div className={`p-2 rounded-lg max-w-[80%] ${message.type === "user" ? "bg-green-500 text-white" : "bg-gray-100 text-black"}`}>
-                  {message.type === "bot" ? (
-                    message.content.split(" ").map((word, idx) => {
-                      const isUrl = word.startsWith("http://") || word.startsWith("https://");
-                      return isUrl ? (
-                        <a key={idx} href={word} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                          {word}{" "}
-                        </a>
-                      ) : (
-                        word + " "
-                      );
-                    })
-                  ) : (
-                    message.content
-                  )}
+                <div
+                  className={`p-2 rounded-lg max-w-[80%] ${
+                    message.type === "user"
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-100 text-black"
+                  }`}
+                >
+                  {message.type === "bot"
+                    ? message.content.split(" ").map((word, idx) => {
+                        const isUrl =
+                          word.startsWith("http://") ||
+                          word.startsWith("https://");
+                        return isUrl ? (
+                          <a
+                            key={idx}
+                            href={word}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                          >
+                            {word}{" "}
+                          </a>
+                        ) : (
+                          word + " "
+                        );
+                      })
+                    : message.content}
                 </div>
               </div>
             ))}
@@ -147,7 +175,10 @@ export function ChatWidget() {
                 placeholder="Type a message..."
                 className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2"
               />
-              <Button onPress={handleSendMessage} className="px-4 py-2 text-white rounded-lg bg-green-600">
+              <Button
+                onPress={handleSendMessage}
+                className="px-4 py-2 text-white rounded-lg bg-green-600"
+              >
                 Send
               </Button>
             </div>
@@ -162,7 +193,10 @@ export function ChatWidget() {
           )}
         </div>
       ) : (
-        <Button onPress={() => setIsOpen(true)} className="text-white p-3 rounded-full shadow-lg transition-colors bg-green-600">
+        <Button
+          onPress={() => setIsOpen(true)}
+          className="text-white p-3 rounded-full shadow-lg transition-colors bg-green-600"
+        >
           <MessageCircle className="h-6 w-6" />
         </Button>
       )}
