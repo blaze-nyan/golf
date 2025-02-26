@@ -75,10 +75,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     pathname.match(new RegExp(step.path(courseId).replace(/\//g, "\\/") + "$"))
   );
 
-  // Load progress from localStorage on mount
+  // Load progress from window.localStorage on mount
   useEffect(() => {
-    if (courseId) {
-      const saved = localStorage.getItem(`golfCourseProgress_${courseId}`);
+    if (courseId && typeof window !== "undefined") {
+      const saved = window.localStorage.getItem(
+        `golfCourseProgress_${courseId}`
+      );
       if (saved) {
         setMaxCompletedStep(Number(saved));
       } else {
@@ -88,8 +90,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, [courseId]);
 
   useEffect(() => {
-    if (courseId) {
-      const savedBookingDetails = localStorage.getItem(
+    if (courseId && typeof window !== "undefined") {
+      const savedBookingDetails = window.localStorage.getItem(
         `bookingDetails_${courseId}`
       );
       console.log(savedBookingDetails);
@@ -100,8 +102,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (courseId) {
-      localStorage.setItem(
+    if (courseId && typeof window !== "undefined") {
+      window.localStorage.setItem(
         `bookingDetails_${courseId}`,
         JSON.stringify(bookingDetails)
       );
@@ -109,8 +111,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, [bookingDetails, courseId]);
 
   useEffect(() => {
-    if (courseId && maxCompletedStep >= 0) {
-      localStorage.setItem(
+    if (courseId && maxCompletedStep >= 0 && typeof window !== "undefined") {
+      window.localStorage.setItem(
         `golfCourseProgress_${courseId}`,
         String(maxCompletedStep)
       );

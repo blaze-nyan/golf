@@ -24,7 +24,10 @@ const OtherServicesPage = () => {
   const { setBookingDetails, bookingDetails } = useProgress();
 
   useEffect(() => {
-    const clientID = localStorage.getItem("clientId");
+    const clientID =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("clientId")
+        : null;
     setBookingDetails((prevBookingDetails: any) => ({
       ...prevBookingDetails,
       clientID: clientID,
