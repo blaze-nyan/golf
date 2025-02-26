@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 
-const APIDatabase = "http://localhost:3001";
+const APIDatabase = "https://placeholderdatabase.onrender.com";
 
 export const fetchData = async (apiRoute: string) => {
   try {
