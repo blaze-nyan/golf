@@ -42,8 +42,15 @@ export default function LoginForm() {
       console.log("Login response:", response.data); // For debugging
 
       if (response.data.clientId) {
-        // Always store clientId, use remember for persistence duration
-        localStorage.setItem("clientId", response.data.clientId.toString());
+        // Check for browser environment before using localStorage
+        if (typeof window !== "undefined") {
+          // Always store clientId, use remember for persistence duration
+          window.localStorage.setItem(
+            "clientId",
+            response.data.clientId.toString()
+          );
+        }
+
         const staffList = await fetchData("staffList");
 
         const clientIds = staffList.map(
@@ -52,6 +59,7 @@ export default function LoginForm() {
         );
         console.log(staffList);
         console.log(clientIds);
+
         if (clientIds.includes(response.data.clientId.toString())) {
           router.push("/dashboard");
         } else {

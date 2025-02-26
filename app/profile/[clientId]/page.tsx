@@ -148,11 +148,14 @@ export default function ProfilePage() {
   const [isOpenBookings, setIsOpenBookings] = useState(false);
 
   useEffect(() => {
-    const clientId = localStorage.getItem("clientId");
-    if (clientId) {
-      router.push(`/profile/${clientId}`);
-    } else {
-      router.push("/auth/login");
+    // Only run this code on the client side
+    if (typeof window !== "undefined") {
+      const clientId = window.localStorage.getItem("clientId");
+      if (clientId) {
+        router.push(`/profile/${clientId}`);
+      } else {
+        router.push("/auth/login");
+      }
     }
   }, [router]);
 
@@ -182,10 +185,12 @@ export default function ProfilePage() {
     return phoneRegex.test(phone);
   };
 
-  useEffect(
-    () => localStorage.setItem("clientImage", profileImage),
-    [profileImage]
-  );
+  useEffect(() => {
+    // Only execute on the client side
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("clientImage", profileImage);
+    }
+  }, [profileImage]);
 
   useEffect(() => {
     const fetchProfileAndImage = async () => {

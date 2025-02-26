@@ -10,9 +10,10 @@ const AuthRedirect = () => {
   }, []);
 
   useEffect(() => {
-    if (isClient) {
-      const clientId = localStorage.getItem("clientId");
+    if (isClient && typeof window !== "undefined") {
+      const clientId = window.localStorage.getItem("clientId");
       if (clientId) {
+        // Do something with clientId
       } else {
         router.push("/auth/login");
       }
