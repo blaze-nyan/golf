@@ -10,6 +10,7 @@
     "server": "json-server -p3001 --watch db.json"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.22.0",
     "@heroui/button": "^2.2.10",
     "@heroui/navbar": "^2.2.9",
     "@heroui/react": "^2.6.14",
