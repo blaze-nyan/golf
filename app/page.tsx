@@ -5,18 +5,19 @@
 // import ProductList from "./components/ProductList";
 // import Review from "./components/Review";
 import Hero from "./components/hero";
-import { WeatherWidget } from "@/app/components/weather/weather-widget";
 // import FadeInImage from "./components/fade-in-image";
+
 export default function Home() {
   return (
-    <div className="relative flex h-dvh w-full flex-col justify-center items-center  bg-background pb-10">
+    <div className="relative flex w-full flex-col justify-center items-center bg-background pb-10 overflow-auto">
+      {/* Hero Section */}
       <Hero />
 
+      {/* You can add other content here */}
       {/* <Button>Hello</Button> */}
       {/* <Stepper />
       <ProductList />
       <Review /> */}
-      <WeatherWidget />
     </div>
   );
 }

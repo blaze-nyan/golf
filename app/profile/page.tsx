@@ -9,7 +9,10 @@ export default function ProfileRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    const clientId = localStorage.getItem("clientId");
+    const clientId =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("clientId")
+        : null;
     if (clientId) {
       router.push(`/profile/${clientId}`);
     } else {
@@ -18,7 +21,7 @@ export default function ProfileRedirect() {
   }, [router]);
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-[90vh] items-center justify-center">
       <Spinner size="lg" />
     </div>
   );

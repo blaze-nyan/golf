@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/lib/types.ts
 export interface RawGolfCourse {
   "Golf Course ID": number;
@@ -71,4 +72,12 @@ export interface ProfileData {
   "ID Number": string;
   "Passport or ID": string;
   Designation: string;
+  "Communication List": Array<any>;
 }
+
+export type GolfBookingType = {
+  "Golf Booking Type ID": number;
+  Description: string;
+  "Number of Holes": number;
+  "Available Online": boolean;
+};

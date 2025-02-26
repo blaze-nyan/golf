@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/golfcourse/context/progress-context.tsx
 "use client";
 
@@ -10,16 +11,15 @@ export const STEPS = [
     path: (courseId: string) => `/golfcourse/${courseId}`,
   },
   {
-    title: "Hole",
+    title: "Booking",
     path: (courseId: string) => `/golfcourse/${courseId}/hole`,
   },
   {
-    title: "Other Services",
+    title: "Details",
     path: (courseId: string) => `/golfcourse/${courseId}/other-services`,
   },
-
   {
-    title: "Booking",
+    title: "Payment",
     path: (courseId: string) => `/golfcourse/${courseId}/booking`,
   },
   {
@@ -34,12 +34,36 @@ type ProgressContextType = {
   courseId: string;
   completeStep: (step: number) => void;
   canAccess: (step: number) => boolean;
+  bookingDetails: any;
+  setBookingDetails: (bookingDetails: any) => void;
 };
 
 const ProgressContext = createContext<ProgressContextType | null>(null);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [maxCompletedStep, setMaxCompletedStep] = useState(-1);
+
+  const [bookingDetails, setBookingDetails] = useState({
+    courseId: "",
+    courseImageUID: "",
+    courseLocation: "",
+    courseName: "",
+    bookingType: null,
+    clientID: null,
+    teeDate: null,
+    teeTime: null,
+    numberOfGolfers: null,
+    numberOfnonPlayers: null,
+    "Golf Cart": null,
+    Caddies: null,
+    "Food & Drinks": null,
+    "Golfer Names": [],
+    status: "prepaid",
+    paymentType: null,
+    paid: 0,
+    price: 0,
+  });
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -51,10 +75,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     pathname.match(new RegExp(step.path(courseId).replace(/\//g, "\\/") + "$"))
   );
 
-  // Load progress from localStorage on mount
+  // Load progress from window.localStorage on mount
   useEffect(() => {
-    if (courseId) {
-      const saved = localStorage.getItem(`golfCourseProgress_${courseId}`);
+    if (courseId && typeof window !== "undefined") {
+      const saved = window.localStorage.getItem(
+        `golfCourseProgress_${courseId}`
+      );
       if (saved) {
         setMaxCompletedStep(Number(saved));
       } else {
@@ -63,17 +89,36 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, [courseId]);
 
-  // Save progress to localStorage whenever it changes
   useEffect(() => {
-    if (courseId && maxCompletedStep >= 0) {
-      localStorage.setItem(
+    if (courseId && typeof window !== "undefined") {
+      const savedBookingDetails = window.localStorage.getItem(
+        `bookingDetails_${courseId}`
+      );
+      console.log(savedBookingDetails);
+      if (savedBookingDetails) {
+        setBookingDetails(JSON.parse(savedBookingDetails));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (courseId && typeof window !== "undefined") {
+      window.localStorage.setItem(
+        `bookingDetails_${courseId}`,
+        JSON.stringify(bookingDetails)
+      );
+    }
+  }, [bookingDetails, courseId]);
+
+  useEffect(() => {
+    if (courseId && maxCompletedStep >= 0 && typeof window !== "undefined") {
+      window.localStorage.setItem(
         `golfCourseProgress_${courseId}`,
         String(maxCompletedStep)
       );
     }
   }, [maxCompletedStep, courseId]);
 
-  // Redirect if trying to access a step that's not available
   useEffect(() => {
     if (courseId && currentStep > maxCompletedStep + 1) {
       const allowedPath =
@@ -98,6 +143,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         courseId,
         completeStep,
         canAccess,
+        bookingDetails,
+        setBookingDetails,
       }}
     >
       {children}
