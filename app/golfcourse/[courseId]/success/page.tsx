@@ -61,7 +61,7 @@ const page = () => {
   }, []);
 
   return (
-    <div className="min-h-screen py-6 px-4 flex flex-col items-center justify-center bg-gray-50">
+    <div className="h-full md:min-h-screen py-6 px-4 flex flex-col items-center justify-center  transition-colors duration-200">
       {/* Confetti effect */}
       {showConfetti && (
         <Confetti
@@ -81,27 +81,29 @@ const page = () => {
         />
       )}
 
-      <Card className="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
+      <Card className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-200">
         {/* Header */}
-        <div className="bg-green-700 text-white py-4 text-center text-lg md:text-xl font-bold">
+        <div className="bg-green-700 dark:bg-green-800 text-white py-4 text-center text-lg md:text-xl font-bold">
           Your Booking was Successful!
         </div>
 
-        <div className="p-4 space-y-4 text-sm md:text-base text-gray-700">
+        <div className="p-4 space-y-4 text-sm md:text-base text-gray-700 dark:text-gray-300">
           {/* Course Section */}
           <SectionWrapper disabled={isSectionDisabled(0)}>
             <div className="flex gap-3 items-center">
-              <Image
-                removeWrapper
-                className="h-16 w-16 rounded-md object-cover"
-                src={usePlaceholderGolfCourseImageLink()}
-                alt="golf course"
-              />
+              <div className="h-16 w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+                <Image
+                  removeWrapper
+                  className="h-full w-full object-cover"
+                  src={usePlaceholderGolfCourseImageLink()}
+                  alt="golf course"
+                />
+              </div>
               <div>
-                <div className="font-semibold">
+                <div className="font-semibold text-gray-900 dark:text-gray-100">
                   {bookingDetails.courseName || "Course Name"}
                 </div>
-                <div className="text-gray-500 text-sm">
+                <div className="text-gray-500 dark:text-gray-400 text-sm">
                   {bookingDetails.courseLocation || "N/A"}
                 </div>
               </div>
@@ -172,9 +174,9 @@ const page = () => {
             <div className="flex items-center justify-center gap-2 font-semibold text-base md:text-lg">
               <Icon
                 icon="mdi-currency-btc"
-                className="text-green-600 text-xl"
+                className="text-green-600 dark:text-green-400 text-xl"
               />
-              <span>
+              <span className="text-gray-900 dark:text-green-300">
                 Total:{" "}
                 {bookingDetails.price ? `${bookingDetails.price} THB` : "N/A"}
               </span>
@@ -183,7 +185,7 @@ const page = () => {
 
           <div className="pt-2">
             <Button
-              className="w-full bg-green-700 text-white py-3 rounded-md hover:bg-green-800 text-base"
+              className="w-full bg-green-700 dark:bg-green-600 text-white py-3 rounded-md hover:bg-green-800 dark:hover:bg-green-700 text-base transition-colors duration-200"
               onPress={goToProfile}
             >
               Back to Profile
@@ -193,7 +195,7 @@ const page = () => {
       </Card>
 
       {/* Booking ID */}
-      <div className="mt-4 text-sm text-gray-500">
+      <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
         Booking ID: #{bookingDetails.id || "000000"}
       </div>
     </div>
@@ -211,8 +213,10 @@ const SectionWrapper = ({
   disabled: boolean;
 }) => (
   <div
-    className={`p-3 border border-gray-200 rounded-lg ${
-      disabled ? "opacity-50 pointer-events-none" : "bg-gray-50"
+    className={`p-3 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors duration-200 ${
+      disabled
+        ? "opacity-50 pointer-events-none"
+        : "bg-gray-50 dark:bg-gray-800/50"
     }`}
   >
     {children}
@@ -235,9 +239,13 @@ const InfoItem = ({
   value: string | number;
 }) => (
   <div className="flex items-center gap-2">
-    <Icon icon={icon} className="text-green-600 text-lg flex-shrink-0" />
+    <Icon
+      icon={icon}
+      className="text-green-600 dark:text-green-400 text-lg flex-shrink-0"
+    />
     <span className="truncate">
-      <strong>{label}:</strong> {value}
+      <strong className="text-gray-800 dark:text-gray-200">{label}:</strong>{" "}
+      <span className="text-gray-700 dark:text-gray-300">{value}</span>
     </span>
   </div>
 );

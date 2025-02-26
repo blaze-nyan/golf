@@ -103,21 +103,21 @@ const page = () => {
 
   return (
     <div className="space-y-6 p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3 md:mb-5">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3 md:mb-5">
         Payment Page
       </h1>
 
       {/* Payment Type Selection */}
       <div className="space-y-3">
-        <h2 className="text-lg md:text-xl font-semibold">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
           Select Payment Type
         </h2>
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             className={`w-full ${
               paymentType === "prepayment"
-                ? "bg-green-700 text-white"
-                : "bg-gray-200"
+                ? "bg-green-700 text-white dark:bg-green-600"
+                : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
             }`}
             onPress={() => handlePaymentTypeChange("prepayment")}
           >
@@ -126,8 +126,8 @@ const page = () => {
           <Button
             className={`w-full ${
               paymentType === "fullPayment"
-                ? "bg-green-700 text-white"
-                : "bg-gray-200"
+                ? "bg-green-700 text-white dark:bg-green-600"
+                : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
             }`}
             onPress={() => handlePaymentTypeChange("fullPayment")}
           >
@@ -137,30 +137,34 @@ const page = () => {
       </div>
 
       {/* Payment Amount Display */}
-      <Card className="w-full">
-        <CardHeader className="px-4 py-3">
-          <h2 className="text-base md:text-lg font-semibold">Amount to Pay</h2>
+      <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <CardHeader className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Amount to Pay
+          </h2>
         </CardHeader>
         <CardBody className="px-4 py-3">
-          <div className="text-lg md:text-xl font-bold">{amountToPay} THB</div>
+          <div className="text-lg md:text-xl font-bold text-gray-800 dark:text-green-400">
+            {amountToPay} THB
+          </div>
         </CardBody>
       </Card>
 
-      <div className="text-red-600 font-bold text-sm md:text-md p-3 md:p-4 border border-red-500 rounded-md my-1">
+      <div className="text-red-600 dark:text-red-400 font-bold text-sm md:text-md p-3 md:p-4 border border-red-500 dark:border-red-700 bg-red-50 dark:bg-red-900/20 rounded-md my-1">
         There will be no refund after payment is made.
       </div>
 
       {/* Credit Card Input Form */}
-      <Card className="w-full">
-        <CardHeader className="px-4 py-3">
-          <h2 className="text-lg md:text-xl font-semibold">
+      <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <CardHeader className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
             Credit Card Details
           </h2>
         </CardHeader>
         <CardBody className="px-4 py-3 space-y-4">
           {/* Select Payment Method */}
           <div>
-            <label className="block text-sm font-semibold mb-2 visible">
+            <label className="block text-sm font-semibold mb-2 visible text-gray-700 dark:text-gray-300">
               Select Payment Method
             </label>
             <Select
@@ -175,7 +179,7 @@ const page = () => {
           </div>
           {/* Card Number */}
           <div>
-            <label className="block text-sm font-semibold mb-2">
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               Card Number
             </label>
             <Input
@@ -191,7 +195,7 @@ const page = () => {
           {/* Expiry Date and CVV */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="w-full sm:w-1/2">
-              <label className="block text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
                 Expiry Date (MM/YY)
               </label>
               <Input
@@ -203,7 +207,9 @@ const page = () => {
               />
             </div>
             <div className="w-full sm:w-1/2 mt-4 sm:mt-0">
-              <label className="block text-sm font-semibold mb-2">CVV</label>
+              <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+                CVV
+              </label>
               <Input
                 type="text"
                 value={cvv}
@@ -217,7 +223,7 @@ const page = () => {
 
           {/* Cardholder Name */}
           <div>
-            <label className="block text-sm font-semibold mb-2">
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               Cardholder Name
             </label>
             <Input
@@ -231,7 +237,7 @@ const page = () => {
 
           <Button
             onPress={handleSubmit}
-            className="w-full bg-green-700 text-white mt-6 py-2"
+            className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white mt-6 py-2"
           >
             Submit Payment
           </Button>
@@ -240,15 +246,17 @@ const page = () => {
 
       {/* Modal for Payment Success */}
       <Modal isOpen={isOpen} onClose={onClose} size="sm">
-        <ModalContent>
-          <ModalHeader className="text-center">Payment</ModalHeader>
+        <ModalContent className="dark:bg-gray-800">
+          <ModalHeader className="text-center dark:text-gray-100">
+            Payment
+          </ModalHeader>
           <ModalBody>
             {isLoading ? (
               <div className="w-full py-6 flex justify-center items-center">
                 <Spinner size="lg" />
               </div>
             ) : (
-              <div className="text-center py-4">
+              <div className="text-center py-4 dark:text-gray-200">
                 Your payment has been successfully processed.
               </div>
             )}
@@ -261,16 +269,21 @@ const page = () => {
 
       {/* Modal for Error */}
       <Modal isOpen={errorModalOpen} onClose={onErrorClose} size="sm">
-        <ModalContent>
-          <ModalHeader className="text-center">Error</ModalHeader>
+        <ModalContent className="dark:bg-gray-800">
+          <ModalHeader className="text-center dark:text-gray-100">
+            Error
+          </ModalHeader>
           <ModalBody>
-            <div className="text-center text-red-600 py-4">
+            <div className="text-center text-red-600 dark:text-red-400 py-4">
               There is an issue with the card details provided. Please check and
               try again.
             </div>
           </ModalBody>
           <ModalFooter className="flex justify-center">
-            <Button onPress={onErrorClose} className="bg-red-500 text-white">
+            <Button
+              onPress={onErrorClose}
+              className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white"
+            >
               OK
             </Button>
           </ModalFooter>

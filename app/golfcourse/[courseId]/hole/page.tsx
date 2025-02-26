@@ -257,12 +257,12 @@ const page = () => {
 
   return (
     <div className="space-y-5 p-4 md:p-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
         Select Booking
       </h1>
 
       {/* Filters section - stack vertically on mobile, horizontal on larger screens */}
-      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 items-center ">
+      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 items-center">
         <div className="w-full md:w-[120px]">
           <Select
             label="Booking Type"
@@ -314,14 +314,14 @@ const page = () => {
       </div>
 
       {/* Selection summary - responsive layout */}
-      <div className="text-sm md:text-base text-gray-800 pt-2">
+      <div className="text-sm md:text-base text-gray-800 dark:text-gray-200 pt-2">
         <p className="mb-2">Showing available tee times for:</p>
         <div className="flex flex-wrap gap-2 mb-2">
-          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-sm">
+          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full shadow-sm">
             {selectedDate.toDate("UTC").toLocaleDateString()}
           </span>
 
-          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-sm">
+          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full shadow-sm">
             {startTime.hour % 12 === 0 ? 12 : startTime.hour % 12}:
             {startTime.minute < 10 ? "0" : ""}
             {startTime.minute} {startTime.hour < 12 ? "AM" : "PM"}
@@ -331,7 +331,7 @@ const page = () => {
             {endTime.minute} {endTime.hour < 12 ? "AM" : "PM"}
           </span>
 
-          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full shadow-sm">
+          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full shadow-sm">
             {bookingType == 1 ? "9-Hole" : "18-Hole"}
           </span>
         </div>
@@ -344,7 +344,7 @@ const page = () => {
         </div>
       ) : (
         /* Tee time grid - responsive grid with different column counts */
-        <div className="w-full max-h-[400px] md:max-h-[255px] p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-3 overflow-y-auto bg-gray-50 rounded-md">
+        <div className="w-full max-h-[400px] md:max-h-[255px] p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md">
           {availableTeeTimes.map((data, index) => {
             if (!compareTime(data["Tee Minute"], startTime, endTime)) {
               return null;
@@ -357,11 +357,11 @@ const page = () => {
             return (
               <Card
                 key={index}
-                className={`p-2 cursor-pointer transition-transform duration-200 h-[115px] 
+                className={`p-2 cursor-pointer transition-transform duration-200 h-[115px] border border-gray-200 dark:border-gray-700
                 ${
                   selectedTimeCode === data["Tee Minute"]
-                    ? "bg-green-200 scale-105"
-                    : "hover:scale-105"
+                    ? "bg-green-200 dark:bg-green-800 scale-105"
+                    : "hover:scale-105 dark:bg-gray-700"
                 }
                 ${
                   unavailableTeeTimes.includes(data["Tee Minute"])
@@ -380,8 +380,8 @@ const page = () => {
                     <div
                       className={`w-full flex items-center justify-center rounded-md p-1 ${
                         selectedTimeCode === data["Tee Minute"]
-                          ? "bg-green-200"
-                          : "bg-green-100"
+                          ? "bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-100"
+                          : "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
                       }`}
                     >
                       <span className="px-2 font-semibold">
@@ -393,10 +393,10 @@ const page = () => {
                     <div>
                       <Icon
                         icon="mdi:account"
-                        className="text-3xl md:text-4xl"
+                        className="text-3xl md:text-4xl text-gray-700 dark:text-gray-300"
                       />
                     </div>
-                    <span className="px-2 font-semibold text-xs md:text-sm">
+                    <span className="px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200">
                       {`${data["Online Golfer Count"]} Maximum`}
                     </span>
                   </div>
@@ -406,11 +406,13 @@ const page = () => {
           })}
         </div>
       )}
+
       <div className="pt-4 md:hidden">
         <NextButton />
       </div>
+
       {/* Fixed position for next button on mobile */}
-      <div className="pt-4 hidden  bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
+      <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
         <NextButton />
       </div>
     </div>

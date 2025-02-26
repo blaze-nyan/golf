@@ -17,6 +17,7 @@ import {
 } from "@heroui/react";
 //componets
 import ProfileIcon from "./profile-icon";
+import { ThemeSwitcher } from "@/app/components/theme-switcher";
 
 import { cn } from "@heroui/react";
 import NextLink from "next/link";
@@ -70,20 +71,22 @@ export default function NavBar(props: NavbarProps) {
 
       {/* Right Content */}
       <NavbarContent className="hidden md:flex" justify="end">
-        {checkClientId()? <ProfileIcon />
-        :
-          
-        <NavbarItem className="ml-2 !flex gap-2">
-        <Button
-          as={NextLink}
-          href="/auth/login"
-          color="primary"
-          variant="flat"
-        >
-          Login to Book
-        </Button>
-      </NavbarItem>}
+        {checkClientId() ? (
+          <ProfileIcon />
+        ) : (
+          <NavbarItem className="ml-2 !flex gap-2">
+            <Button
+              as={NextLink}
+              href="/auth/login"
+              color="primary"
+              variant="flat"
+            >
+              Login to Book
+            </Button>
+          </NavbarItem>
+        )}
       </NavbarContent>
+      <ThemeSwitcher />
 
       <NavbarMenuToggle className="text-default-400 md:hidden" />
 

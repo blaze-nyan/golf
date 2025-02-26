@@ -102,15 +102,15 @@ export default function GolfCoursesPage() {
       {/* Section for explanation about golf courses */}
       <section className="text-center mb-5 max-w-4xl">
         <h2 className="text-4xl font-semibold">Discover Our Golf Courses</h2>
-        <p className="text-lg text-gray-600 mt-3">
+        <p className="text-lg  mt-3">
           We offer a wide selection of beautifully designed golf courses that
-          cater to players of all skill levels. Whether you’re looking for a
+          cater to players of all skill levels. Whether you are looking for a
           challenging championship course or a relaxing day on the links, our
           courses promise an unforgettable experience. Our facilities include
           stunning fairways, state-of-the-art driving ranges, and clubhouses
           equipped with everything you need for a great round of golf.
         </p>
-        <p className="text-lg text-gray-600 mt-3">
+        <p className="text-lg  mt-3">
           Explore our courses below and find the perfect course for your next
           round!
         </p>

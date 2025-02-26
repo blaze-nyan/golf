@@ -91,10 +91,6 @@ const page = () => {
     golferList,
   ]);
 
-  // const handleNumGolfersChange = (change: number) => {
-  //   setNumGolfers((prev) => Math.min(4, Math.max(1, prev + change)));
-  // };
-
   const handleNonPlayerChange = (change: number) => {
     setNonPlayers((prev) => Math.max(0, prev + change));
   };
@@ -138,26 +134,33 @@ const page = () => {
   }
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="text-3xl font-bold text-gray-800 mb-5">Booking Details</h1>
+    <div className="max-w-2xl mx-auto p-4">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-5">
+        Booking Details
+      </h1>
 
       {/* Golfers */}
-      <div className="flex justify-between items-center bg-gray-100 p-3 px-4 rounded-lg ">
-        <span className="text-medium flex items-center gap-2">
-          <Icon icon="mdi-golf" />
+      <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg mb-4 shadow-sm">
+        <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
+          <Icon
+            icon="mdi-golf"
+            className="text-green-600 dark:text-green-400"
+          />
           Golfers - {feeForDay} THB
         </span>
         <div className="flex items-center space-x-3">
           <button
-            className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+            className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
             onClick={() => handleRemoveGolfer()}
             disabled={numGolfers === 1}
           >
             <Icon icon="mdi-minus" />
           </button>
-          <span className="text-medium w-6 text-center">{numGolfers}</span>
+          <span className="text-medium w-6 text-center font-semibold text-gray-700 dark:text-gray-200">
+            {numGolfers}
+          </span>
           <button
-            className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+            className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600"
             onClick={() => setGolferModalOpen(true)}
           >
             <Icon icon="mdi-plus" />
@@ -165,34 +168,16 @@ const page = () => {
         </div>
       </div>
 
-      {/* Golfers List as Tags */}
-      {/* <div className="mt-2">
-        <div className="flex flex-wrap gap-2">
-          {golferList.length === 0 ? (
-            <span className="bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-sm w-32 text-center">
-              Loading Golfer
-            </span>
-          ) : (
-            golferList.map((golfer, index) => (
-              <span
-                key={index}
-                className="border border-green-700 text-green-700 px-3 py-1 rounded-full text-sm"
-              >
-                {golfer}
-              </span>
-            ))
-          )}
-        </div>
-      </div> */}
-
       {/* New Golfer Modal */}
       {isGolferModalOpen && (
         <Modal
           isOpen={isGolferModalOpen}
           onClose={() => setGolferModalOpen(false)}
         >
-          <ModalContent className="max-w-sm mx-auto">
-            <ModalHeader>Add New Golfer</ModalHeader>
+          <ModalContent className="max-w-sm mx-auto dark:bg-gray-800">
+            <ModalHeader className="dark:text-gray-100">
+              Add New Golfer
+            </ModalHeader>
             <ModalBody>
               <Input
                 value={newGolferName}
@@ -204,11 +189,14 @@ const page = () => {
             <ModalFooter className="space-x-3">
               <Button
                 onPress={handleAddGolfer}
-                className="bg-green-800 text-white"
+                className="bg-green-700 dark:bg-green-600 text-white"
               >
                 Add Golfer
               </Button>
-              <Button onPress={() => setGolferModalOpen(false)} className="">
+              <Button
+                onPress={() => setGolferModalOpen(false)}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              >
                 Cancel
               </Button>
             </ModalFooter>
@@ -217,23 +205,28 @@ const page = () => {
       )}
 
       {/* Guests */}
-      <div className="flex justify-between items-center bg-gray-100 p-3 px-4 rounded-lg my-4">
-        <span className="text-medium flex items-center gap-2">
-          <Icon icon="mdi-person" />
+      <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg my-4 shadow-sm">
+        <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
+          <Icon
+            icon="mdi-person"
+            className="text-green-600 dark:text-green-400"
+          />
           Accompanying Persons - 100 THB
         </span>
         <div className="flex flex-col items-center space-y-1">
           <div className="flex items-center space-x-3">
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
               onClick={() => handleNonPlayerChange(-1)}
-              disabled={numNonPlayers === 1}
+              disabled={numNonPlayers === 0}
             >
               <Icon icon="mdi-minus" />
             </button>
-            <span className="text-medium w-6 text-center">{numNonPlayers}</span>
+            <span className="text-medium w-6 text-center font-semibold text-gray-700 dark:text-gray-200">
+              {numNonPlayers}
+            </span>
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center "
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
               onClick={() => handleNonPlayerChange(1)}
               disabled={numNonPlayers === 4}
             >
@@ -246,22 +239,27 @@ const page = () => {
       {/* Services */}
       <div className="space-y-4">
         {/* Caddies */}
-        <div className="flex justify-between items-center bg-gray-100 p-3 px-4 rounded-lg">
-          <span className="text-medium flex items-center gap-2">
-            <Icon icon="mdi-backpack" />
+        <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg shadow-sm">
+          <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
+            <Icon
+              icon="mdi-backpack"
+              className="text-green-600 dark:text-green-400"
+            />
             Caddies - 300 THB
           </span>
           <div className="flex items-center space-x-3">
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
               onClick={() => handleServiceChange("caddies", -1)}
               disabled={numCaddies === 0}
             >
               <Icon icon="mdi-minus" />
             </button>
-            <span className="text-medium w-6 text-center">{numCaddies}</span>
+            <span className="text-medium w-6 text-center font-semibold text-gray-700 dark:text-gray-200">
+              {numCaddies}
+            </span>
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600"
               onClick={() => handleServiceChange("caddies", 1)}
             >
               <Icon icon="mdi-plus" />
@@ -270,22 +268,27 @@ const page = () => {
         </div>
 
         {/* Golf Cart */}
-        <div className="flex justify-between items-center bg-gray-100 p-3 px-4 rounded-lg">
-          <span className="text-medium flex items-center gap-2">
-            <Icon icon="mdi-car" />
+        <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg shadow-sm">
+          <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
+            <Icon
+              icon="mdi-car"
+              className="text-green-600 dark:text-green-400"
+            />
             Golf Cart - 500 THB
           </span>
           <div className="flex items-center space-x-3">
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
               onClick={() => handleServiceChange("golfCarts", -1)}
               disabled={numGolfCarts === numGolfers}
             >
               <Icon icon="mdi-minus" />
             </button>
-            <span className="text-medium w-6 text-center">{numGolfCarts}</span>
+            <span className="text-medium w-6 text-center font-semibold text-gray-700 dark:text-gray-200">
+              {numGolfCarts}
+            </span>
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600"
               onClick={() => handleServiceChange("golfCarts", 1)}
             >
               <Icon icon="mdi-plus" />
@@ -294,22 +297,27 @@ const page = () => {
         </div>
 
         {/* Food & Drinks */}
-        <div className="flex justify-between items-center bg-gray-100 p-3 px-4 rounded-lg">
-          <span className="text-medium flex items-center gap-2">
-            <Icon icon="mdi-food" />
+        <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg shadow-sm">
+          <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
+            <Icon
+              icon="mdi-food"
+              className="text-green-600 dark:text-green-400"
+            />
             Food & Drinks - 300 THB
           </span>
           <div className="flex items-center space-x-3">
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50"
               onClick={() => handleServiceChange("foodDrinks", -1)}
               disabled={numFoodDrinks === 0}
             >
               <Icon icon="mdi-minus" />
             </button>
-            <span className="text-medium w-6 text-center">{numFoodDrinks}</span>
+            <span className="text-medium w-6 text-center font-semibold text-gray-700 dark:text-gray-200">
+              {numFoodDrinks}
+            </span>
             <button
-              className="px-3 py-1 rounded-lg text-xl bg-white align-middle text-center"
+              className="px-3 py-1 rounded-lg text-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 align-middle text-center shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-600"
               onClick={() => handleServiceChange("foodDrinks", 1)}
             >
               <Icon icon="mdi-plus" />
@@ -319,9 +327,13 @@ const page = () => {
       </div>
 
       {/* Total Price */}
-      <div className="mt-3 text-lg text-right">Total: {totalPrice} THB</div>
+      <div className="mt-6 text-lg text-right font-bold text-gray-800 dark:text-green-400">
+        Total: {totalPrice} THB
+      </div>
 
-      <NextButton />
+      <div className="mt-6">
+        <NextButton />
+      </div>
     </div>
   );
 };
