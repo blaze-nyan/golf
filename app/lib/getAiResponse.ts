@@ -10,7 +10,7 @@ interface ResponseData {
 }
 
 export default async function getAiResponse(event: string): Promise<{ type: string; text: string }[]> {
-  var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
   var userMessage = event;
 
   var requestBody = {
