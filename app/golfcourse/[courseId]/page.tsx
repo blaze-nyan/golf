@@ -93,7 +93,7 @@ const CoursePage = () => {
 
   if (!golfCourse) {
     return (
-      <div className="p-4 text-center text-red-600">
+      <div className="p-4 text-center text-red-600 dark:text-red-400">
         Failed to load golf course information. Please try again.
       </div>
     );
@@ -104,26 +104,26 @@ const CoursePage = () => {
 
   return (
     <div className="px-4 md:px-6 pb-16 max-w-6xl mx-auto space-y-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mt-4">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mt-4">
         {golfCourse.golfCourseName || placeholderGolfCourse.golfCourseName}
       </h1>
 
       <div className="flex flex-wrap gap-2 sm:gap-4">
         <div className="flex items-center">
-          <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
+          <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             Holes:{" "}
             {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
           </span>
         </div>
         <div className="flex items-center">
-          <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-600 text-green-600 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
+          <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-600 text-green-600 dark:border-green-500 dark:text-green-500 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             Par:{" "}
             {golfCourse.golfCoursePar || placeholderGolfCourse.golfCoursePar}
           </span>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg shadow-md">
+      <div className="overflow-hidden rounded-lg shadow-md dark:shadow-gray-800">
         <Image
           removeWrapper
           className="h-auto w-full object-cover object-center"
@@ -132,8 +132,8 @@ const CoursePage = () => {
         />
       </div>
 
-      <div className="prose prose-sm sm:prose max-w-none">
-        <p className="text-base sm:text-lg text-gray-600">
+      <div className="prose prose-sm sm:prose max-w-none dark:prose-invert">
+        <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
           {golfCourse.golfCourseDescription ||
             placeholderGolfCourse.golfCourseDescription}
         </p>
@@ -146,7 +146,7 @@ const CoursePage = () => {
       {/* Holes Section */}
       <div className="space-y-6">
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
             Outward Holes
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2">
@@ -169,7 +169,7 @@ const CoursePage = () => {
                     className={`px-2 py-2 text-xs sm:text-sm font-medium sm:font-semibold shadow-sm rounded-md transition-all duration-300 ${
                       selectedHole === hole
                         ? "bg-green-500 text-white scale-105"
-                        : "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50"
                     }`}
                     onClick={() =>
                       setSelectedHole(
@@ -191,7 +191,7 @@ const CoursePage = () => {
             className={`mt-2 px-3 py-2 text-sm font-semibold shadow-md rounded-md transition-all duration-300 transform ${
               selectedHole === "Outward Holes"
                 ? "bg-green-500 text-white"
-                : "bg-green-100 text-green-700 hover:bg-green-200"
+                : "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50"
             }`}
             onClick={() => {
               let totalPar = 0;
@@ -226,7 +226,7 @@ const CoursePage = () => {
             View All Outward Holes
           </button>
 
-          <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 mt-6">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 mt-6">
             Inward Holes
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2">
@@ -245,7 +245,7 @@ const CoursePage = () => {
                     className={`px-2 py-2 text-xs sm:text-sm font-medium sm:font-semibold shadow-sm rounded-md transition-all duration-300 ${
                       selectedHole === hole
                         ? "bg-green-500 text-white scale-105"
-                        : "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50"
                     }`}
                     onClick={() =>
                       setSelectedHole(
@@ -267,7 +267,7 @@ const CoursePage = () => {
             className={`mt-2 px-3 py-2 text-sm font-semibold shadow-md rounded-md transition-all duration-300 transform ${
               selectedHole === "Inward Holes"
                 ? "bg-green-500 text-white"
-                : "bg-green-100 text-green-700 hover:bg-green-200"
+                : "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50"
             }`}
             onClick={() => {
               let totalPar = 0;
@@ -304,22 +304,22 @@ const CoursePage = () => {
         </div>
 
         {selectedHole && (
-          <div className="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
-            <h4 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
               Hole Details
             </h4>
-            <p className="text-gray-700">{selectedHole}</p>
+            <p className="text-gray-700 dark:text-gray-300">{selectedHole}</p>
           </div>
         )}
       </div>
 
       {/* Notes Section */}
       <div className="space-y-3">
-        <h3 className="text-xl md:text-2xl font-semibold text-gray-800 border-b pb-2">
+        <h3 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
           Golf Course Notes
         </h3>
         {golfCourse.golfCourseNotes && golfCourse.golfCourseNotes.length > 0 ? (
-          <ul className="list-disc pl-5 space-y-1 text-base md:text-lg text-gray-700">
+          <ul className="list-disc pl-5 space-y-1 text-base md:text-lg text-gray-700 dark:text-gray-300">
             {golfCourse.golfCourseNotes.map((note: any, index: any) => (
               <li key={index} className="py-1">
                 {note}
@@ -327,7 +327,7 @@ const CoursePage = () => {
             ))}
           </ul>
         ) : (
-          <p className="text-base md:text-lg text-gray-700">
+          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300">
             No notes available.
           </p>
         )}
@@ -337,7 +337,7 @@ const CoursePage = () => {
       </div>
 
       {/* Next Button with proper spacing */}
-      <div className="pt-4 hidden  bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
+      <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
         <NextButton />
       </div>
     </div>

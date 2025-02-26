@@ -95,10 +95,10 @@ const Hero = () => {
 
       {/* Next Week's Weather Forecast Section */}
       <section className="text-center w-full max-w-4xl mx-auto mt-8 sm:mt-10 px-4">
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+        <h2 className="text-xl sm:text-2xl font-semibold ">
           Plan Your Week Ahead on the Course
         </h2>
-        <p className="text-base sm:text-lg text-gray-600 mt-2 sm:mt-3">
+        <p className="text-base sm:text-lg  mt-2 sm:mt-3">
           Stay updated with the weather forecast for the next week. Our detailed
           weather reports help you plan your next round of golf at [Golf Club
           Name].
@@ -110,13 +110,15 @@ const Hero = () => {
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
               <div
                 key={day}
-                className="bg-white border rounded-lg shadow-lg p-3 sm:p-4 min-w-[80px] sm:w-24 flex-shrink-0"
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 sm:p-4 min-w-[80px] sm:w-24 flex-shrink-0 transition-colors duration-200"
               >
-                <p className="text-lg sm:text-xl font-semibold">{day}</p>
-                <p className="text-base sm:text-lg">
+                <p className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">
+                  {day}
+                </p>
+                <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
                   {Math.floor(18 + Math.random() * 7)}°C
                 </p>
-                <p className="text-xs sm:text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {
                     ["Sunny", "Cloudy", "Rainy", "Partly Cloudy"][
                       Math.floor(Math.random() * 4)
