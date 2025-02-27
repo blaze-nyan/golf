@@ -138,7 +138,6 @@ const page = () => {
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-5">
         Booking Details
       </h1>
-
       {/* Golfers */}
       <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg mb-4 shadow-sm">
         <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
@@ -167,7 +166,16 @@ const page = () => {
           </button>
         </div>
       </div>
-
+      <div>
+        {golferList.map((golfer) => (
+          <span
+            key={golfer}
+            className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm mr-1"
+          >
+            {golfer}
+          </span>
+        ))}
+      </div>
       {/* New Golfer Modal */}
       {isGolferModalOpen && (
         <Modal
@@ -203,7 +211,6 @@ const page = () => {
           </ModalContent>
         </Modal>
       )}
-
       {/* Guests */}
       <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg my-4 shadow-sm">
         <span className="text-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
@@ -235,7 +242,6 @@ const page = () => {
           </div>
         </div>
       </div>
-
       {/* Services */}
       <div className="space-y-4">
         {/* Caddies */}
@@ -325,12 +331,10 @@ const page = () => {
           </div>
         </div>
       </div>
-
       {/* Total Price */}
       <div className="mt-6 text-lg text-right font-bold text-gray-800 dark:text-green-400">
         Total: {totalPrice} THB
       </div>
-
       <div className="mt-6">
         <NextButton />
       </div>
