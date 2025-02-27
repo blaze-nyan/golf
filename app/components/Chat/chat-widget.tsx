@@ -1,7 +1,7 @@
 "use client";
 import getAiResponse from "@/app/lib/getAiResponse";
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Maximize, Minimize } from "lucide-react";
+import { MessageCircle, X, Maximize, Minimize, Send } from "lucide-react";
 import { Button } from "@heroui/button";
 
 interface ChatMessage {
@@ -15,6 +15,7 @@ export function ChatWidget() {
   const [isClient, setIsClient] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 320, height: 480 });
@@ -31,11 +32,12 @@ export function ChatWidget() {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() || isLoading) return;
 
     const userMessage: ChatMessage = { type: "user", content: inputMessage };
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
+    setIsLoading(true);
 
     try {
       const aiResponse = await getAiResponse(inputMessage);
@@ -55,6 +57,8 @@ export function ChatWidget() {
           content: "Error retrieving response. Please try again.",
         },
       ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -74,8 +78,8 @@ export function ChatWidget() {
       const newHeight = startHeight + (moveEvent.clientY - startY);
 
       setSize({
-        width: Math.max(320, newWidth), // Prevent too small
-        height: Math.max(400, newHeight),
+        width: Math.max(300, Math.min(newWidth, window.innerWidth - 40)), // Prevent too small or too large
+        height: Math.max(400, Math.min(newHeight, window.innerHeight - 40)),
       });
     };
 
@@ -96,8 +100,10 @@ export function ChatWidget() {
       {isOpen ? (
         <div
           ref={chatBoxRef}
-          className={`bg-white rounded-lg shadow-xl flex flex-col resize overflow-hidden ${
-            isMaximized ? "fixed inset-0 w-full h-full" : ""
+          className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-black/30 flex flex-col resize overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-200 ${
+            isMaximized
+              ? "fixed inset-0 m-0 rounded-none w-full h-full"
+              : "max-w-full max-h-[90vh]"
           }`}
           style={{
             width: isMaximized ? "100%" : `${size.width}px`,
@@ -105,67 +111,99 @@ export function ChatWidget() {
           }}
         >
           {/* Header */}
-          <div className="p-4 border-b flex justify-between items-center bg-gray-200">
-            <h3 className="font-medium">Golf Assistant</h3>
+          <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-100 dark:bg-gray-800">
+            <h3 className="font-medium text-gray-800 dark:text-gray-100">
+              Golf Assistant
+            </h3>
             <div className="flex gap-2">
               {/* Maximize/Minimize Toggle */}
-              <button onClick={() => setIsMaximized(!isMaximized)}>
+              <button
+                onClick={() => setIsMaximized(!isMaximized)}
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors"
+              >
                 {isMaximized ? (
                   <Minimize className="h-5 w-5" />
                 ) : (
                   <Maximize className="h-5 w-5" />
                 )}
               </button>
-              <button onClick={() => setIsOpen(false)}>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  message.type === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div ref={messagesEndRef} />
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50 dark:bg-gray-900">
+            {messages.length === 0 ? (
+              <div className="text-center text-gray-500 dark:text-gray-400 my-8">
+                <p>Welcome to the Golf Assistant!</p>
+                <p className="text-sm mt-2">How can I help you today?</p>
+              </div>
+            ) : (
+              messages.map((message, index) => (
                 <div
-                  className={`p-2 rounded-lg max-w-[80%] ${
-                    message.type === "user"
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-100 text-black"
+                  key={index}
+                  className={`flex ${
+                    message.type === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  {message.type === "bot"
-                    ? message.content.split(" ").map((word, idx) => {
-                        const isUrl =
-                          word.startsWith("http://") ||
-                          word.startsWith("https://");
-                        return isUrl ? (
-                          <a
-                            key={idx}
-                            href={word}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                          >
-                            {word}{" "}
-                          </a>
-                        ) : (
-                          word + " "
-                        );
-                      })
-                    : message.content}
+                  <div
+                    className={`p-2 sm:p-3 rounded-lg max-w-[85%] ${
+                      message.type === "user"
+                        ? "bg-green-600 dark:bg-green-700 text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                    }`}
+                  >
+                    {message.type === "bot"
+                      ? message.content.split(" ").map((word, idx) => {
+                          const isUrl =
+                            word.startsWith("http://") ||
+                            word.startsWith("https://");
+                          return isUrl ? (
+                            <a
+                              key={idx}
+                              href={word}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 dark:text-blue-400 hover:underline"
+                            >
+                              {word}{" "}
+                            </a>
+                          ) : (
+                            word + " "
+                          );
+                        })
+                      : message.content}
+                  </div>
+                </div>
+              ))
+            )}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="p-3 rounded-lg bg-gray-200 dark:bg-gray-700">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
+                    <div
+                      className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            ))}
+            )}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
-          <div className="p-4 border-t">
+          <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -173,13 +211,19 @@ export function ChatWidget() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type a message..."
-                className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+                disabled={isLoading}
               />
               <Button
                 onPress={handleSendMessage}
-                className="px-4 py-2 text-white rounded-lg bg-green-600"
+                disabled={isLoading || !inputMessage.trim()}
+                className={`px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors ${
+                  isLoading || !inputMessage.trim()
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
               >
-                Send
+                <Send className="h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -188,14 +232,14 @@ export function ChatWidget() {
           {!isMaximized && (
             <div
               onMouseDown={handleResizeMouseDown}
-              className="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 cursor-se-resize"
+              className="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 dark:bg-gray-600 cursor-se-resize"
             />
           )}
         </div>
       ) : (
         <Button
           onPress={() => setIsOpen(true)}
-          className="text-white p-3 rounded-full shadow-lg transition-colors bg-green-600"
+          className="text-white p-3 rounded-full shadow-lg transition-colors bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
         >
           <MessageCircle className="h-6 w-6" />
         </Button>
