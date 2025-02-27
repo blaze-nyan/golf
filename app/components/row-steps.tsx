@@ -159,10 +159,7 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
     }, [color, className]);
 
     return (
-      <nav
-        aria-label="Progress"
-        className="max-w-fit overflow-x-auto pb-2"
-      >
+      <nav aria-label="Progress" className="max-w-fit overflow-x-auto pb-2">
         <ol
           className={cn("flex flex-row flex-nowrap gap-x-3", colors, className)}
         >

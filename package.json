@@ -10,6 +10,7 @@
     "server": "json-server -p3001 --watch db.json"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.22.0",
     "@heroui/button": "^2.2.10",
     "@heroui/navbar": "^2.2.9",
     "@heroui/react": "^2.6.14",
@@ -20,6 +21,7 @@
     "framer-motion": "^12.0.6",
     "lucide-react": "^0.475.0",
     "next": "15.1.6",
+    "next-themes": "^0.4.4",
     "react": "^18.2.0",
     "react-confetti": "^6.2.3",
     "react-dom": "^18.2.0",

@@ -63,14 +63,14 @@ const page = () => {
       ...prevBookingDetails,
       paymentType: paymentType,
     }));
-  }, [paymentType]);
+  }, [paymentType, setBookingDetails]);
 
   useEffect(() => {
     setBookingDetails((prevBookingDetails: any) => ({
       ...prevBookingDetails,
       paid: amountToPay,
     }));
-  }, [amountToPay]);
+  }, [amountToPay, setBookingDetails]);
 
   // Simple validation function (you can improve it)
   const validateCreditCard = () => {
@@ -102,64 +102,75 @@ const page = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-5">Payment Page</h1>
+    <div className="space-y-6 p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3 md:mb-5">
+        Payment Page
+      </h1>
 
       {/* Payment Type Selection */}
       <div className="space-y-3">
-        <h2 className="text-xl font-semibold">Select Payment Type</h2>
-        <div className="flex gap-4">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
+          Select Payment Type
+        </h2>
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             className={`w-full ${
               paymentType === "prepayment"
-                ? "bg-green-700 text-white"
-                : "bg-gray-200"
+                ? "bg-green-700 text-white dark:bg-green-600"
+                : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
             }`}
-            onClick={() => handlePaymentTypeChange("prepayment")}
+            onPress={() => handlePaymentTypeChange("prepayment")}
           >
-            Prepayment (30% of total)
+            Prepayment (30%)
           </Button>
           <Button
             className={`w-full ${
               paymentType === "fullPayment"
-                ? "bg-green-700 text-white"
-                : "bg-gray-200"
+                ? "bg-green-700 text-white dark:bg-green-600"
+                : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
             }`}
-            onClick={() => handlePaymentTypeChange("fullPayment")}
+            onPress={() => handlePaymentTypeChange("fullPayment")}
           >
-            Full Payment (100% of total)
+            Full Payment
           </Button>
         </div>
       </div>
 
       {/* Payment Amount Display */}
-      <Card className="p-4">
-        <CardHeader>
-          <h2 className="text-lg font-semibold">Amount to Pay</h2>
+      <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <CardHeader className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Amount to Pay
+          </h2>
         </CardHeader>
-        <CardBody>
-          <div className="text-xl">{amountToPay} THB</div>
+        <CardBody className="px-4 py-3">
+          <div className="text-lg md:text-xl font-bold text-gray-800 dark:text-green-400">
+            {amountToPay} THB
+          </div>
         </CardBody>
       </Card>
 
-      <div className="text-red-600 font-bold text-md p-4 border border-red-500 rounded-md my-1">
+      <div className="text-red-600 dark:text-red-400 font-bold text-sm md:text-md p-3 md:p-4 border border-red-500 dark:border-red-700 bg-red-50 dark:bg-red-900/20 rounded-md my-1">
         There will be no refund after payment is made.
       </div>
 
       {/* Credit Card Input Form */}
-      <Card className="p-4">
-        <CardHeader>
-          <h2 className="text-xl font-semibold mb-4">Credit Card Details</h2>
+      <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <CardHeader className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Credit Card Details
+          </h2>
         </CardHeader>
-        <CardBody>
+        <CardBody className="px-4 py-3 space-y-4">
           {/* Select Payment Method */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1 visible">
+          <div>
+            <label className="block text-sm font-semibold mb-2 visible text-gray-700 dark:text-gray-300">
               Select Payment Method
             </label>
             <Select
               placeholder="Select a payment method"
               aria-label="Select a payment method"
+              className="w-full"
             >
               <SelectItem value="visa">Visa</SelectItem>
               <SelectItem value="mastercard">MasterCard</SelectItem>
@@ -167,41 +178,43 @@ const page = () => {
             </Select>
           </div>
           {/* Card Number */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">
+          <div>
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               Card Number
             </label>
             <Input
               type="text"
               value={cardNumber}
               onChange={(e) => setCardNumber(e.target.value)}
-              className="w-full rounded"
+              className="w-full"
               maxLength={16}
               placeholder="Card Number"
             />
           </div>
 
           {/* Expiry Date and CVV */}
-          <div className="flex gap-4 mb-4">
-            <div className="w-1/2">
-              <label className="block text-sm font-semibold mb-1">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="w-full sm:w-1/2">
+              <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
                 Expiry Date (MM/YY)
               </label>
               <Input
                 type="text"
                 value={expiryDate}
                 onChange={(e) => setExpiryDate(e.target.value)}
-                className="w-full rounded"
+                className="w-full"
                 placeholder="MM/YY"
               />
             </div>
-            <div className="w-1/2">
-              <label className="block text-sm font-semibold mb-1">CVV</label>
+            <div className="w-full sm:w-1/2 mt-4 sm:mt-0">
+              <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+                CVV
+              </label>
               <Input
                 type="text"
                 value={cvv}
                 onChange={(e) => setCvv(e.target.value)}
-                className="w-full rounded"
+                className="w-full"
                 maxLength={3}
                 placeholder="CVV"
               />
@@ -209,64 +222,73 @@ const page = () => {
           </div>
 
           {/* Cardholder Name */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">
+          <div>
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               Cardholder Name
             </label>
             <Input
               type="text"
               value={cardHolderName}
               onChange={(e) => setCardHolderName(e.target.value)}
-              className="w-full rounded"
+              className="w-full"
               placeholder="Cardholder Name"
             />
           </div>
+
+          <Button
+            onPress={handleSubmit}
+            className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white mt-6 py-2"
+          >
+            Submit Payment
+          </Button>
         </CardBody>
-
-        {/* Modal for Payment Success */}
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalContent>
-            <ModalHeader>Payment</ModalHeader>
-            <ModalBody className="w-[100%]">
-              {isLoading ? (
-                <div className="w-[100%] h-[100%] flex justify-center items-center">
-                  <Spinner />
-                </div>
-              ) : (
-                <div>Your payment has been successfully processed.</div>
-              )}
-            </ModalBody>
-            <ModalFooter>{!isLoading && <NextButton />}</ModalFooter>
-          </ModalContent>
-        </Modal>
-
-        {/* Modal for Error */}
-        <Modal isOpen={errorModalOpen} onClose={onErrorClose}>
-          <ModalContent>
-            <ModalHeader>Error</ModalHeader>
-            <ModalBody>
-              <div>
-                There is an issue with the card details provided. Please check
-                and try again.
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button onClick={onErrorClose} className="bg-red-500 text-white">
-                OK
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-
-        <Button
-          onClick={handleSubmit}
-          className="w-full bg-green-700 text-white"
-        >
-          Submit Payment
-        </Button>
       </Card>
 
-      {/* Next Button */}
+      {/* Modal for Payment Success */}
+      <Modal isOpen={isOpen} onClose={onClose} size="sm">
+        <ModalContent className="dark:bg-gray-800">
+          <ModalHeader className="text-center dark:text-gray-100">
+            Payment
+          </ModalHeader>
+          <ModalBody>
+            {isLoading ? (
+              <div className="w-full py-6 flex justify-center items-center">
+                <Spinner size="lg" />
+              </div>
+            ) : (
+              <div className="text-center py-4 dark:text-gray-200">
+                Your payment has been successfully processed.
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter className="flex justify-center">
+            {!isLoading && <NextButton />}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Modal for Error */}
+      <Modal isOpen={errorModalOpen} onClose={onErrorClose} size="sm">
+        <ModalContent className="dark:bg-gray-800">
+          <ModalHeader className="text-center dark:text-gray-100">
+            Error
+          </ModalHeader>
+          <ModalBody>
+            <div className="text-center text-red-600 dark:text-red-400 py-4">
+              There is an issue with the card details provided. Please check and
+              try again.
+            </div>
+          </ModalBody>
+          <ModalFooter className="flex justify-center">
+            <Button
+              onPress={onErrorClose}
+              className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white"
+            >
+              OK
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
