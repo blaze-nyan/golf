@@ -73,7 +73,7 @@ export default function page() {
       </div>
 
       {/* Link to reservation page */}
-      <Link href="/menu" className="mt-4">
+      <Link href="https://demo.ob.cimsoweb.com/" className="mt-4">
         <Button
           variant="solid"
           color="primary"

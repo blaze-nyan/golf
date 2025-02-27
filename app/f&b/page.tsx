@@ -65,7 +65,7 @@ export default function page() {
       </div>
 
       {/* Link to another page */}
-      <Link href="/menu" className="mt-2">
+      <Link href="https://demo.rest.cimsoweb.com/signin" className="mt-2">
         <Button
           variant="solid"
           color="primary"

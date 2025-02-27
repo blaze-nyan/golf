@@ -81,6 +81,8 @@ export default function ProfilePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
 
+  const [message, setMessage] = useState("");
+
   const [phoneData, setPhoneData] = useState<Communication>({
     "Communication ID": 0,
     "Communication Detail": "No Phone Number Set",
@@ -301,12 +303,13 @@ export default function ProfilePage() {
       setProfileData(updatedProfileData); // Update profile data
 
       if (updatedImageData.success && updatedImageData.imageInfo) {
-        console.log("TEST")
-        console.log(updatedImageData.imageInfo)
         const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
         console.log(base64Image)
         setProfileImage(base64Image); // Update the profile image state
       }
+      
+      setMessage("Profile picture updated successfully!");
+      setTimeout(() => setMessage(""), 3000); // Clear after 3s
     } catch (err) {
       setError("Failed to upload image");
       console.error(err);
@@ -406,10 +409,11 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!profileData) return;
-
     try {
       await updateClientInfo(profileData);
       setIsEditing(false);
+      setMessage("Profile updated successfully!");
+      setTimeout(() => setMessage(""), 3000); // Clear after 3s
     } catch (err) {
       setError("Failed to update profile");
       console.error(err);
@@ -583,6 +587,8 @@ export default function ProfilePage() {
                     </div>
                   )}
               </div>
+
+                {message && <div className="bg-green-500 text-white p-2 rounded col-span-2">{message}</div>}
             </div>
           </CardBody>
         </Card>

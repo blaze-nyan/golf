@@ -165,6 +165,7 @@ const page = () => {
     const minDate = parseDate(tomorrow.toISOString().split("T")[0]);
     fetchCourses();
     setSelectedDate(minDate);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [startTime, setStartTime] = useState(new Time(6, 0));
@@ -256,7 +257,7 @@ const page = () => {
   }, [selectedDate, unavailableTeeDates]); // This will rerun when selectedDate or unavailableTeeDates changes
 
   return (
-    <div className="space-y-5 p-4 md:p-6">
+    <div className="space-y-5 p-4">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
         Select Booking
       </h1>

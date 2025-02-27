@@ -188,21 +188,15 @@ const BookingModal: React.FC<BookingModalProps> = ({
                   There will be no refund after payment is made.
                 </div>
 
-                <Button
-                  onPress={onClose}
-                  className="text-white hidden sm:block"
-                  color="primary"
-                >
-                  Close
-                </Button>
+                <div className="mt-6 flex justify-between">
+                  <Button onPress={onClose} className="text-white hidden sm:block" color="primary">
+                    Close
+                  </Button>
 
-                <Button
-                  onPress={openConfirmationModal} // Pass the booking.id to cancelBooking function
-                  className="text-white hidden sm:block"
-                  color="primary"
-                >
-                  Cancel Booking
-                </Button>
+                  <Button onPress={openConfirmationModal} className="text-white hidden sm:block bg-red-500" color="primary">
+                    Cancel Booking
+                  </Button>
+                </div>
               </div>
             </Card>
           </div>
