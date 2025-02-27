@@ -105,7 +105,7 @@ const Hero = () => {
         </p>
         <div className="mt-4 sm:mt-6 overflow-x-auto pb-4">
           {/* Scrollable container for small screens */}
-          <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 min-w-min sm:min-w-0">
+          <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 min-w-10 ">
             {/* Day cards */}
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
               <div
