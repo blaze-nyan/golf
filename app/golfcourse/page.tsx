@@ -7,7 +7,8 @@ import Link from "next/link";
 import { getGolfCourses } from "@/app/lib/api";
 // components
 import CourseCard from "../components/course-card";
-import { Spinner } from "@heroui/react";
+// import { Spinner } from "@heroui/react";
+import CustomLoading from "../components/custom-loading";
 
 interface GolfCourse {
   golfCourseId: number;
@@ -129,7 +130,8 @@ export default function GolfCoursesPage() {
       {/* Loading state */}
       {loading ? (
         <div className="flex justify-center mb-5">
-          <Spinner size="lg" />
+          {/* <Spinner size="lg" /> */}
+          <CustomLoading />
         </div>
       ) : (
         // Golf Course Cards Section

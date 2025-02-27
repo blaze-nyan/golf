@@ -14,7 +14,6 @@ import {
   Select,
   SelectItem,
   Avatar,
-  Spinner,
   Modal,
   ModalContent,
   ModalHeader,
@@ -42,6 +41,7 @@ import BookingModal from "@/app/components/booking-model";
 import LogoutButton from "@/app/components/logout-button";
 import Link from "next/link";
 import MembershipInfoList from "@/app/components/memberships";
+import CustomLoading from "@/app/components/custom-loading";
 
 interface ProfileData {
   "Client ID": number;
@@ -185,7 +185,7 @@ export default function ProfilePage() {
   useEffect(() => {
     // Only execute on the client side
     if (typeof window !== "undefined") {
-      console.log(profileImage)
+      console.log(profileImage);
       window.localStorage.setItem("clientImage", profileImage);
     }
   }, [profileImage]);
@@ -215,8 +215,8 @@ export default function ProfilePage() {
         setProfileData(profileData); // This ensures profileData is set before it's used.
 
         if (imageData.success && imageData.imageInfo) {
-          console.log("TEST")
-          console.log(imageData.imageInfo)
+          console.log("TEST");
+          console.log(imageData.imageInfo);
           const base64Image = arrayBufferToBase64(imageData.imageInfo);
           setProfileImage(base64Image);
         }
@@ -250,7 +250,7 @@ export default function ProfilePage() {
       }
     };
     fetchProfileAndImage();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.clientId, router]);
 
   const sleep = (ms: number) =>
@@ -301,10 +301,10 @@ export default function ProfilePage() {
       setProfileData(updatedProfileData); // Update profile data
 
       if (updatedImageData.success && updatedImageData.imageInfo) {
-        console.log("TEST")
-        console.log(updatedImageData.imageInfo)
+        console.log("TEST");
+        console.log(updatedImageData.imageInfo);
         const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
-        console.log(base64Image)
+        console.log(base64Image);
         setProfileImage(base64Image); // Update the profile image state
       }
     } catch (err) {
@@ -401,7 +401,7 @@ export default function ProfilePage() {
         }
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phoneData, emailData]);
 
   const handleSave = async () => {
@@ -419,7 +419,8 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex h-[90vh] items-center justify-center">
-        <Spinner size="lg" />
+        {/* <Spinner size="lg" /> */}
+        <CustomLoading />
       </div>
     );
   }
