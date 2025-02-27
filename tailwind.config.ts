@@ -41,6 +41,24 @@ export default {
             foreground: "var(--foreground)",
           },
         },
+        dark: {
+          layout: {},
+          colors: {
+            primary: {
+              DEFAULT: "#00E676",
+              50: "#E2FFF1",
+              100: "#B3FFD9",
+              200: "#80FFBF",
+              300: "#4DFFA6",
+              400: "#1AFF8C",
+              500: "#00E676", // Main neon green
+              600: "#00C853",
+              700: "#00A544",
+              800: "#008035",
+              900: "#005C26",
+            },
+          },
+        },
       },
     }),
   ],

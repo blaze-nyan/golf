@@ -168,9 +168,6 @@ export default function ProfilePage() {
     setIsOpenBookings(false); // Close the booking modal
   };
 
-  // const toggleCollapseBookings = () => {
-  //   setIsOpenBookings(!isOpenBookings);
-  // };
   const arrayBufferToBase64 = (buffer: string) => {
     return `data:image/jpeg;base64,${buffer}`;
   };
@@ -250,7 +247,7 @@ export default function ProfilePage() {
       }
     };
     fetchProfileAndImage();
-  }, [params.clientId, router]);
+  }, [params.clientId, router, phoneData, emailData]);
 
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -397,7 +394,7 @@ export default function ProfilePage() {
         }
       }
     }
-  }, [phoneData, emailData]);
+  }, [phoneData, emailData, profileData]);
 
   const handleSave = async () => {
     if (!profileData) return;
@@ -422,40 +419,49 @@ export default function ProfilePage() {
   if (!profileData) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <p>Failed to load profile</p>
+        <p className="text-gray-800 dark:text-gray-200">
+          Failed to load profile
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid gap-6 md:grid-cols-3">
+    <div className="container mx-auto px-4 py-6 sm:py-8 transition-colors duration-200">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         {/* Profile Summary Card */}
-        <Card className="md:col-span-1 p-5">
+        <Card className="md:col-span-1 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardBody className="items-center gap-4 text-center">
-            <Avatar
-              className="h-32 w-32 text-large"
-              src={profileImage ? `${profileImage}` : undefined}
-              icon={<User size={40} />}
-            />
-            <Button
-              isIconOnly
-              size="sm"
-              className="absolute bottom-0 right-0"
-              onPress={onOpen}
-            >
-              <Upload size={16} />
-            </Button>
+            <div className="relative inline-block">
+              <Avatar
+                className="h-24 w-24 sm:h-32 sm:w-32 text-large"
+                src={profileImage ? `${profileImage}` : undefined}
+                icon={<User size={40} />}
+              />
+              <Button
+                isIconOnly
+                size="sm"
+                className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                onPress={onOpen}
+              >
+                <Upload size={16} />
+              </Button>
+            </div>
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                 {profileData["Title"]} {profileData["First Name"]}{" "}
                 {profileData["Surname"]}
               </h2>
-              <p className="text-default-500">{profileData["Given Name"]}</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                {profileData["Given Name"]}
+              </p>
 
               <div className="mt-4">
-                <p className="text-sm text-default-400">
-                  <strong>Company:</strong> {profileData["Company"]}
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <strong className="text-gray-600 dark:text-gray-300">
+                    Company:
+                  </strong>{" "}
+                  {profileData["Company"] || "Not specified"}
                 </p>
               </div>
             </div>
@@ -463,9 +469,11 @@ export default function ProfilePage() {
         </Card>
 
         {/* Profile Details Card */}
-        <Card className="md:col-span-2 p-5">
-          <CardHeader className="flex justify-between">
-            <h3 className="text-lg font-semibold">Profile Details</h3>
+        <Card className="md:col-span-2 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="flex justify-between items-center px-1 py-2">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              Profile Details
+            </h3>
             <Button
               color={isEditing ? "success" : "primary"}
               variant="flat"
@@ -473,6 +481,11 @@ export default function ProfilePage() {
                 isEditing ? <Save size={18} /> : <Edit2 size={18} />
               }
               onPress={() => (isEditing ? handleSave() : setIsEditing(true))}
+              className={
+                isEditing
+                  ? "bg-green-100 dark:bg-green-800/30 text-green-700 dark:text-green-400"
+                  : ""
+              }
             >
               {isEditing ? "Save" : "Edit"}
             </Button>
@@ -542,7 +555,7 @@ export default function ProfilePage() {
                 />
                 {!isValidEmail(emailData["Communication Detail"]) &&
                   isEditing && (
-                    <div className="text-gray-500 text-sm px-3 pt-1">
+                    <div className="text-gray-500 dark:text-gray-400 text-sm px-3 pt-1">
                       Invalid email will not be saved.
                     </div>
                   )}
@@ -557,7 +570,7 @@ export default function ProfilePage() {
                 />
                 {!isValidPhoneNumber(phoneData["Communication Detail"]) &&
                   isEditing && (
-                    <div className="text-gray-500 text-sm px-3 pt-1">
+                    <div className="text-gray-500 dark:text-gray-400 text-sm px-3 pt-1">
                       Invalid phone number will not be saved.
                     </div>
                   )}
@@ -565,31 +578,39 @@ export default function ProfilePage() {
             </div>
           </CardBody>
         </Card>
-        <Card className="md:col-span-3 p-5">
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Bookings</h3>
+        <Card className="md:col-span-3 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="px-1 py-2">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              Bookings
+            </h3>
           </CardHeader>
           <CardBody>
-            <div className="overflow-x-auto max-w-full">
+            <div className="overflow-x-auto w-full">
               {/* Header Row */}
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-4 font-semibold text-gray-700 bg-gray-100 p-3 rounded-md shadow-sm">
-                <div className="text-sm">Course Name</div>
-                <div className="text-sm hidden md:block">Location</div>
-                <div className="text-sm">Date</div>
-                <div className="text-sm">Time</div>
-                <div className="text-sm hidden md:block">Golfers</div>
-                <div className="text-sm hidden md:block">Status</div>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-4 font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-3 rounded-md shadow-sm">
+                <div className="text-xs sm:text-sm">Course Name</div>
+                <div className="text-xs sm:text-sm hidden md:block">
+                  Location
+                </div>
+                <div className="text-xs sm:text-sm">Date</div>
+                <div className="text-xs sm:text-sm">Time</div>
+                <div className="text-xs sm:text-sm hidden md:block">
+                  Golfers
+                </div>
+                <div className="text-xs sm:text-sm hidden md:block">Status</div>
               </div>
 
               {/* Booking Data Rows or No Data Message */}
               {bookingData.length === 0 ? (
                 <>
-                  <div className="text-center text-gray-500 py-5">
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-5">
                     No Booking Available
                   </div>
                   <div className="text-center">
                     <Link href="/golfcourse">
-                      <Button color="primary">Go to Golf Courses</Button>
+                      <Button color="primary" className="mt-2">
+                        Go to Golf Courses
+                      </Button>
                     </Link>
                   </div>
                 </>
@@ -597,29 +618,29 @@ export default function ProfilePage() {
                 bookingData.map((booking: any) => (
                   <div
                     key={booking.id}
-                    className="grid grid-cols-3 md:grid-cols-6 gap-4 p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-300 rounded-lg"
+                    className="grid grid-cols-3 md:grid-cols-6 gap-4 p-3 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/40 transition-colors duration-300 rounded-lg"
                     onClick={() => openBookingModal(booking)}
                   >
-                    <div className="text-sm text-gray-800">
+                    <div className="text-xs sm:text-sm text-gray-800 dark:text-gray-200 truncate">
                       {booking.courseName}
                     </div>
 
-                    <div className="text-sm text-gray-600 md:block hidden">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 md:block hidden truncate">
                       {booking.courseLocation.length > 50
                         ? `${booking.courseLocation.substring(0, 50)}...`
                         : booking.courseLocation}
                     </div>
 
-                    <div className="text-sm text-gray-600">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                       {dateToString(convertExcelDateToJSDate(booking.teeDate))}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                       {convertMinutesToTimeWithAMPM(booking.teeTime)}
                     </div>
-                    <div className="text-sm text-gray-600 hidden md:block">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden md:block">
                       {booking.numberOfGolfers}
                     </div>
-                    <div className="text-sm text-gray-600 hidden md:block">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden md:block">
                       {booking.status}
                     </div>
                   </div>
@@ -632,31 +653,42 @@ export default function ProfilePage() {
         <MembershipInfoList membershipsList={[]}></MembershipInfoList>
 
         {/* Additional Info Card */}
-        <Card className="md:col-span-3 p-5 py-3">
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Account Information</h3>
+        <Card className="md:col-span-3 p-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="px-1 py-2">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              Account Information
+            </h3>
           </CardHeader>
           <CardBody>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
               <div>
-                <p className="text-small text-default-500">Member Since</p>
-                <p>February 2024</p>
+                <p className="text-small text-gray-500 dark:text-gray-400">
+                  Member Since
+                </p>
+                <p className="text-gray-800 dark:text-gray-200">
+                  February 2024
+                </p>
               </div>
               <div>
-                <p className="text-small text-default-500">Last Login</p>
-                <p>Today</p>
+                <p className="text-small text-gray-500 dark:text-gray-400">
+                  Last Login
+                </p>
+                <p className="text-gray-800 dark:text-gray-200">Today</p>
               </div>
               <div>
-                <p className="text-small text-default-500">Status</p>
-                <p className="text-success">Active</p>
+                <p className="text-small text-gray-500 dark:text-gray-400">
+                  Status
+                </p>
+                <p className="text-green-600 dark:text-green-400">Active</p>
               </div>
             </div>
           </CardBody>
         </Card>
 
-        <div className="md:col-span-3">
-          <LogoutButton></LogoutButton>
+        <div className="md:col-span-3 mt-2">
+          <LogoutButton />
         </div>
+
         {/* Use the BookingModal component */}
         <BookingModal
           isOpen={isOpenBookings}
@@ -664,9 +696,13 @@ export default function ProfilePage() {
           booking={selectedBooking}
           forceReload={refetchBookings}
         />
+
+        {/* Image Upload Modal */}
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalContent>
-            <ModalHeader>Upload Profile Picture</ModalHeader>
+          <ModalContent className="bg-white dark:bg-gray-800">
+            <ModalHeader className="text-gray-800 dark:text-gray-100">
+              Upload Profile Picture
+            </ModalHeader>
             <ModalBody>
               <Input
                 type="file"
@@ -675,25 +711,31 @@ export default function ProfilePage() {
                 disabled={isUploading}
               />
               {previewUrl && (
-                <div className="mt-4">
+                <div className="mt-4 flex justify-center">
                   <Image
                     src={previewUrl}
                     alt="Preview"
                     width={500}
                     height={500}
-                    className="max-h-48 rounded object-cover"
+                    className="max-h-48 rounded object-cover border border-gray-200 dark:border-gray-600"
                   />
                 </div>
               )}
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button
+                color="danger"
+                variant="light"
+                onPress={onClose}
+                className="dark:text-gray-300 dark:hover:text-white"
+              >
                 Cancel
               </Button>
               <Button
                 color="primary"
                 onPress={handleImageUpload}
                 isLoading={isUploading}
+                className="bg-green-600 dark:bg-green-700 text-white"
               >
                 Upload
               </Button>
