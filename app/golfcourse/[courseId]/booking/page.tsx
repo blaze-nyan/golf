@@ -102,7 +102,7 @@ const page = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 max-w-4xl mx-auto">
+    <div className="space-y-6 p-4 max-w-4xl">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3 md:mb-5">
         Payment Page
       </h1>

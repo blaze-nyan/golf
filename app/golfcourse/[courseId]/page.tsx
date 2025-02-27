@@ -97,13 +97,13 @@ const CoursePage = () => {
         Failed to load golf course information. Please try again.
       </div>
     );
-  }
+  } 
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const image = () => usePlaceholderGolfCourseImageLink();
 
   return (
-    <div className="px-4 md:px-6 pb-16 max-w-6xl mx-auto space-y-6">
+    <div className="px-4 md:px-6 pb-16 max-w-6xl space-y-6">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mt-4">
         {golfCourse.golfCourseName || placeholderGolfCourse.golfCourseName}
       </h1>

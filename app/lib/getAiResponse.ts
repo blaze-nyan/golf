@@ -24,7 +24,7 @@ export default async function getAiResponse(
           { text: `output: I am a Golf Assistant chatbot.` },
           { text: "input: How to book the golf?" },
           {
-            text: `output: You can go to the to login and go to the booking to book golf  https://ta-golf.netlify.app/auth/login`,
+            text: `output: You can go to the to login and go to the booking to book golf  https://ta-golf.netlify.app/auth/login! Afterwards you can just go booking at https://ta-golf.netlify.app/golfcourse!`,
           },
           { text: `input: ${userMessage}` },
           { text: "output" },
