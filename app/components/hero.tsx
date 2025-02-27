@@ -10,12 +10,14 @@ const Hero = () => {
       <section className="z-20 flex flex-col items-center justify-center gap-4 sm:gap-6 w-full max-w-3xl">
         <div className="text-center text-xl sm:text-3xl md:text-4xl leading-[1.2] tracking-tighter">
           <div className="bg-hero-section-title bg-clip-text">
-            Easiest way to <br className="sm:hidden" /> power global teams.
+            Always Ready <br className="sm:hidden" /> Just Like Your Best Swing
           </div>
         </div>
         <p className="text-center font-normal text-sm sm:text-base md:text-lg leading-6 sm:leading-7 text-default-500 w-full max-w-[466px]">
-          Acme makes running global teams simple. HR, Payroll, International
-          Employment, contractor management and more.
+          Streamline your golf experience with Splash Golf Club&apos;s intuitive
+          online booking platform. Enjoy real-time tee time availability, secure
+          member access, and a hassle-free reservation process that lets you
+          focus solely on your game.
         </p>
         {/* <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full">
           <Button
@@ -100,8 +102,8 @@ const Hero = () => {
         </h2>
         <p className="text-base sm:text-lg  mt-2 sm:mt-3">
           Stay updated with the weather forecast for the next week. Our detailed
-          weather reports help you plan your next round of golf at [Golf Club
-          Name].
+          weather reports help you plan your next round of golf at Splash Golf
+          Club.
         </p>
         <div className="mt-4 sm:mt-6 overflow-x-auto pb-4">
           {/* Scrollable container for small screens */}
