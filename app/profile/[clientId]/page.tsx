@@ -185,6 +185,7 @@ export default function ProfilePage() {
   useEffect(() => {
     // Only execute on the client side
     if (typeof window !== "undefined") {
+      console.log(profileImage)
       window.localStorage.setItem("clientImage", profileImage);
     }
   }, [profileImage]);
@@ -214,6 +215,8 @@ export default function ProfilePage() {
         setProfileData(profileData); // This ensures profileData is set before it's used.
 
         if (imageData.success && imageData.imageInfo) {
+          console.log("TEST")
+          console.log(imageData.imageInfo)
           const base64Image = arrayBufferToBase64(imageData.imageInfo);
           setProfileImage(base64Image);
         }
@@ -247,7 +250,8 @@ export default function ProfilePage() {
       }
     };
     fetchProfileAndImage();
-  }, [params.clientId, router, phoneData, emailData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.clientId, router]);
 
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -297,7 +301,10 @@ export default function ProfilePage() {
       setProfileData(updatedProfileData); // Update profile data
 
       if (updatedImageData.success && updatedImageData.imageInfo) {
+        console.log("TEST")
+        console.log(updatedImageData.imageInfo)
         const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
+        console.log(base64Image)
         setProfileImage(base64Image); // Update the profile image state
       }
     } catch (err) {
@@ -394,7 +401,8 @@ export default function ProfilePage() {
         }
       }
     }
-  }, [phoneData, emailData, profileData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phoneData, emailData]);
 
   const handleSave = async () => {
     if (!profileData) return;
