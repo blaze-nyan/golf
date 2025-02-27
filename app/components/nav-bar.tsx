@@ -91,12 +91,6 @@ export default function NavBar(props: NavbarProps) {
       <NavbarMenuToggle className="text-default-400 md:hidden" />
 
       <NavbarMenu className="top-[calc(var(--navbar-height)_-_1px)] max-h-fit bg-default-200/50 pb-6 pt-6 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50">
-        <NavbarMenuItem>
-          <Button fullWidth as={NextLink} href="/auth/login" variant="faded">
-            Sign In
-          </Button>
-        </NavbarMenuItem>
-
         {links.map(({ href, label }, index) => (
           <NavbarMenuItem key={`${href}-${label}`}>
             <Link
@@ -109,6 +103,23 @@ export default function NavBar(props: NavbarProps) {
             {index < links.length - 1 && <Divider className="opacity-50" />}
           </NavbarMenuItem>
         ))}
+        {checkClientId() ? (
+          <NavbarMenuItem>
+            <Link
+              className="mb-2 w-full text-default-500"
+              href="/profile"
+              size="md"
+            >
+              Profile
+            </Link>
+          </NavbarMenuItem>
+        ) : (
+          <NavbarMenuItem>
+            <Button fullWidth as={NextLink} href="/auth/login" variant="faded">
+              Sign In
+            </Button>
+          </NavbarMenuItem>
+        )}
       </NavbarMenu>
     </Navbar>
   );
