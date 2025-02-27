@@ -19,6 +19,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Avatar,
 } from "@heroui/react";
 import { User, Edit2, Save, Upload } from "lucide-react";
 import {
@@ -302,13 +303,11 @@ export default function ProfilePage() {
       setProfileData(updatedProfileData); // Update profile data
 
       if (updatedImageData.success && updatedImageData.imageInfo) {
-
-
         const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
         console.log(base64Image);
         setProfileImage(base64Image); // Update the profile image state
       }
-      
+
       setMessage("Profile picture updated successfully!");
       setTimeout(() => setMessage(""), 3000); // Clear after 3s
     } catch (err) {
@@ -590,7 +589,11 @@ export default function ProfilePage() {
                   )}
               </div>
 
-                {message && <div className="bg-green-500 text-white p-2 rounded col-span-2">{message}</div>}
+              {message && (
+                <div className="bg-green-500 text-white p-2 rounded col-span-2">
+                  {message}
+                </div>
+              )}
             </div>
           </CardBody>
         </Card>
