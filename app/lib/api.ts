@@ -76,6 +76,15 @@ export const signUp = async (userData: SignUpRequest) => {
     throw error;
   }
 };
+export const verifyEmail = async (token: string) => {
+  try {
+    const response = await axios.get(`/api/verify?token=${token}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    throw error;
+  }
+};
 
 // app/lib/api.ts
 export const getClientInfo = async (clientId: number): Promise<ProfileData> => {
