@@ -12,10 +12,10 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const clientId = searchParams.get("clientId");
+    // const { searchParams } = new URL(request.url);
+    const { clientId } = await request.json();
 
     if (!clientId) {
       return NextResponse.json(

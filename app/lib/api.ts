@@ -81,7 +81,9 @@ export const signUp = async (userData: SignUpRequest) => {
 export const getClientInfo = async (clientId: number): Promise<ProfileData> => {
   try {
     // Call our Next.js API route instead of external API directly
-    const response = await axios.get(`/api/profile?clientId=${clientId}`);
+    const response = await axios.post("/api/profile", {
+      clientId: clientId,
+    });
     return response.data.payload;
   } catch (error) {
     console.error("Error fetching client info:", error);

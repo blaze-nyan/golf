@@ -211,8 +211,15 @@ export default function ProfilePage() {
         // Fetch both profile and image data
         const [profileData, imageData] = await Promise.all([
           getClientInfo(parsedClientId),
+
           getClientImage(parsedClientId),
         ]);
+        await console.log(
+          "profileData=>",
+          profileData,
+          "parsedClientId=>",
+          parsedClientId
+        );
 
         setProfileData(profileData); // This ensures profileData is set before it's used.
 
