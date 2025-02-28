@@ -633,11 +633,14 @@ export default function ProfilePage() {
                     No Booking Available
                   </div>
                   <div className="text-center">
-                    <Link href="/golfcourse">
-                      <Button color="primary" className="mt-2">
-                        Go to Golf Courses
-                      </Button>
-                    </Link>
+                    <Button
+                      as={Link}
+                      href="/golfcourse"
+                      color="primary"
+                      className="mt-2"
+                    >
+                      Go to Golf Courses
+                    </Button>
                   </div>
                 </>
               ) : (
