@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// app/api/signup/route.ts (replace your existing implementation)
+// app/api/auth/signup/route.ts
 import { NextResponse } from "next/server";
-// import axios from "axios";
-import crypto from "crypto";
-import { sendVerificationEmail } from "@/app/lib/email";
+import axios from "axios";
 
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
@@ -15,57 +12,30 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-// Store verification tokens temporarily (use a database in production)
-export const verificationTokens = new Map<
-  string,
-  {
-    email: string;
-    expires: Date;
-    userData: any;
-  }
->();
-
 export async function POST(request: Request) {
   try {
     const userData = await request.json();
 
-    // Generate verification token
-    const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date();
-    expires.setHours(expires.getHours() + 24); // 24 hour expiration
-
-    // Store the user data along with the token
-    verificationTokens.set(token, {
-      email: userData.email,
-      expires,
-      userData,
-    });
-
-    // Get the base URL for verification link
-    const host = request.headers.get("host") || "localhost:3000";
-    const protocol = host.includes("localhost") ? "http" : "https";
-    const baseUrl = `${protocol}://${host}`;
-
-    // Send verification email
-    const emailSent = await sendVerificationEmail(
-      userData.email,
-      token,
-      baseUrl
+    const response = await axios.post(
+      `${BASE_URL}/new_user_request`,
+      {
+        hg_code: "ixschool",
+        payload: {
+          Email: userData.email,
+          Password: userData.password,
+          "First Name": userData.firstName,
+          Surname: userData.surname,
+        },
+      },
+      { headers }
     );
 
-    if (!emailSent) {
-      return NextResponse.json(
-        {
-          error: "Failed to send verification email",
-        },
-        { status: 500 }
-      );
+    const clientId = response.data.payload.Client_ID;
+    if (clientId === 0) {
+      return NextResponse.json({ error: "Signup failed" }, { status: 400 });
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Please check your email to verify your account.",
-    });
+    return NextResponse.json({ clientId, success: true });
   } catch (error) {
     console.error("Error in signup:", error);
     return NextResponse.json({ error: "Signup failed" }, { status: 500 });
