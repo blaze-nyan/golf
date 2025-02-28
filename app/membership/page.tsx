@@ -52,7 +52,7 @@ export default function MembershipPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-10 gap-6 min-h-screen transition-colors duration-300 dark:bg-gray-900">
+    <div className="flex flex-col items-center justify-center px-4 py-10 gap-6 min-h-screen transition-colors duration-300 ">
       {/* Section for introduction */}
       <div className="text-center mb-8 max-w-2xl">
         <h2 className="text-2xl md:text-3xl font-semibold mb-4 dark:text-white">
