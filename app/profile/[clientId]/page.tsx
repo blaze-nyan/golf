@@ -211,8 +211,15 @@ export default function ProfilePage() {
         // Fetch both profile and image data
         const [profileData, imageData] = await Promise.all([
           getClientInfo(parsedClientId),
+
           getClientImage(parsedClientId),
         ]);
+        await console.log(
+          "profileData=>",
+          profileData,
+          "parsedClientId=>",
+          parsedClientId
+        );
 
         setProfileData(profileData); // This ensures profileData is set before it's used.
 
@@ -626,11 +633,14 @@ export default function ProfilePage() {
                     No Booking Available
                   </div>
                   <div className="text-center">
-                    <Link href="/golfcourse">
-                      <Button color="primary" className="mt-2">
-                        Go to Golf Courses
-                      </Button>
-                    </Link>
+                    <Button
+                      as={Link}
+                      href="/golfcourse"
+                      color="primary"
+                      className="mt-2"
+                    >
+                      Go to Golf Courses
+                    </Button>
                   </div>
                 </>
               ) : (

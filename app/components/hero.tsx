@@ -91,7 +91,7 @@ const Hero = () => {
       </Button> */}
 
       {/* Weather Section */}
-      <section className="mt-8 sm:mt-10 w-full max-w-md">
+      <section className="mt-8 sm:mt-10 w-full max-w-md flex items-center justify-center">
         <WeatherWidget />
       </section>
 

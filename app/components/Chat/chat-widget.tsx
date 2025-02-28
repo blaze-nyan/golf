@@ -18,8 +18,9 @@ export function ChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ width: 320, height: 480 });
-  const isResizing = useRef(false);
+  // const [size, setSize] = useState({ width: 320, height: 480 });
+  const size = { width: 320, height: 480 };
+  // const isResizing = useRef(false);
 
   const golfCourseData = {
     name: "Hackathon",
@@ -30,8 +31,16 @@ export function ChatWidget() {
     allowCrossOver: true,
     feeStockId: 0,
     holes: [
-      { type: "Regular par", values: [5, 4, 3, 4, 3, 4, 4, 5, 4, 36, 5, 4, 3, 4, 4, 4, 5, 4, 3, 36, 72] },
-      { type: "Regular distance", values: [444, 319, 106, 257, 86, 328, 234, 428, 303] },
+      {
+        type: "Regular par",
+        values: [
+          5, 4, 3, 4, 3, 4, 4, 5, 4, 36, 5, 4, 3, 4, 4, 4, 5, 4, 3, 36, 72,
+        ],
+      },
+      {
+        type: "Regular distance",
+        values: [444, 319, 106, 257, 86, 328, 234, 428, 303],
+      },
     ],
   };
 
@@ -48,46 +57,69 @@ export function ChatWidget() {
   const getResponsePlaceholder = (question: string) => {
     const lowerQuestion = question.toLowerCase();
     if (lowerQuestion.includes("hackathon")) {
-      if (lowerQuestion.includes("description")) return golfCourseData.description;
-      if (lowerQuestion.includes("holes")) return `Hackathon Golf Course has ${golfCourseData.numberOfHoles} holes.`;
-      if (lowerQuestion.includes("par")) return `The total par for this course is ${golfCourseData.par}.`;
-      if (lowerQuestion.includes("cross over")) return golfCourseData.allowCrossOver ? "Yes, crossover is allowed." : "No, crossover is not allowed.";
-      if (lowerQuestion.includes("distance")) return `Regular distances for the first few holes: ${golfCourseData.holes[1].values.slice(0, 5).join(", ")}...`;
+      if (lowerQuestion.includes("description"))
+        return golfCourseData.description;
+      if (lowerQuestion.includes("holes"))
+        return `Hackathon Golf Course has ${golfCourseData.numberOfHoles} holes.`;
+      if (lowerQuestion.includes("par"))
+        return `The total par for this course is ${golfCourseData.par}.`;
+      if (lowerQuestion.includes("cross over"))
+        return golfCourseData.allowCrossOver
+          ? "Yes, crossover is allowed."
+          : "No, crossover is not allowed.";
+      if (lowerQuestion.includes("distance"))
+        return `Regular distances for the first few holes: ${golfCourseData.holes[1].values
+          .slice(0, 5)
+          .join(", ")}...`;
     }
 
-  // Weather response - Always sunny!
-  if (lowerQuestion.includes("weather")) {
-    return "It is expected to be sunny—perfect for golfing!";
-  }
+    // Weather response - Always sunny!
+    if (lowerQuestion.includes("weather")) {
+      return "It is expected to be sunny—perfect for golfing!";
+    }
 
-  // Dress code response
-  if (lowerQuestion.includes("dress code") || lowerQuestion.includes("attire")) {
-    return "Golfers are encouraged to wear a collared shirt, golf slacks or shorts, and proper golf shoes. Avoid denim, t-shirts, and sandals.";
-  }
+    // Dress code response
+    if (
+      lowerQuestion.includes("dress code") ||
+      lowerQuestion.includes("attire")
+    ) {
+      return "Golfers are encouraged to wear a collared shirt, golf slacks or shorts, and proper golf shoes. Avoid denim, t-shirts, and sandals.";
+    }
 
+    // Food-related question
+    if (
+      lowerQuestion.includes("food") ||
+      lowerQuestion.includes("menu") ||
+      lowerQuestion.includes("eat")
+    ) {
+      return "If you're feeling hungry after your game, check out our food and beverage offerings here: https://ta-golf.netlify.app/f&b Trust me, you won’t want to miss it!";
+    }
 
-// Food-related question
-if (lowerQuestion.includes("food") || lowerQuestion.includes("menu") || lowerQuestion.includes("eat")) {
-  return "If you're feeling hungry after your game, check out our food and beverage offerings here: https://ta-golf.netlify.app/f&b Trust me, you won’t want to miss it!";
-}
+    // Hotel or places to stay
+    if (
+      lowerQuestion.includes("hotel") ||
+      lowerQuestion.includes("stay") ||
+      lowerQuestion.includes("accommodation")
+    ) {
+      return "Looking for a place to stay? You can explore great hotels near the course here: https://ta-golf.netlify.app/hotel Perfect for a relaxing stay after a day of golf!";
+    }
 
-// Hotel or places to stay
-if (lowerQuestion.includes("hotel") || lowerQuestion.includes("stay") || lowerQuestion.includes("accommodation")) {
-  return "Looking for a place to stay? You can explore great hotels near the course here: https://ta-golf.netlify.app/hotel Perfect for a relaxing stay after a day of golf!";
-}
-
-// Membership-related question
-if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lowerQuestion.includes("sign up")) {
-  return "Interested in becoming a member? You can learn more about our membership options here: https://ta-golf.netlify.app/membership Join us and enjoy exclusive benefits!";
-}
+    // Membership-related question
+    if (
+      lowerQuestion.includes("membership") ||
+      lowerQuestion.includes("join") ||
+      lowerQuestion.includes("sign up")
+    ) {
+      return "Interested in becoming a member? You can learn more about our membership options here: https://ta-golf.netlify.app/membership Join us and enjoy exclusive benefits!";
+    }
 
     return null;
   };
 
   const removeAsterisks = (str: string) => {
     return str.replace(/\*/g, "");
-  }
-  
+  };
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
@@ -96,32 +128,35 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
     setInputMessage("");
     setIsLoading(true);
 
-    const responsePlaceholder = getResponsePlaceholder(inputMessage)
-    
+    const responsePlaceholder = getResponsePlaceholder(inputMessage);
+
     if (responsePlaceholder) {
       const botMessage: ChatMessage = {
         type: "bot",
-        content: removeAsterisks(responsePlaceholder) || "I'm sorry, I couldn't understand that.",
+        content:
+          removeAsterisks(responsePlaceholder) ||
+          "I'm sorry, I couldn't understand that.",
       };
-    
+
       setTimeout(() => {
         setMessages((prev) => [...prev, botMessage]);
         setIsLoading(false);
       }, 2000); // 1-second delay
 
-      return
+      return;
     }
 
     try {
       const aiResponse = await getAiResponse(inputMessage);
 
       const responseText = aiResponse[0]?.text;
-      const finalText = responseText ? removeAsterisks(responseText) : "I'm sorry, I couldn't understand that.";
+      const finalText = responseText
+        ? removeAsterisks(responseText)
+        : "I'm sorry, I couldn't understand that.";
 
       const botMessage: ChatMessage = {
         type: "bot",
-        content:
-        finalText,
+        content: finalText,
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -139,36 +174,36 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
     }
   };
 
-  const handleResizeMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault();
-    isResizing.current = true;
+  // const handleResizeMouseDown = (event: React.MouseEvent) => {
+  //   event.preventDefault();
+  //   isResizing.current = true;
 
-    const startX = event.clientX;
-    const startY = event.clientY;
-    const startWidth = size.width;
-    const startHeight = size.height;
+  //   const startX = event.clientX;
+  //   const startY = event.clientY;
+  //   const startWidth = size.width;
+  //   const startHeight = size.height;
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!isResizing.current) return;
+  //   const handleMouseMove = (moveEvent: MouseEvent) => {
+  //     if (!isResizing.current) return;
 
-      const newWidth = startWidth + (moveEvent.clientX - startX);
-      const newHeight = startHeight + (moveEvent.clientY - startY);
+  //     const newWidth = startWidth + (moveEvent.clientX - startX);
+  //     const newHeight = startHeight + (moveEvent.clientY - startY);
 
-      setSize({
-        width: Math.max(300, Math.min(newWidth, window.innerWidth - 40)), // Prevent too small or too large
-        height: Math.max(400, Math.min(newHeight, window.innerHeight - 40)),
-      });
-    };
+  //     setSize({
+  //       width: Math.max(300, Math.min(newWidth, window.innerWidth - 40)), // Prevent too small or too large
+  //       height: Math.max(400, Math.min(newHeight, window.innerHeight - 40)),
+  //     });
+  //   };
 
-    const handleMouseUp = () => {
-      isResizing.current = false;
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
+  //   const handleMouseUp = () => {
+  //     isResizing.current = false;
+  //     document.removeEventListener("mousemove", handleMouseMove);
+  //     document.removeEventListener("mouseup", handleMouseUp);
+  //   };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
+  //   document.addEventListener("mousemove", handleMouseMove);
+  //   document.addEventListener("mouseup", handleMouseUp);
+  // };
 
   if (!isClient) return null;
 
@@ -306,12 +341,12 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
           </div>
 
           {/* Resize Handle */}
-          {!isMaximized && (
+          {/* {!isMaximized && (
             <div
               onMouseDown={handleResizeMouseDown}
               className="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 dark:bg-gray-600 cursor-se-resize"
             />
-          )}
+          )} */}
         </div>
       ) : (
         <Button

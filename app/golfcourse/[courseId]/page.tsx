@@ -132,6 +132,7 @@ const CoursePage = () => {
         />
       </div>
 
+
       <div className="prose prose-sm sm:prose max-w-none dark:prose-invert">
         <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
           {golfCourse.golfCourseDescription ||
@@ -141,6 +142,32 @@ const CoursePage = () => {
 
       <div className="py-2">
         <GolfFeesTable />
+      </div>
+
+      
+      <div className="overflow-hidden flex justify-between">
+        <div className="h-auto w-[48%] space-y-3">
+          <Image
+            removeWrapper
+            className=" object-cover object-center"
+            src={"/1_0.png"}
+            alt="Golf course"
+          />
+          <h2 className="text-l font-semibold text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 pb-2">
+            Outward Holes
+          </h2>
+        </div>
+        <div className="h-auto w-[48%] space-y-3">
+          <Image
+            removeWrapper
+            className=" object-cover object-center"
+            src={"/2_0.png"}
+            alt="Golf course"
+          />
+          <h2 className="text-l font-semibold text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 pb-2">
+            Inward Holes
+          </h2>
+        </div>
       </div>
 
       {/* Holes Section */}
