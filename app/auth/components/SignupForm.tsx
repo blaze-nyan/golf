@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
 import { Button, Input, Checkbox, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { signUp } from "@/app/lib/api"; // Your existing import
+import { signUp } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 
 export default function Component() {
@@ -13,8 +12,6 @@ export default function Component() {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [verificationSent, setVerificationSent] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
@@ -54,76 +51,26 @@ export default function Component() {
     setIsLoading(true);
 
     try {
-      // Your existing signUp function will now call our updated API endpoint
       const response = await signUp({
         email: formData.email,
         password: formData.password,
         firstName: formData.firstName,
         surname: formData.surname,
       });
+      console.log(response);
 
-      // Check if the response indicates email verification was sent
-      if (response.success && response.message?.includes("check your email")) {
-        setVerificationSent(true);
-      } else {
-        // If somehow the API hasn't been updated yet, maintain the original behavior
-        router.push("/auth/login");
-      }
+      // If signup successful, redirect to login
+      router.push("/auth/login");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(
-        err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Signup failed. Please try again."
+        err.response?.data?.message || "Signup failed. Please try again."
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Render verification success screen if email sent
-  if (verificationSent) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/20">
-            <Icon icon="mdi:email-check" className="h-8 w-8 text-success" />
-          </div>
-
-          <h2 className="text-2xl font-semibold">Verification Email Sent</h2>
-
-          <p className="text-default-600 mt-2 mb-4">
-            We&apos;ve sent a verification link to{" "}
-            <strong>{formData.email}</strong>. Please check your inbox and click
-            the link to verify your email.
-          </p>
-
-          <div className="mt-2 text-sm text-default-500">
-            Don&apos;t see the email? Check your spam folder or
-            <Button
-              variant="light"
-              size="sm"
-              className="px-1"
-              onClick={() =>
-                handleSubmit({ preventDefault: () => {} } as React.FormEvent)
-              }
-            >
-              resend the verification email
-            </Button>
-          </div>
-
-          <Button
-            color="primary"
-            className="mt-4"
-            onClick={() => router.push("/auth/login")}
-          >
-            Go to Login
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Your existing form UI remains here...
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
@@ -146,6 +93,7 @@ export default function Component() {
             onChange={handleInputChange}
             disabled={isLoading}
           />
+          {/* ... other inputs with similar updates ... */}
           <Input
             isRequired
             label="Surname"
@@ -251,6 +199,7 @@ export default function Component() {
             Already have an account? Log In
           </Link>
         </p>
+        {/* ... rest of your component ... */}
       </div>
     </div>
   );
