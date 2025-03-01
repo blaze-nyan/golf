@@ -388,7 +388,7 @@ const Hero: React.FC = () => {
       <section className="z-20 flex flex-col items-center justify-center gap-4 sm:gap-6 w-full max-w-3xl">
         <div
           ref={headingRef}
-          className={`text-center text-xl sm:text-3xl md:text-4xl font-bold leading-[1.2] tracking-tighter ${
+          className={`text-center text-xl sm:text-3xl md:text-4xl font-bold leading-[1.2] tracking-tighter sm:w-full w-[300px] ${
             resolvedTheme === "dark"
               ? "bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent"
               : "bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent"
@@ -413,7 +413,7 @@ const Hero: React.FC = () => {
 
         <p
           ref={descriptionRef}
-          className="text-center font-normal text-sm sm:text-base md:text-lg leading-6 sm:leading-7 text-gray-700 dark:text-gray-300 w-full max-w-[466px]"
+          className="text-center font-normal text-sm sm:text-base md:text-lg leading-6 sm:leading-7 text-gray-700 dark:text-gray-300 w-[300px] max-w-[466px] text-wrap sm:w-full "
         >
           Streamline your golf experience with Splash Golf Club&apos;s intuitive
           online booking platform. Enjoy real-time tee time availability, secure
@@ -474,15 +474,15 @@ const Hero: React.FC = () => {
         </h2>
         <p
           ref={forecastDescRef}
-          className="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-2 sm:mt-3"
+          className="text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 mt-2 sm:mt-3 w-[300px] mx-auto sm:w-full"
         >
           Stay updated with the weather forecast for the next week. Our detailed
           weather reports help you plan your next round of golf at Splash Golf
           Club.
         </p>
-        <div className="mt-4 sm:mt-6 overflow-x-auto pb-4">
+        <div className="mt-4 sm:mt-6 overflow-x-auto  pb-4">
           {/* Scrollable container for small screens */}
-          <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 min-w-10">
+          <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 pt-4 w-[300px] sm:w-full">
             {/* Day cards */}
             {weekForecast.map((day, index) => (
               <div
@@ -492,8 +492,8 @@ const Hero: React.FC = () => {
                   bg-white dark:bg-gray-800 
                   border border-gray-200 dark:border-gray-700 
                   rounded-lg shadow-md dark:shadow-gray-900/30
-                  p-3 sm:p-4 min-w-[80px] sm:w-24 flex-shrink-0 
-                  transition-all duration-300 
+                  p-3 sm:p-4 min-w-[40px] w-[102px] sm:w-24 flex-shrink-0 
+                  transition-all duration-300
                   cursor-pointer
                   ${index === 0 ? "border-l-green-500 border-l-4" : ""}
                 `}

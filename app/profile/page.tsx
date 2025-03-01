@@ -3,8 +3,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import { Spinner } from "@heroui/react";
-import CustomLoading from "../components/custom-loading";
+import AnimatedLoading from "../components/animated-loading";
 
 export default function ProfileRedirect() {
   const router = useRouter();
@@ -24,7 +23,8 @@ export default function ProfileRedirect() {
   return (
     <div className="flex h-[90vh] items-center justify-center">
       {/* <Spinner size="lg" /> */}
-      <CustomLoading />
+      {/* <CustomLoading /> */}
+      <AnimatedLoading />
     </div>
   );
 }
