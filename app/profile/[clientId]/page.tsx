@@ -41,7 +41,7 @@ import BookingModal from "@/app/components/booking-model";
 import LogoutButton from "@/app/components/logout-button";
 import Link from "next/link";
 import MembershipInfoList from "@/app/components/memberships";
-import CustomLoading from "@/app/components/custom-loading";
+import AnimatedLoading from "@/app/components/animated-loading";
 
 interface ProfileData {
   "Client ID": number;
@@ -431,7 +431,8 @@ export default function ProfilePage() {
     return (
       <div className="flex h-[90vh] items-center justify-center">
         {/* <Spinner size="lg" /> */}
-        <CustomLoading />
+        {/* <CustomLoading /> */}
+        <AnimatedLoading />
       </div>
     );
   }

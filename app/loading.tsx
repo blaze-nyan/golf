@@ -1,12 +1,10 @@
 "use client";
-// import { Spinner } from "@heroui/react";
-import CustomLoading from "./components/custom-loading";
+import AnimatedLoading from "./components/animated-loading";
 
 export default function App() {
   return (
     <div className="flex h-[90vh] items-center justify-center">
-      {/* <Spinner size="lg" /> */}
-      <CustomLoading />
+      <AnimatedLoading />
     </div>
   );
 }
