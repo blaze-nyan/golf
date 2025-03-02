@@ -9,6 +9,12 @@ interface ChatMessage {
   content: string;
 }
 
+const quickReplies = [
+  "Sendible features & plans",
+  "I'm already a customer",
+  "Request a demo",
+];
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -21,20 +27,6 @@ export function ChatWidget() {
   const [size, setSize] = useState({ width: 320, height: 480 });
   const isResizing = useRef(false);
 
-  const golfCourseData = {
-    name: "Hackathon",
-    description:
-      "Nestled in the heart of lush greenery, Hackathon Golf Course offers an exceptional golfing experience...",
-    numberOfHoles: 18,
-    par: 72,
-    allowCrossOver: true,
-    feeStockId: 0,
-    holes: [
-      { type: "Regular par", values: [5, 4, 3, 4, 3, 4, 4, 5, 4, 36, 5, 4, 3, 4, 4, 4, 5, 4, 3, 36, 72] },
-      { type: "Regular distance", values: [444, 319, 106, 257, 86, 328, 234, 428, 303] },
-    ],
-  };
-
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -45,49 +37,10 @@ export function ChatWidget() {
     }
   }, [messages]);
 
-  const getResponsePlaceholder = (question: string) => {
-    const lowerQuestion = question.toLowerCase();
-    if (lowerQuestion.includes("hackathon")) {
-      if (lowerQuestion.includes("description")) return golfCourseData.description;
-      if (lowerQuestion.includes("holes")) return `Hackathon Golf Course has ${golfCourseData.numberOfHoles} holes.`;
-      if (lowerQuestion.includes("par")) return `The total par for this course is ${golfCourseData.par}.`;
-      if (lowerQuestion.includes("cross over")) return golfCourseData.allowCrossOver ? "Yes, crossover is allowed." : "No, crossover is not allowed.";
-      if (lowerQuestion.includes("distance")) return `Regular distances for the first few holes: ${golfCourseData.holes[1].values.slice(0, 5).join(", ")}...`;
-    }
-
-  // Weather response - Always sunny!
-  if (lowerQuestion.includes("weather")) {
-    return "It is expected to be sunny—perfect for golfing!";
-  }
-
-  // Dress code response
-  if (lowerQuestion.includes("dress code") || lowerQuestion.includes("attire")) {
-    return "Golfers are encouraged to wear a collared shirt, golf slacks or shorts, and proper golf shoes. Avoid denim, t-shirts, and sandals.";
-  }
-
-
-// Food-related question
-if (lowerQuestion.includes("food") || lowerQuestion.includes("menu") || lowerQuestion.includes("eat")) {
-  return "If you're feeling hungry after your game, check out our food and beverage offerings here: https://ta-golf.netlify.app/f&b Trust me, you won’t want to miss it!";
-}
-
-// Hotel or places to stay
-if (lowerQuestion.includes("hotel") || lowerQuestion.includes("stay") || lowerQuestion.includes("accommodation")) {
-  return "Looking for a place to stay? You can explore great hotels near the course here: https://ta-golf.netlify.app/hotel Perfect for a relaxing stay after a day of golf!";
-}
-
-// Membership-related question
-if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lowerQuestion.includes("sign up")) {
-  return "Interested in becoming a member? You can learn more about our membership options here: https://ta-golf.netlify.app/membership Join us and enjoy exclusive benefits!";
-}
-
-    return null;
-  };
-
   const removeAsterisks = (str: string) => {
     return str.replace(/\*/g, "");
-  }
-  
+  };
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
@@ -96,78 +49,31 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
     setInputMessage("");
     setIsLoading(true);
 
-    const responsePlaceholder = getResponsePlaceholder(inputMessage)
-    
-    if (responsePlaceholder) {
-      const botMessage: ChatMessage = {
-        type: "bot",
-        content: removeAsterisks(responsePlaceholder) || "I'm sorry, I couldn't understand that.",
-      };
-    
-      setTimeout(() => {
-        setMessages((prev) => [...prev, botMessage]);
-        setIsLoading(false);
-      }, 2000); // 1-second delay
-
-      return
-    }
-
     try {
       const aiResponse = await getAiResponse(inputMessage);
-
       const responseText = aiResponse[0]?.text;
-      const finalText = responseText ? removeAsterisks(responseText) : "I'm sorry, I couldn't understand that.";
+      const finalText = responseText
+        ? removeAsterisks(responseText)
+        : "I'm sorry, I couldn't understand that.";
 
-      const botMessage: ChatMessage = {
-        type: "bot",
-        content:
-        finalText,
-      };
+      const botMessage: ChatMessage = { type: "bot", content: finalText };
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error fetching AI response:", error);
       setMessages((prev) => [
         ...prev,
-        {
-          type: "bot",
-          content: "Error retrieving response. Please try again.",
-        },
+        { type: "bot", content: "Error retrieving response. Please try again." },
       ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleResizeMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault();
-    isResizing.current = true;
-
-    const startX = event.clientX;
-    const startY = event.clientY;
-    const startWidth = size.width;
-    const startHeight = size.height;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!isResizing.current) return;
-
-      const newWidth = startWidth + (moveEvent.clientX - startX);
-      const newHeight = startHeight + (moveEvent.clientY - startY);
-
-      setSize({
-        width: Math.max(300, Math.min(newWidth, window.innerWidth - 40)), // Prevent too small or too large
-        height: Math.max(400, Math.min(newHeight, window.innerHeight - 40)),
-      });
-    };
-
-    const handleMouseUp = () => {
-      isResizing.current = false;
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+  const quickmessage = (reply: string) => {
+    setInputMessage(reply);
+    handleSendMessage();
+    console.log("hello");
   };
 
   if (!isClient) return null;
@@ -216,9 +122,24 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50 dark:bg-gray-900">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500 dark:text-gray-400 my-8">
-                <p>Welcome to the Golf Assistant!</p>
-                <p className="text-sm mt-2">How can I help you today?</p>
+              <div className="text-start mt-4">
+                <p className="p-2 rounded-lg max-w-[85%] bg-gray-200 text-gray-800">
+                  Hey 👋 Got any questions?
+                </p>
+                <p className="text-sm mt-2 p-2 rounded-lg max-w-[85%] bg-gray-200 text-gray-800">
+                  I'll be glad to assist! What can I help you with?
+                </p>
+                <div className="mt-6 space-y-2">
+                  {quickReplies.map((reply, index) => (
+                    <Button
+                      key={index}
+                      onPress={() => quickmessage(reply)}
+                      className="block border-solid border-2 border-orange-500 text-left bg-white hover:bg-orange-100 text-orange-800 py-2 px-3 rounded-md"
+                    >
+                      {reply}
+                    </Button>
+                  ))}
+                </div>
               </div>
             ) : (
               messages.map((message, index) => (
@@ -259,24 +180,6 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
                 </div>
               ))
             )}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="p-3 rounded-lg bg-gray-200 dark:bg-gray-700">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
-                    <div
-                      className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"
-                      style={{ animationDelay: "0.2s" }}
-                    ></div>
-                    <div
-                      className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"
-                      style={{ animationDelay: "0.4s" }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
@@ -288,36 +191,21 @@ if (lowerQuestion.includes("membership") || lowerQuestion.includes("join") || lo
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type a message..."
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg"
                 disabled={isLoading}
               />
               <Button
                 onPress={handleSendMessage}
                 disabled={isLoading || !inputMessage.trim()}
-                className={`px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors ${
-                  isLoading || !inputMessage.trim()
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
+                className="px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors"
               >
                 <Send className="h-5 w-5" />
               </Button>
             </div>
           </div>
-
-          {/* Resize Handle */}
-          {!isMaximized && (
-            <div
-              onMouseDown={handleResizeMouseDown}
-              className="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 dark:bg-gray-600 cursor-se-resize"
-            />
-          )}
         </div>
       ) : (
-        <Button
-          onPress={() => setIsOpen(true)}
-          className="text-white p-3 rounded-full shadow-lg transition-colors bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-        >
+        <Button onPress={() => setIsOpen(true)} className="text-white p-3 rounded-full shadow-lg bg-green-600">
           <MessageCircle className="h-6 w-6" />
         </Button>
       )}
