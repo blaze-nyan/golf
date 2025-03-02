@@ -13,20 +13,26 @@ export default function ProfileRedirect() {
     if (typeof window === "undefined") return;
 
     const clientId = window.localStorage.getItem("clientId");
-    if (clientId && clientId.trim()) {
-      try {
-        const clientId_ = encryptData(clientId);
-        if (process.env.NODE_ENV === "development") {
-          console.log("Encrypted Client ID:", clientId_);
+
+      if (clientId) {
+        try {
+          const clientId_ = encryptData(clientId);
+          console.log("ClientIdEncypeteINprofilePage",clientId_)
+          window.localStorage.setItem(
+            "clientIdEncrypt",
+            clientId_.toString()
+          );
+          if (process.env.NODE_ENV === "development") {
+            console.log("Encrypted Client ID:", clientId_);
+          }
+          router.push(`/profile/${encodeURIComponent(clientId_)}`);
+        } catch (error) {
+          console.error("Encryption error:", error);
+          router.push("/auth/login");
         }
-        router.push(`/profile/${clientId_}`);
-      } catch (error) {
-        console.error("Encryption error:", error);
+      } else {
         router.push("/auth/login");
       }
-    } else {
-      router.push("/auth/login");
-    }
   }, [router]);
 
   return (

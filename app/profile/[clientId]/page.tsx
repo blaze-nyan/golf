@@ -71,13 +71,14 @@ export default function ProfilePage() {
   const router = useRouter();
   /////
   const clientId_: any = params.clientId;
+
   if (!clientId_) {
     console.error("clientId_ is undefined");
     router.push("/auth/login");
   }
   const decodedClientId_ = decodeURIComponent(clientId_);
   console.log("Before decryption (Decoded clientId_):", decodedClientId_);
-  
+
   const clientId = decryptData(decodedClientId_);
   console.log("After decryption (Decrypted clientId):", clientId);
   
