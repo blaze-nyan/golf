@@ -91,7 +91,7 @@ export default function NavBar(props: NavbarProps) {
       <NavbarMenuToggle className="text-default-400 md:hidden" />
 
       <NavbarMenu className="top-[calc(var(--navbar-height)_-_1px)] max-h-fit bg-default-200/50 pb-6 pt-6 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50">
-        {links.map(({ href, label }, index) => (
+        {links.map(({ href, label }) => (
           <NavbarMenuItem key={`${href}-${label}`}>
             <Link
               className="mb-2 w-full text-default-500"
@@ -100,7 +100,7 @@ export default function NavBar(props: NavbarProps) {
             >
               {label}
             </Link>
-            {index < links.length - 1 && <Divider className="opacity-50" />}
+            <Divider className="opacity-50" />
           </NavbarMenuItem>
         ))}
         {checkClientId() ? (
@@ -112,6 +112,7 @@ export default function NavBar(props: NavbarProps) {
             >
               Profile
             </Link>
+            <Divider className="opacity-50" />
           </NavbarMenuItem>
         ) : (
           <NavbarMenuItem>

@@ -83,13 +83,18 @@ export function WeatherWidget() {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading || !weather) return <Spinner />;
+  if (loading || !weather)
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
 
   const playability = getPlayabilityStatus(weather);
 
   return (
-    <Card className="max-w-[400px] min-w-[300px]">
+    <Card className="max-w-[400px] min-w-[300px] flex items-center justify-center">
       <CardBody>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">

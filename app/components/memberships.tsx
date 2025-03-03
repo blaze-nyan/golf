@@ -54,9 +54,9 @@ const MembershipInfoList: React.FC<MembershipInfoListProps> = ({
                 No Membership Available
               </div>
               <div className="text-center">
-                <Link href="/membership">
-                  <Button color="primary">Go to Memberships</Button>
-                </Link>
+                <Button as={Link} href="/membership" color="primary">
+                  Go to Memberships
+                </Button>
               </div>
             </>
           ) : (
