@@ -28,7 +28,6 @@ export function ChatWidget() {
   const size = { width: 320, height: 480 };
   // const isResizing = useRef(false);
 
-
   const golfCourseData = {
     name: "Hackathon",
     description:
@@ -51,7 +50,6 @@ export function ChatWidget() {
     ],
   };
 
-
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -61,7 +59,6 @@ export function ChatWidget() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-
 
   const getResponsePlaceholder = (question: string) => {
     const lowerQuestion = question.toLowerCase();
@@ -125,7 +122,6 @@ export function ChatWidget() {
     return null;
   };
 
-
   const removeAsterisks = (str: string) => {
     return str.replace(/\*/g, "");
   };
@@ -137,7 +133,6 @@ export function ChatWidget() {
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
-
 
     const responsePlaceholder = getResponsePlaceholder(inputMessage);
 
@@ -157,7 +152,6 @@ export function ChatWidget() {
       return;
     }
 
-
     try {
       const aiResponse = await getAiResponse(inputMessage);
       const responseText = aiResponse[0]?.text;
@@ -165,18 +159,17 @@ export function ChatWidget() {
         ? removeAsterisks(responseText)
         : "I'm sorry, I couldn't understand that.";
 
-
       const botMessage: ChatMessage = { type: "bot", content: finalText };
-
-  
-
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error fetching AI response:", error);
       setMessages((prev) => [
         ...prev,
-        { type: "bot", content: "Error retrieving response. Please try again." },
+        {
+          type: "bot",
+          content: "Error retrieving response. Please try again.",
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -219,7 +212,6 @@ export function ChatWidget() {
   //   document.addEventListener("mousemove", handleMouseMove);
   //   document.addEventListener("mouseup", handleMouseUp);
   // };
-
 
   if (!isClient) return null;
 
@@ -272,14 +264,14 @@ export function ChatWidget() {
                   Hey 👋 Got any questions?
                 </p>
                 <p className="text-sm mt-2 p-2 rounded-lg max-w-[85%] bg-gray-200 text-gray-800">
-                  I'll be glad to assist! What can I help you with?
+                  I&apos;ll be glad to assist! What can I help you with?
                 </p>
                 <div className="mt-6 space-y-2">
                   {quickReplies.map((reply, index) => (
                     <Button
                       key={index}
                       onPress={() => quickmessage(reply)}
-                      className="block border-solid border-2 border-orange-500 text-left bg-white hover:bg-orange-100 text-orange-800 py-2 px-3 rounded-md"
+                      className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm bg-transparent"
                     >
                       {reply}
                     </Button>
@@ -349,7 +341,6 @@ export function ChatWidget() {
             </div>
           </div>
 
-
           {/* Resize Handle */}
           {/* {!isMaximized && (
             <div
@@ -357,10 +348,12 @@ export function ChatWidget() {
               className="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 dark:bg-gray-600 cursor-se-resize"
             />
           )} */}
-
         </div>
       ) : (
-        <Button onPress={() => setIsOpen(true)} className="text-white p-3 rounded-full shadow-lg bg-green-600">
+        <Button
+          onPress={() => setIsOpen(true)}
+          className="text-white p-3 rounded-full shadow-lg bg-green-600"
+        >
           <MessageCircle className="h-6 w-6" />
         </Button>
       )}

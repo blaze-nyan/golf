@@ -81,9 +81,7 @@ export default function ProfilePage() {
 
   const clientId = decryptData(decodedClientId_);
   console.log("After decryption (Decrypted clientId):", clientId);
-  
-  
-  
+
   ///////////////////////////////////////////////////
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -309,7 +307,6 @@ export default function ProfilePage() {
       // After uploading the image, refetch the profile and image data
       if (!clientId_) return;
 
-
       // Fetch updated profile and image data
       const [updatedProfileData, updatedImageData] = await Promise.all([
         getClientInfo(clientId), // Fetch updated profile data
@@ -439,8 +436,6 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex h-[90vh] items-center justify-center">
-        {/* <Spinner size="lg" /> */}
-        {/* <CustomLoading /> */}
         <AnimatedLoading />
       </div>
     );
