@@ -18,6 +18,7 @@ const LogoutButton = () => {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("clientImage");
       window.localStorage.removeItem("clientId");
+
       router.push("/auth/login");
       setIsLogoutModalOpen(false);
     }
