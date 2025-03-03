@@ -107,7 +107,7 @@ export default function NavBar(props: NavbarProps) {
           <NavbarMenuItem>
             <Link
               className="mb-2 w-full text-default-500"
-              href="/profile"
+              href={`/profile`} // Corrected the template literal usage
               size="md"
             >
               Profile

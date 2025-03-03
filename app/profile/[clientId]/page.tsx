@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { decryptData } from "@/app/lib/dataEncrypt";
 import axios from "axios";
 import {
   Card,
@@ -65,8 +66,25 @@ type Communication = {
 };
 
 export default function ProfilePage() {
+  //decryptcliendId
   const params = useParams();
   const router = useRouter();
+  /////
+  const clientId_: any = params.clientId;
+
+  if (!clientId_) {
+    console.error("clientId_ is undefined");
+    router.push("/auth/login");
+  }
+  const decodedClientId_ = decodeURIComponent(clientId_);
+  console.log("Before decryption (Decoded clientId_):", decodedClientId_);
+
+  const clientId = decryptData(decodedClientId_);
+  console.log("After decryption (Decrypted clientId):", clientId);
+  
+  
+  
+  ///////////////////////////////////////////////////
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -152,9 +170,9 @@ export default function ProfilePage() {
   useEffect(() => {
     // Only run this code on the client side
     if (typeof window !== "undefined") {
-      const clientId = window.localStorage.getItem("clientId");
-      if (clientId) {
-        router.push(`/profile/${clientId}`);
+      const _clientId = window.localStorage.getItem("clientId");
+      if (_clientId) {
+        router.push(`/profile/${clientId_}`);
       } else {
         router.push("/auth/login");
       }
@@ -196,29 +214,22 @@ export default function ProfilePage() {
     const fetchProfileAndImage = async () => {
       try {
         setIsLoading(true);
-        const clientId = params.clientId;
 
-        if (!clientId) {
+        if (!clientId_) {
           router.push("/auth/login");
           return;
         }
-
-        const parsedClientId = parseInt(clientId as string);
-        if (isNaN(parsedClientId)) {
-          throw new Error("Invalid client ID");
-        }
-
         // Fetch both profile and image data
         const [profileData, imageData] = await Promise.all([
-          getClientInfo(parsedClientId),
+          getClientInfo(clientId),
 
-          getClientImage(parsedClientId),
+          getClientImage(clientId),
         ]);
         await console.log(
           "profileData=>",
           profileData,
           "parsedClientId=>",
-          parsedClientId
+          clientId
         );
 
         setProfileData(profileData); // This ensures profileData is set before it's used.
@@ -269,7 +280,7 @@ export default function ProfilePage() {
     await sleep(1000);
     const bookings = await fetchData("bookings");
     const filteredBookings = bookings.filter(
-      (booking: { clientID: any }) => booking.clientID === params.clientId
+      (booking: { clientID: any }) => booking.clientID === clientId
     );
     closeBookingModal();
     setBookingData(filteredBookings);
@@ -296,15 +307,13 @@ export default function ProfilePage() {
       onClose();
 
       // After uploading the image, refetch the profile and image data
-      const clientId = params.clientId;
-      if (!clientId) return;
-      const parsedClientId = parseInt(clientId as string);
-      if (isNaN(parsedClientId)) return;
+      if (!clientId_) return;
+
 
       // Fetch updated profile and image data
       const [updatedProfileData, updatedImageData] = await Promise.all([
-        getClientInfo(parsedClientId), // Fetch updated profile data
-        getClientImage(parsedClientId), // Fetch updated image data
+        getClientInfo(clientId), // Fetch updated profile data
+        getClientImage(clientId), // Fetch updated image data
       ]);
 
       setProfileData(updatedProfileData); // Update profile data
