@@ -100,6 +100,31 @@ export const getClientInfo = async (clientId: number): Promise<ProfileData> => {
   }
 };
 
+export async function getClientInfo_(clientId: number) {
+  try {
+    if (!clientId) throw new Error("Client ID is required");
+
+    console.log(`Fetching user profile for Client ID: ${clientId}`);
+
+    // ✅ Call external API directly
+    const response = await axios.post(
+      `${BASE_URL}/get_client_request`,
+      {
+        hg_code: "ixschool",
+        payload: {
+          "Client ID": clientId, // Make sure we're sending as number
+        },
+      },
+      { headers }
+    );
+    return response.data.payload;
+  } catch (error) {
+    console.error("Error fetching client info:", error);
+    throw error;
+  }
+}
+
+
 export const updateClientInfo = async (clientInfo: ClientInfo) => {
   console.log(clientInfo);
   try {
