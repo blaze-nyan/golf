@@ -33,10 +33,7 @@ const page = () => {
 
   // State to track panel visibility
   const [isPanelVisible, setIsPanelVisible] = useState(true);
-  const [screenSize, setScreenSize] = useState({
-    width: typeof window !== "undefined" ? window.innerWidth : 0,
-    isMobile: typeof window !== "undefined" ? window.innerWidth < 640 : false,
-  });
+  const [isMobile, setIsMobile] = useState(false);
 
   // Credit card form state
   const [cardNumber, setCardNumber] = useState("");
@@ -56,9 +53,7 @@ const page = () => {
   // Monitor screen size and panel visibility
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
-      const isMobile = width < 640;
-      setScreenSize({ width, isMobile });
+      setIsMobile(window.innerWidth < 640);
     };
 
     // Check for panel visibility from localStorage or custom events
@@ -113,7 +108,7 @@ const page = () => {
     }));
   }, [amountToPay, setBookingDetails]);
 
-  // Simple validation function (you can improve it)
+  // Simple validation function
   const validateCreditCard = () => {
     if (cardNumber.length < 16) {
       onErrorOpen();
@@ -142,15 +137,19 @@ const page = () => {
     }
   };
 
-  // Get container width class based on panel visibility
-  const getContainerWidthClass = () => {
-    if (screenSize.isMobile) return "w-full";
-    return isPanelVisible ? "w-full max-w-2xl" : "w-full max-w-3xl mx-auto";
-  };
-
   return (
     <div
-      className={`space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300 ${getContainerWidthClass()}`}
+      className={`
+        space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300
+        w-full mx-auto
+        ${
+          isMobile
+            ? ""
+            : isPanelVisible
+            ? "max-w-2xl"
+            : "max-w-2xl md:max-w-3xl mx-auto"
+        }
+      `}
     >
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-5">
         Payment Page
@@ -213,9 +212,9 @@ const page = () => {
         <CardBody className="px-3 sm:px-4 py-2 sm:py-3 space-y-3 sm:space-y-4">
           {/* Select Payment Method */}
           <div>
-            {/* <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 visible text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 visible text-gray-700 dark:text-gray-300">
               Select Payment Method
-            </label> */}
+            </label>
             <Select
               placeholder="Select a payment method"
               aria-label="Select a payment method"
@@ -228,9 +227,9 @@ const page = () => {
           </div>
           {/* Card Number */}
           <div>
-            {/* <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
               Card Number
-            </label> */}
+            </label>
             <Input
               type="text"
               value={cardNumber}
@@ -244,9 +243,9 @@ const page = () => {
           {/* Expiry Date and CVV */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="w-full sm:w-1/2">
-              {/* <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
-                MM/YY
-              </label> */}
+              <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
+                Expiry Date (MM/YY)
+              </label>
               <Input
                 type="text"
                 value={expiryDate}
@@ -256,9 +255,9 @@ const page = () => {
               />
             </div>
             <div className="w-full sm:w-1/2 mt-3 sm:mt-0">
-              {/* <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
                 CVV
-              </label> */}
+              </label>
               <Input
                 type="text"
                 value={cvv}
@@ -272,9 +271,9 @@ const page = () => {
 
           {/* Cardholder Name */}
           <div>
-            {/* <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
               Cardholder Name
-            </label> */}
+            </label>
             <Input
               type="text"
               value={cardHolderName}
@@ -294,14 +293,14 @@ const page = () => {
       </Card>
 
       {/* Mobile Next Button */}
-      <div className="pt-4 md:hidden sticky bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-2 shadow-md z-10">
+      <div className="pt-4 md:hidden   p-2 shadow-lg">
         <div className="flex justify-end">
           <NextButton />
         </div>
       </div>
 
       {/* Desktop Next Button */}
-      <div className="pt-4 hidden md:flex md:justify-end">
+      <div className="pt-4 hidden md:flex md:justify-end shadow-lg">
         <NextButton />
       </div>
 
