@@ -104,7 +104,7 @@ const CoursePage = () => {
   const image = () => usePlaceholderGolfCourseImageLink();
 
   return (
-    <div className="px-4 md:px-6 pb-16 max-w-6xl space-y-6">
+    <div className="px-4 md:px-6 pb-2 max-w-6xl space-y-6">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mt-4">
         {golfCourse.golfCourseName || placeholderGolfCourse.golfCourseName}
       </h1>
@@ -362,12 +362,12 @@ const CoursePage = () => {
         <div className="pt-4 md:hidden">
           <NextButton />
         </div>
+        <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-start">
+          <NextButton />
+        </div>
       </div>
 
       {/* Next Button with proper spacing */}
-      <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
-        <NextButton />
-      </div>
     </div>
   );
 };

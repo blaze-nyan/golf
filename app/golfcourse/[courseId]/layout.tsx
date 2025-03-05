@@ -76,10 +76,13 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="w-full max-w-[100%] relative h-[74vh] flex overflow-hidden">
+    <div
+      style={{ height: "calc(100dvh - 130px)" }}
+      className="w-full max-w-[100%]  relative  flex overflow-hidden"
+    >
       {/* Main content area */}
       <div
-        className="transition-all duration-300 ease-in-out overflow-y-auto px-2 font-sans pb-5"
+        className="transition-all duration-300 ease-in-out overflow-y-auto px-2 font-sans "
         style={{
           width: getContentWidth(),
           display:
@@ -91,10 +94,11 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
 
       {currentStep <= 3 && (
         <div
-          className="absolute z-50 right-0 top-0 h-full transition-all duration-300 ease-in-out flex"
+          className="absolute z-50 right-0 top-0 transition-all duration-300 ease-in-out flex"
           style={{
             transform: isPanelVisible ? "translateX(0)" : "translateX(100%)",
             width: getPanelWidth(),
+            height: "calc(100dvh - 60px)",
           }}
         >
           {/* Toggle button - attached to the panel */}

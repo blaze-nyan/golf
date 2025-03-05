@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 4px; /* Adjust the width of the scrollbar */
