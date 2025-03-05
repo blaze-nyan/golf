@@ -326,7 +326,7 @@ const page = () => {
   const filteredTeeTimes = getFilteredTeeTimes();
 
   return (
-    <div className="space-y-4 sm:space-y-5 p-2 sm:p-4">
+    <div className="space-y-4 sm:space-y-5 p-2 sm:p-4 h-full">
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1 sm:mb-2">
         Select Booking
       </h1>
@@ -529,12 +529,13 @@ const page = () => {
       )}
 
       {/* Next button - fixed position at bottom for mobile */}
-      <div className="pt-4 md:hidden sticky bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-2 shadow-md z-10">
+
+      <div className="flex justify-start pt-4 md:hidden   p-2 shadow-lg">
         <NextButton />
       </div>
 
       {/* Desktop next button */}
-      <div className="pt-4 hidden md:flex md:justify-end">
+      <div className="pt-4 hidden md:flex md:justify-start">
         <NextButton />
       </div>
     </div>

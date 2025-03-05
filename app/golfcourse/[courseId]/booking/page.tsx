@@ -141,7 +141,7 @@ const page = () => {
     <div
       className={`
         space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300
-        w-full mx-auto
+        w-full mx-auto h-full
         ${
           isMobile
             ? ""
@@ -293,14 +293,12 @@ const page = () => {
       </Card>
 
       {/* Mobile Next Button */}
-      <div className="pt-4 md:hidden   p-2 shadow-lg">
-        <div className="flex justify-end">
-          <NextButton />
-        </div>
+      <div className="flex justify-start pt-4 md:hidden   p-2 shadow-lg">
+        <NextButton />
       </div>
 
       {/* Desktop Next Button */}
-      <div className="pt-4 hidden md:flex md:justify-end shadow-lg">
+      <div className="pt-4 hidden md:flex md:justify-start shadow-lg">
         <NextButton />
       </div>
 

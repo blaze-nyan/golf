@@ -44,7 +44,7 @@ const page = () => {
         console.log(clientInfo);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Individual state variables
@@ -82,7 +82,7 @@ const page = () => {
       "Golfer Names": golferList,
       price: calculatedPrice,
     }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     numGolfers,
     numCaddies,
@@ -136,7 +136,7 @@ const page = () => {
   }
 
   return (
-    <div className=" p-4 w-[100%]">
+    <div className=" p-4 w-[100%] h-full">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-5">
         Booking Details
       </h1>
@@ -337,7 +337,7 @@ const page = () => {
       <div className="mt-6 text-lg text-right font-bold text-gray-800 dark:text-green-400">
         Total: {totalPrice} THB
       </div>
-      <div className="mt-6 flex justify-end w-[100%]">
+      <div className="mt-6 flex justify-start w-[100%]">
         <NextButton />
       </div>
     </div>
