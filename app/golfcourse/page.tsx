@@ -101,7 +101,9 @@ export default function GolfCoursesPage() {
     <div className="flex flex-col items-center justify-center my-10 mx-5 mb-20 gap-4 ">
       {/* Section for explanation about golf courses */}
       <section className="text-center mb-5 max-w-4xl">
-        <h2 className="text-4xl font-semibold">Discover Our Golf Courses</h2>
+        <h2 className="text-4xl font-semibold text-green-400">
+          Discover Our Golf Courses
+        </h2>
         <p className="text-lg  mt-3">
           We offer a wide selection of beautifully designed golf courses that
           cater to players of all skill levels. Whether you are looking for a
@@ -129,8 +131,6 @@ export default function GolfCoursesPage() {
       {/* Loading state */}
       {loading ? (
         <div className="flex justify-center mb-5">
-          {/* <Spinner size="lg" /> */}
-          {/* <CustomLoading /> */}
           <AnimatedLoading />
         </div>
       ) : (
