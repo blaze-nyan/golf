@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Card, Image } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { useProgress } from "../../context/progress-context";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Confetti from "react-confetti";
@@ -13,7 +13,7 @@ import {
   convertExcelDateToJSDate,
 } from "../../../components/date-functionalities";
 import { useRouter } from "next/navigation";
-import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
+// import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
 
 const page = () => {
   const { bookingDetails, currentStep } = useProgress();
@@ -23,8 +23,8 @@ const page = () => {
   // State for triggering confetti and window dimensions
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowDimension, setWindowDimension] = useState({
-    width: typeof window !== "undefined" ? window.innerWidth : 0,
-    height: typeof window !== "undefined" ? window.innerHeight : 0,
+    width: 0,
+    height: 0,
   });
 
   const goToProfile = () => {
@@ -41,6 +41,9 @@ const page = () => {
   };
 
   useEffect(() => {
+    // Initialize window dimensions
+    detectSize();
+
     // Set up window resize listener for responsive confetti
     window.addEventListener("resize", detectSize);
     return () => {
@@ -61,14 +64,14 @@ const page = () => {
   }, []);
 
   return (
-    <div className="h-full md:min-h-screen py-6 px-4 flex flex-col items-center justify-center  transition-colors duration-200">
-      {/* Confetti effect */}
+    <div className="min-h-[100%] w-full py-4 sm:py-6 px-2 sm:px-4 flex flex-col items-center justify-center transition-colors duration-200">
+      {/* Confetti effect - reduce pieces on mobile */}
       {showConfetti && (
         <Confetti
           width={windowDimension.width}
           height={windowDimension.height}
           gravity={0.2}
-          numberOfPieces={150} // Reduced for mobile performance
+          numberOfPieces={windowDimension.width < 768 ? 80 : 150}
           recycle={false}
           initialVelocityX={5}
           initialVelocityY={20}
@@ -81,29 +84,29 @@ const page = () => {
         />
       )}
 
-      <Card className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+      <Card className="w-full max-w-sm sm:max-w-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-200">
         {/* Header */}
-        <div className="bg-green-700 dark:bg-green-800 text-white py-4 text-center text-lg md:text-xl font-bold">
+        <div className="bg-green-700 dark:bg-green-800 text-white py-3 sm:py-4 text-center text-base sm:text-lg md:text-xl font-bold">
           Your Booking was Successful!
         </div>
 
-        <div className="p-4 space-y-4 text-sm md:text-base text-gray-700 dark:text-gray-300">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300">
           {/* Course Section */}
           <SectionWrapper disabled={isSectionDisabled(0)}>
-            <div className="flex gap-3 items-center">
-              <div className="h-16 w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+            <div className="flex gap-2 sm:gap-3 items-center">
+              {/* <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
                 <Image
                   removeWrapper
                   className="h-full w-full object-cover"
                   src={usePlaceholderGolfCourseImageLink()}
                   alt="golf course"
                 />
-              </div>
+              </div> */}
               <div>
-                <div className="font-semibold text-gray-900 dark:text-gray-100">
+                <div className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                   {bookingDetails.courseName || "Course Name"}
                 </div>
-                <div className="text-gray-500 dark:text-gray-400 text-sm">
+                <div className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
                   {bookingDetails.courseLocation || "N/A"}
                 </div>
               </div>
@@ -122,17 +125,20 @@ const page = () => {
                 icon="mdi-calendar"
                 label="Date"
                 value={
-                  dateToString(
-                    convertExcelDateToJSDate(bookingDetails.teeDate)
-                  ) || "Select"
+                  bookingDetails.teeDate
+                    ? dateToString(
+                        convertExcelDateToJSDate(bookingDetails.teeDate)
+                      )
+                    : "Select"
                 }
               />
               <InfoItem
                 icon="mdi-clock"
                 label="Time"
                 value={
-                  convertMinutesToTimeWithAMPM(bookingDetails.teeTime) ||
-                  "Select"
+                  bookingDetails.teeTime
+                    ? convertMinutesToTimeWithAMPM(bookingDetails.teeTime)
+                    : "Select"
                 }
               />
             </InfoGrid>
@@ -144,37 +150,37 @@ const page = () => {
               <InfoItem
                 icon="mdi-golf"
                 label="Golfers"
-                value={bookingDetails.numberOfGolfers}
+                value={bookingDetails.numberOfGolfers || 0}
               />
               <InfoItem
                 icon="mdi-person"
                 label="Guests"
-                value={bookingDetails.numberOfnonPlayers}
+                value={bookingDetails.numberOfnonPlayers || 0}
               />
               <InfoItem
                 icon="mdi-backpack"
                 label="Caddies"
-                value={bookingDetails["Caddies"]}
+                value={bookingDetails["Caddies"] || 0}
               />
               <InfoItem
                 icon="mdi-car"
                 label="Carts"
-                value={bookingDetails["Golf Cart"]}
+                value={bookingDetails["Golf Cart"] || 0}
               />
               <InfoItem
                 icon="mdi-food"
                 label="Food"
-                value={bookingDetails["Food & Drinks"]}
+                value={bookingDetails["Food & Drinks"] || 0}
               />
             </InfoGrid>
           </SectionWrapper>
 
           {/* Price */}
           <SectionWrapper disabled={isSectionDisabled(3)}>
-            <div className="flex items-center justify-center gap-2 font-semibold text-base md:text-lg">
+            <div className="flex items-center justify-center gap-2 font-semibold text-sm sm:text-base md:text-lg">
               <Icon
                 icon="mdi-currency-btc"
-                className="text-green-600 dark:text-green-400 text-xl"
+                className="text-green-600 dark:text-green-400 text-lg sm:text-xl"
               />
               <span className="text-gray-900 dark:text-green-300">
                 Total:{" "}
@@ -185,7 +191,7 @@ const page = () => {
 
           <div className="pt-2">
             <Button
-              className="w-full bg-green-700 dark:bg-green-600 text-white py-3 rounded-md hover:bg-green-800 dark:hover:bg-green-700 text-base transition-colors duration-200"
+              className="w-full bg-green-700 dark:bg-green-600 text-white py-2 sm:py-3 rounded-md hover:bg-green-800 dark:hover:bg-green-700 text-sm sm:text-base transition-colors duration-200"
               onPress={goToProfile}
             >
               Back to Profile
@@ -195,7 +201,7 @@ const page = () => {
       </Card>
 
       {/* Booking ID */}
-      <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+      <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
         Booking ID: #{bookingDetails.id || "000000"}
       </div>
     </div>
@@ -213,7 +219,7 @@ const SectionWrapper = ({
   disabled: boolean;
 }) => (
   <div
-    className={`p-3 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors duration-200 ${
+    className={`p-2 sm:p-3 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors duration-200 ${
       disabled
         ? "opacity-50 pointer-events-none"
         : "bg-gray-50 dark:bg-gray-800/50"
@@ -225,7 +231,9 @@ const SectionWrapper = ({
 
 /** Info Grid for compact layout */
 const InfoGrid = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{children}</div>
+  <div className="grid grid-cols-2 xs:grid-cols-2 gap-2 sm:gap-3">
+    {children}
+  </div>
 );
 
 /** Info Item */
@@ -238,12 +246,12 @@ const InfoItem = ({
   label: string;
   value: string | number;
 }) => (
-  <div className="flex items-center gap-2">
+  <div className="flex items-center gap-1 sm:gap-2">
     <Icon
       icon={icon}
-      className="text-green-600 dark:text-green-400 text-lg flex-shrink-0"
+      className="text-green-600 dark:text-green-400 text-base sm:text-lg flex-shrink-0"
     />
-    <span className="truncate">
+    <span className="truncate text-xs sm:text-sm">
       <strong className="text-gray-800 dark:text-gray-200">{label}:</strong>{" "}
       <span className="text-gray-700 dark:text-gray-300">{value}</span>
     </span>

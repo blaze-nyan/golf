@@ -5,9 +5,10 @@ import { NextButton } from "../components/NextButton";
 import { Image } from "@heroui/react";
 import { useProgress } from "@/app/golfcourse/context/progress-context";
 import { getGolfCourseSingle } from "@/app/lib/api";
-import { Spinner } from "@heroui/react";
+
 import GolfFeesTable from "@/app/components/golf-fee-table";
 import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
+import AnimatedLoading from "@/app/components/animated-loading";
 
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
@@ -86,7 +87,7 @@ const CoursePage = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[300px]">
-        <Spinner size="lg" />
+        <AnimatedLoading />
       </div>
     );
   }
@@ -97,7 +98,7 @@ const CoursePage = () => {
         Failed to load golf course information. Please try again.
       </div>
     );
-  } 
+  }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const image = () => usePlaceholderGolfCourseImageLink();

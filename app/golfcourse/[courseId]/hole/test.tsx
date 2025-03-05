@@ -21,7 +21,7 @@ import {
 import { fetchData } from "@/app/lib/api-placeholder-db";
 import AnimatedLoading from "@/app/components/animated-loading";
 
-// Placeholder data remains the same
+// Placeholder data (unchanged)
 const placeholderData = [
   {
     "Tee Minute": 374,
@@ -111,14 +111,14 @@ const placeholderData = [
 
 const page = () => {
   const today = new Date();
-  today.setDate(today.getDate() + 2);
+  today.setDate(today.getDate() + 2); // Adds one day to today's date
 
   const formattedDate = parseDate(today.toISOString().split("T")[0]);
 
   const [selectedDate, setSelectedDate] = useState(formattedDate);
   const [bookingType, setBookingType] = useState(1);
 
-  const { courseId, setBookingDetails, currentStep } = useProgress();
+  const { courseId, setBookingDetails } = useProgress(); //currentStep, canAccess,
   const [availableTeeTimes, setAvailableTeeTimes] = useState(placeholderData);
 
   const [selectedTimeCode, setSelectedTimeCode] = useState<number | null>(null);
@@ -126,44 +126,7 @@ const page = () => {
   const [isLoading, setLoading] = useState(true);
   const [showTimeFilters, setShowTimeFilters] = useState(false);
 
-  // Check if booking panel is visible (depends on current step and screen size)
-  const [isPanelVisible, setIsPanelVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  const titles = ["9 Hole", "18 Hole"];
-
-  // Add a resize listener to detect panel visibility based on window size
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 640);
-
-      // Check for panel visibility based on localStorage or some other state manager
-      // This assumes you're storing panel visibility state somewhere
-      const panelState = localStorage.getItem("panelVisible");
-      if (panelState) {
-        setIsPanelVisible(panelState === "true");
-      } else {
-        // Default: visible on desktop, hidden on mobile
-        setIsPanelVisible(width >= 640);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Listen to any custom events that might be triggered when panel visibility changes
-  useEffect(() => {
-    const handlePanelToggle = (e: CustomEvent) => {
-      setIsPanelVisible(e.detail.visible);
-    };
-
-    window.addEventListener("panelToggle" as any, handlePanelToggle);
-    return () =>
-      window.removeEventListener("panelToggle" as any, handlePanelToggle);
-  }, []);
+  const titles = ["9 Hole", "18 Hole"]; // Options for booking type
 
   const handleCardClick = (timeCode: number) => {
     setSelectedTimeCode(timeCode === selectedTimeCode ? null : timeCode);
@@ -302,19 +265,6 @@ const page = () => {
   };
 
   // Function to get filtered tee times
-
-  // Rest of your state hooks and handlers remain the same...
-
-  // Function to determine grid column count based on panel visibility
-  const getGridColumnClass = () => {
-    if (isMobile) return "grid-cols-2";
-    if (isPanelVisible && currentStep <= 3) {
-      return "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
-    }
-    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7";
-  };
-
-  // Function to get filtered tee times
   const getFilteredTeeTimes = () => {
     return availableTeeTimes.filter(
       (data) =>
@@ -426,14 +376,6 @@ const page = () => {
         </div>
       </div>
 
-      {/* Results count */}
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {filteredTeeTimes.length} available time
-          {filteredTeeTimes.length !== 1 ? "s" : ""}
-        </p>
-      </div>
-
       {/* Loading state */}
       {isLoading ? (
         <div className="w-full h-48 sm:h-64 flex flex-col align-middle items-center justify-center">
@@ -441,6 +383,14 @@ const page = () => {
         </div>
       ) : (
         <>
+          {/* Results count */}
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {filteredTeeTimes.length} available time
+              {filteredTeeTimes.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+
           {/* Empty state */}
           {filteredTeeTimes.length === 0 && !isLoading && (
             <div className="bg-gray-50 dark:bg-gray-800 rounded-md p-4 text-center">
@@ -457,11 +407,9 @@ const page = () => {
             </div>
           )}
 
-          {/* Tee time grid - RESPONSIVE GRID that adjusts based on panel visibility */}
+          {/* Tee time grid - responsive grid with different column counts */}
           {filteredTeeTimes.length > 0 && (
-            <div
-              className={`w-full max-h-[350px] sm:max-h-[400px] md:max-h-[255px] p-2 sm:p-4 grid ${getGridColumnClass()} gap-2 sm:gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md transition-all duration-300`}
-            >
+            <div className="w-full max-h-[350px] sm:max-h-[400px] md:max-h-[255px] p-2 sm:p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md">
               {availableTeeTimes.map((data, index) => {
                 if (!compareTime(data["Tee Minute"], startTime, endTime)) {
                   return null;
@@ -474,7 +422,7 @@ const page = () => {
                 return (
                   <Card
                     key={index}
-                    className={`p-2 cursor-pointer transition-transform duration-200 h-[95px] sm:h-[115px] border border-gray-200 dark:border-gray-700
+                    className={`p-2 cursor-pointer transition-transform duration-200 h-[95px] sm:h-[115px] border border-gray-200 dark:border-gray-700 sm:min-w-[120px] flex-wrap gap-1
                     ${
                       selectedTimeCode === data["Tee Minute"]
                         ? "bg-green-200 dark:bg-green-800 scale-105"
@@ -492,6 +440,7 @@ const page = () => {
                           handleCardClick(data["Tee Minute"]);
                         }
                       }}
+                      className="w-full"
                     >
                       <div className="flex mb-1">
                         <div
@@ -501,21 +450,21 @@ const page = () => {
                               : "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
                           }`}
                         >
-                          <span className="px-1 sm:px-2 text-xs sm:text-sm font-semibold truncate">
+                          <span className="px-1 sm:px-2 text-xs sm:text-sm font-semibold">
                             {`${convertMinutesToTimeWithAMPM(
                               data["Tee Minute"]
                             )}`}
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-col items-center">
+                      <div className="flex flex-col items-center ">
                         <div>
                           <Icon
                             icon="mdi:account"
                             className="text-2xl sm:text-3xl md:text-4xl text-gray-700 dark:text-gray-300"
                           />
                         </div>
-                        <span className="px-1 sm:px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200 truncate">
+                        <span className="px-1 sm:px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200">
                           {`${data["Online Golfer Count"]} Maximum`}
                         </span>
                       </div>
