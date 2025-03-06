@@ -1,12 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// app/auth/components/SignupForm.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Input, Checkbox, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { signUp } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 
-export default function Component() {
+interface SignupFormProps {
+  verifiedEmail: string;
+}
+
+export default function SignupForm({ verifiedEmail }: SignupFormProps) {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
@@ -18,11 +24,19 @@ export default function Component() {
   const [formData, setFormData] = useState({
     firstName: "",
     surname: "",
-    email: "",
+    email: verifiedEmail,
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
   });
+
+  // Update email when verifiedEmail changes
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      email: verifiedEmail,
+    }));
+  }, [verifiedEmail]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -61,7 +75,6 @@ export default function Component() {
 
       // If signup successful, redirect to login
       router.push("/auth/login");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Signup failed. Please try again."
@@ -93,7 +106,6 @@ export default function Component() {
             onChange={handleInputChange}
             disabled={isLoading}
           />
-          {/* ... other inputs with similar updates ... */}
           <Input
             isRequired
             label="Surname"
@@ -115,8 +127,9 @@ export default function Component() {
             type="email"
             variant="bordered"
             value={formData.email}
-            onChange={handleInputChange}
-            disabled={isLoading}
+            readOnly
+            disabled={true}
+            className="opacity-70"
           />
           <Input
             isRequired
@@ -199,7 +212,6 @@ export default function Component() {
             Already have an account? Log In
           </Link>
         </p>
-        {/* ... rest of your component ... */}
       </div>
     </div>
   );
