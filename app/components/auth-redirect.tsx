@@ -1,6 +1,6 @@
-// app/components/auth-redirect.tsx
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getClientId, isAuthValid } from "@/app/lib/auth";
 
 const AuthRedirect = () => {
   const [isClient, setIsClient] = useState(false);
@@ -12,40 +12,26 @@ const AuthRedirect = () => {
 
   useEffect(() => {
     if (isClient && typeof window !== "undefined") {
-      // Check localStorage first (for remembered users)
-      let clientId = window.localStorage.getItem("clientId");
+      console.log("Auth redirect checking authentication state");
+      console.log("localStorage clientId:", localStorage.getItem("clientId"));
+      console.log(
+        "sessionStorage clientId:",
+        sessionStorage.getItem("clientId")
+      );
 
-      // If there's no clientId in localStorage, check sessionStorage
-      if (!clientId) {
-        clientId = window.sessionStorage.getItem("clientId");
-      }
+      // Get clientId and check if authentication is valid
+      const clientId = getClientId();
+      const validAuth = isAuthValid();
 
-      // If we found a clientId in either storage
-      if (clientId) {
-        // Check if it's from localStorage and has an expiration
-        if (window.localStorage.getItem("clientId") === clientId) {
-          const expiration = window.localStorage.getItem("clientIdExpiration");
+      console.log("Client ID:", clientId);
+      console.log("Auth valid:", validAuth);
 
-          // If there's an expiration date set
-          if (expiration) {
-            const expirationDate = new Date(expiration);
-            const now = new Date();
-
-            // If token has expired, clear it and redirect to login
-            if (now > expirationDate) {
-              window.localStorage.removeItem("clientId");
-              window.localStorage.removeItem("clientIdExpiration");
-              window.localStorage.removeItem("rememberMe");
-              router.push("/auth/login");
-              return;
-            }
-          }
-        }
-
-        // If clientId exists and isn't expired, user is authenticated
-        // Continue with your authenticated flow here
+      if (clientId && validAuth) {
+        // User is authenticated, continue with the app
+        console.log("User is authenticated, proceeding...");
       } else {
-        // No clientId found in either storage, redirect to login
+        // Not authenticated, redirect to login
+        console.log("User is not authenticated, redirecting to login");
         router.push("/auth/login");
       }
     }
