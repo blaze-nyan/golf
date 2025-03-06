@@ -1,3 +1,4 @@
+// app/components/logout-button.tsx
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -11,13 +12,18 @@ import {
 
 const LogoutButton = () => {
   const router = useRouter();
-
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
+      // Clear all auth-related data from both storages
       window.localStorage.removeItem("clientImage");
       window.localStorage.removeItem("clientId");
+      window.localStorage.removeItem("clientIdEncrypt");
+      window.localStorage.removeItem("clientIdExpiration");
+      window.localStorage.removeItem("rememberMe");
+
+      window.sessionStorage.removeItem("clientId");
 
       router.push("/auth/login");
       setIsLogoutModalOpen(false);
