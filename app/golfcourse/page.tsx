@@ -8,7 +8,11 @@ import { getGolfCourses } from "@/app/lib/api";
 // components
 import CourseCard from "../components/course-card";
 import AnimatedLoading from "../components/animated-loading";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Golf",
+  description: "GolfPage",
+};
 interface GolfCourse {
   golfCourseId: number;
   golfCourseName: string;
