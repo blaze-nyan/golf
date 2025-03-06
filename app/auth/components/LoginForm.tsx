@@ -40,16 +40,40 @@ export default function LoginForm() {
         password: formData.password,
       });
 
-      console.log("Login response:", response.data); // For debugging
+      console.log("Login response:", response.data);
 
       if (response.data.clientId) {
-        // Check for browser environment before using localStorage
+        // Check for browser environment before using storage
         if (typeof window !== "undefined") {
-          // Always store clientId, use remember for persistence duration
-          window.localStorage.setItem(
-            "clientId",
-            response.data.clientId.toString()
-          );
+          const clientIdStr = response.data.clientId.toString();
+
+          if (formData.remember) {
+            // If "Remember Me" is checked, use localStorage (persists indefinitely)
+            window.localStorage.setItem("clientId", clientIdStr);
+
+            // You can also set an expiration date if you want the "remember me" to last for a specific duration
+            // For example, 30 days from now
+            const expiration = new Date();
+            expiration.setDate(expiration.getDate() + 30);
+            window.localStorage.setItem(
+              "clientIdExpiration",
+              expiration.toISOString()
+            );
+
+            // Store the fact that user chose to be remembered
+            window.localStorage.setItem("rememberMe", "true");
+
+            // Clear any session storage to avoid conflicts
+            window.sessionStorage.removeItem("clientId");
+          } else {
+            // If "Remember Me" is NOT checked, use sessionStorage (cleared when browser is closed)
+            window.sessionStorage.setItem("clientId", clientIdStr);
+
+            // Clear any persistent storage to avoid conflicts
+            window.localStorage.removeItem("clientId");
+            window.localStorage.removeItem("clientIdExpiration");
+            window.localStorage.removeItem("rememberMe");
+          }
         }
 
         const staffList = await fetchData("staffList");

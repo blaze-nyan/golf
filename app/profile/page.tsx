@@ -1,10 +1,9 @@
+// app/profile/page.tsx
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
 import { encryptData } from "@/app/lib/dataEncrypt";
-
 import AnimatedLoading from "../components/animated-loading";
 
 export default function ProfileRedirect() {
@@ -13,7 +12,13 @@ export default function ProfileRedirect() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const clientId = window.localStorage.getItem("clientId");
+    // Check localStorage first (for remembered users)
+    let clientId = window.localStorage.getItem("clientId");
+
+    // If there's no clientId in localStorage, check sessionStorage
+    if (!clientId) {
+      clientId = window.sessionStorage.getItem("clientId");
+    }
 
     if (clientId) {
       try {
