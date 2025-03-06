@@ -168,14 +168,46 @@ export default function ProfilePage() {
   useEffect(() => {
     // Only run this code on the client side
     if (typeof window !== "undefined") {
-      const _clientId = window.localStorage.getItem("clientId");
-      if (_clientId) {
-        router.push(`/profile/${clientId_}`);
-      } else {
+      console.log("=== PROFILE PAGE DEBUG ===");
+      console.log("URL clientId:", clientId_);
+      console.log("Decoded clientId_:", decodedClientId_);
+      console.log("Decrypted clientId:", clientId);
+      console.log("localStorage clientId:", localStorage.getItem("clientId"));
+      console.log(
+        "sessionStorage clientId:",
+        sessionStorage.getItem("clientId")
+      );
+
+      // Get clientId from either storage
+      const getStoredClientId = () => {
+        const localId = window.localStorage.getItem("clientId");
+        if (localId) return localId;
+
+        const sessionId = window.sessionStorage.getItem("clientId");
+        if (sessionId) return sessionId;
+
+        return null;
+      };
+
+      const storedClientId = getStoredClientId();
+
+      // If we can't find a client ID in storage, redirect to login
+      if (!storedClientId) {
+        console.log("No client ID found in storage, redirecting to login");
         router.push("/auth/login");
+        return;
+      }
+
+      // If the decrypted ID doesn't match what's in storage, redirect to login
+      if (clientId.toString() !== storedClientId) {
+        console.log("Client ID mismatch, redirecting to login");
+        console.log("Decrypted:", clientId.toString());
+        console.log("Stored:", storedClientId);
+        router.push("/auth/login");
+        return;
       }
     }
-  }, [router]);
+  }, []);
 
   const openBookingModal = (booking: any) => {
     setSelectedBooking(booking);

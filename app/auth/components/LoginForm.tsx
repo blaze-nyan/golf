@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { fetchData } from "@/app/lib/api-placeholder-db";
+// import { setClientId } from "@/app/lib/auth";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -43,51 +44,36 @@ export default function LoginForm() {
       console.log("Login response:", response.data);
 
       if (response.data.clientId) {
-        // Check for browser environment before using storage
-        if (typeof window !== "undefined") {
-          const clientIdStr = response.data.clientId.toString();
+        const clientIdStr = response.data.clientId.toString();
 
-          if (formData.remember) {
-            // If "Remember Me" is checked, use localStorage (persists indefinitely)
-            window.localStorage.setItem("clientId", clientIdStr);
-
-            // You can also set an expiration date if you want the "remember me" to last for a specific duration
-            // For example, 30 days from now
-            const expiration = new Date();
-            expiration.setDate(expiration.getDate() + 30);
-            window.localStorage.setItem(
-              "clientIdExpiration",
-              expiration.toISOString()
-            );
-
-            // Store the fact that user chose to be remembered
-            window.localStorage.setItem("rememberMe", "true");
-
-            // Clear any session storage to avoid conflicts
-            window.sessionStorage.removeItem("clientId");
-          } else {
-            // If "Remember Me" is NOT checked, use sessionStorage (cleared when browser is closed)
-            window.sessionStorage.setItem("clientId", clientIdStr);
-
-            // Clear any persistent storage to avoid conflicts
-            window.localStorage.removeItem("clientId");
-            window.localStorage.removeItem("clientIdExpiration");
-            window.localStorage.removeItem("rememberMe");
-          }
+        // Set to both storage mechanisms temporarily (to debug the issue)
+        // In production, you'd use only one based on remember me
+        if (formData.remember) {
+          window.localStorage.setItem("clientId", clientIdStr);
+        } else {
+          window.sessionStorage.setItem("clientId", clientIdStr);
         }
 
-        const staffList = await fetchData("staffList");
+        // Debug storage after setting
+        console.log(
+          "After login - localStorage:",
+          localStorage.getItem("clientId")
+        );
+        console.log(
+          "After login - sessionStorage:",
+          sessionStorage.getItem("clientId")
+        );
 
+        const staffList = await fetchData("staffList");
         const clientIds = staffList.map(
           (staff: { [x: string]: any }) => staff["Client ID"]
         );
-        console.log(staffList);
-        console.log(clientIds);
 
+        // Use router.replace instead of push for more reliable navigation
         if (clientIds.includes(response.data.clientId.toString())) {
-          router.push("/dashboard");
+          router.replace("/dashboard");
         } else {
-          router.push("/profile");
+          router.replace("/profile");
         }
       } else {
         setError("Login failed - no client ID received");

@@ -1,8 +1,7 @@
+import { getClientId } from "./auth";
+
 export const checkClientId = (): string | null => {
-  if (typeof window !== "undefined") {
-    return window.localStorage.getItem("clientId");
-  }
-  return null;
+  return getClientId();
 };
 
 export const checkClientProfilePicture = (): string | null => {

@@ -1,4 +1,3 @@
-// app/components/logout-button.tsx
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -9,6 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
+import { clearAuthData } from "@/app/lib/auth";
 
 const LogoutButton = () => {
   const router = useRouter();
@@ -16,14 +16,18 @@ const LogoutButton = () => {
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
-      // Clear all auth-related data from both storages
-      window.localStorage.removeItem("clientImage");
-      window.localStorage.removeItem("clientId");
-      window.localStorage.removeItem("clientIdEncrypt");
-      window.localStorage.removeItem("clientIdExpiration");
-      window.localStorage.removeItem("rememberMe");
+      console.log("Logging out, clearing auth data");
+      clearAuthData();
 
-      window.sessionStorage.removeItem("clientId");
+      // Verify storage was cleared
+      console.log(
+        "After logout - localStorage clientId:",
+        localStorage.getItem("clientId")
+      );
+      console.log(
+        "After logout - sessionStorage clientId:",
+        sessionStorage.getItem("clientId")
+      );
 
       router.push("/auth/login");
       setIsLogoutModalOpen(false);
@@ -31,7 +35,7 @@ const LogoutButton = () => {
   };
 
   const closeModal = () => {
-    setIsLogoutModalOpen(false); // Close the modal without logging out
+    setIsLogoutModalOpen(false);
   };
 
   const handleConfirmation = () => {
