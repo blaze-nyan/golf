@@ -3,7 +3,11 @@ import React from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { Button } from "@heroui/button";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Hotel",
+  description: "HotelPage",
+};
 // Placeholder images
 const hotelImage =
 "https://media.istockphoto.com/id/472899538/photo/downtown-cleveland-hotel-entrance-and-waiting-taxi-cab.jpg?s=612x612&w=0&k=20&c=rz-WSe_6gKfkID6EL9yxCdN_UIMkXUBsr67884j-X9o=";

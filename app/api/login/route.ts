@@ -32,6 +32,9 @@ export async function POST(request: Request) {
       { headers }
     );
     console.log("Login response:", response.data);
+    // In app/api/login/route.ts
+    console.log("Full API response:", JSON.stringify(response.data, null, 2));
+    console.log("Authentication result:", response.data.payload);
 
     // Check the response structure and get Client ID
     const clientId = response.data.payload["Client ID"];

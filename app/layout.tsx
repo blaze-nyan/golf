@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "Splash Golf Club",
   description:
     "Experience world-class golfing at Splash Golf Club. Enjoy scenic courses, professional coaching, and exclusive membership benefits. Book your tee time today. Easily book tee times at top golf courses near you. Enjoy hassle-free online golf club reservations with the best rates. Golf Club Booking. Reserve your spot today!",
+  //   icons: {
+  //     icon: "/favicon.png", // Optional: Apple touch icon
+  // },
 };
 
 export default function RootLayout({
