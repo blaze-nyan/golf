@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// app/auth/components/VerifyEmailForm.tsx
 "use client";
 
 import React, { useState } from "react";
 import { Button, Input, Link } from "@heroui/react";
-// import { Icon } from "@iconify/react";
 import axios from "axios";
 
 interface VerifyEmailFormProps {
@@ -17,6 +17,7 @@ export default function VerifyEmailForm({
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(0);
   const [devOtp, setDevOtp] = useState<string | null>(null); // For development testing
@@ -24,9 +25,26 @@ export default function VerifyEmailForm({
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
+    setIsCheckingEmail(true);
 
     try {
+      // First check if email already exists
+      const checkResponse = await axios.post("/api/check-email-exists", {
+        email,
+      });
+
+      if (checkResponse.data.exists) {
+        setError(
+          `An account with email ${email} already exists. Please log in instead.`
+        );
+        setIsCheckingEmail(false);
+        return;
+      }
+
+      // Email doesn't exist, proceed with sending OTP
+      setIsCheckingEmail(false);
+      setIsLoading(true);
+
       const response = await axios.post("/api/verify-email", { email });
 
       if (response.data.success) {
@@ -51,8 +69,12 @@ export default function VerifyEmailForm({
       }
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to send verification code");
-    } finally {
+      setIsCheckingEmail(false);
       setIsLoading(false);
+    } finally {
+      if (!error) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -108,15 +130,19 @@ export default function VerifyEmailForm({
               variant="bordered"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
+              disabled={isLoading || isCheckingEmail}
             />
 
             <Button
               className="w-full bg-green-600 text-white"
               type="submit"
-              isLoading={isLoading}
+              isLoading={isLoading || isCheckingEmail}
             >
-              {isLoading ? "Sending..." : "Send Verification Code"}
+              {isCheckingEmail
+                ? "Checking..."
+                : isLoading
+                ? "Sending..."
+                : "Send Verification Code"}
             </Button>
 
             <p className="text-center text-small">
