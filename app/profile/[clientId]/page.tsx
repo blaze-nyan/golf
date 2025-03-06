@@ -517,31 +517,43 @@ export default function ProfilePage() {
           </CardHeader>
           <CardBody className="gap-4">
             <div className="grid gap-4 md:grid-cols-2">
-              <Select
-                label="Title"
-                defaultSelectedKeys={[profileData["Title"]]}
-                disabled={!isEditing}
-                onChange={handleInputChange("Title")}
-              >
-                {titles.map((title) => (
-                  <SelectItem key={title} value={title}>
-                    {title}
-                  </SelectItem>
-                ))}
-              </Select>
-
-              <Select
-                label="Gender"
-                defaultSelectedKeys={[profileData["Gender"]]}
-                disabled={!isEditing}
-                onChange={handleInputChange("Gender")}
-              >
-                {genders.map((gender) => (
-                  <SelectItem key={gender.value} value={gender.value}>
-                    {gender.label}
-                  </SelectItem>
-                ))}
-              </Select>
+              {isEditing ? (
+                <Select
+                  label="Title"
+                  defaultSelectedKeys={[profileData["Title"]]}
+                  onChange={handleInputChange("Title")}
+                >
+                  {titles.map((title) => (
+                    <SelectItem key={title} value={title}>
+                      {title}
+                    </SelectItem>
+                  ))}
+                </Select>
+              ) : (
+                <p className=" bg-default-50 text-default-700 px-3 py-2 rounded-md flex flex-col justify-center text-sm">
+                  <span>Title</span>
+                  {profileData["Title"] || "N/A"}
+                </p>
+              )}
+              {isEditing ? (
+                <Select
+                  label="Gender"
+                  defaultSelectedKeys={[profileData["Gender"]]}
+                  disabled={!isEditing}
+                  onChange={handleInputChange("Gender")}
+                >
+                  {genders.map((gender) => (
+                    <SelectItem key={gender.value} value={gender.value}>
+                      {gender.label}
+                    </SelectItem>
+                  ))}
+                </Select>
+              ) : (
+                <p className=" bg-default-50 text-default-700 px-3 py-2 rounded-md flex flex-col justify-center text-sm">
+                  <span>Gender</span>
+                  {profileData["Gender"] || "N/A"}
+                </p>
+              )}
 
               <Input
                 label="First Name"

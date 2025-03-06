@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -54,7 +55,6 @@ export default function LoginForm() {
         const staffList = await fetchData("staffList");
 
         const clientIds = staffList.map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (staff: { [x: string]: any }) => staff["Client ID"]
         );
         console.log(staffList);
@@ -68,7 +68,6 @@ export default function LoginForm() {
       } else {
         setError("Login failed - no client ID received");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
@@ -140,7 +139,11 @@ export default function LoginForm() {
             >
               Remember me
             </Checkbox>
-            <Link className="text-default-500" href="#" size="sm">
+            <Link
+              className="text-default-500"
+              href="/auth/forgot-password"
+              size="sm"
+            >
               Forgot password?
             </Link>
           </div>
