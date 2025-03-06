@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       );
     }    
     
-    if (!errorCode || errorCode != 0) {
+    if (errorCode !== 0) {
       return NextResponse.json(
         { error: "Make sure your password and emails are correct." },
         { status: 401 }
