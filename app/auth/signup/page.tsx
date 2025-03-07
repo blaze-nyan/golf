@@ -6,7 +6,7 @@ import SignupForm from "../components/SignupForm";
 import VerifyEmailForm from "../components/VerifyEmailForm";
 
 const SignupPage = () => {
-  const [step, setStep] = useState<"verify" | "signup">("verify");
+  const [step, setStep] = useState<"verify" | "signup">("signup");
   const [verifiedEmail, setVerifiedEmail] = useState("");
 
   const handleVerificationComplete = (email: string) => {

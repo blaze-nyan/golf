@@ -492,7 +492,7 @@ export default function ProfilePage() {
             <div className="relative inline-block">
               <Avatar
                 className="h-24 w-24 sm:h-32 sm:w-32 text-large"
-                src={profileImage ? `${profileImage}` : undefined}
+                src={profileImage ? `${profileImage}` : "golfball.webp"}
                 icon={<User size={40} />}
               />
               <Button
@@ -784,7 +784,7 @@ export default function ProfilePage() {
             <ModalBody>
               <Input
                 type="file"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 onChange={handleFileSelect}
                 disabled={isUploading}
               />

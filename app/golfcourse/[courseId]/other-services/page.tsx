@@ -27,12 +27,13 @@ const page = () => {
   useEffect(() => {
     const clientID =
       typeof window !== "undefined"
-        ? window.localStorage.getItem("clientId")
+        ? window.sessionStorage.getItem("clientId")
         : null;
     setBookingDetails((prevBookingDetails: any) => ({
       ...prevBookingDetails,
       clientID: clientID,
     }));
+    console.log(clientID)
     if (clientID) {
       getClientInfo(Number(clientID)).then((clientInfo) => {
         setGolferList([
@@ -41,7 +42,7 @@ const page = () => {
             : `${clientInfo["First Name"]} ${clientInfo["Surname"]}`,
         ]);
 
-        console.log(clientInfo);
+        console.log(clientInfo["Given Name"]);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
