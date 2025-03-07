@@ -95,7 +95,7 @@ const CoursePage = () => {
   if (!golfCourse) {
     return (
       <div className="p-4 text-center text-red-600 dark:text-red-400">
-        Failed to load golf course information. Please try again.
+        Only the Hackathon golf course is available in the prototype.
       </div>
     );
   }
