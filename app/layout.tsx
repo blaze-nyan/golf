@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 
 //components
 // import NavBar from "./components/NavBar";
-
+import AdvancedTourButton from "./components/AdvancedTourButton";
 import NavBar from "./components/nav-bar";
 import { ChatWidget } from "@/app/components/Chat/chat-widget";
 
@@ -42,6 +42,7 @@ export default function RootLayout({
           <NavBar />
           {children}
           <ChatWidget />
+          <AdvancedTourButton />
         </Providers>
       </body>
     </html>

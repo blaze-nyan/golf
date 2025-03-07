@@ -7,7 +7,8 @@ import { useTheme } from "next-themes";
 import Faq from "./components/faq";
 import Hero from "./components/hero";
 import CardReview from "@/app/components/card-review";
-
+//tour
+import { createHomeTour } from "@/app/lib/advance-tour-service";
 interface User {
   name: string;
   avatar: string;
@@ -73,7 +74,20 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     setMounted(true);
   }, []);
+  useEffect(() => {
+    if (!mounted) return;
 
+    // Start the tour
+    const tour = createHomeTour();
+    if (tour) {
+      // Short delay to ensure the DOM is fully loaded
+      const tourTimeout = setTimeout(() => {
+        tour.drive();
+      }, 500);
+
+      return () => clearTimeout(tourTimeout);
+    }
+  }, [mounted]);
   useEffect(() => {
     if (!mounted) return;
 

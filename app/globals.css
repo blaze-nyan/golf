@@ -40,3 +40,144 @@ body {
 .animate-splash {
   animation: splash 0.5s forwards;
 }
+
+/* Light mode theme */
+:root:not(.dark) .driver-popover-custom {
+  background-color: #e8faf0;
+  color: #095028;
+  border: 2px solid #0e793c;
+}
+
+:root:not(.dark) .driver-popover-custom .driver-popover-title,
+:root:not(.dark) .driver-popover-custom .driver-popover-description,
+:root:not(.dark) .driver-popover-custom .driver-popover-progress-text {
+  color: #095028;
+}
+
+:root:not(.dark) .driver-popover-custom button {
+  background-color: #0e793c;
+  color: white;
+  border: 2px solid #0e793c;
+  text-shadow: none;
+  font-size: 14px;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+:root:not(.dark) .driver-popover-custom button:hover {
+  background-color: #17c964;
+  border-color: #17c964;
+}
+
+:root:not(.dark) .driver-popover-custom .driver-popover-close-btn {
+  color: #74dfa2;
+}
+
+:root:not(.dark) .driver-popover-custom .driver-popover-close-btn:hover {
+  color: #0e793c;
+}
+
+:root:not(.dark)
+  .driver-popover-custom
+  .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: #e8faf0;
+}
+
+:root:not(.dark)
+  .driver-popover-custom
+  .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: #e8faf0;
+}
+
+:root:not(.dark)
+  .driver-popover-custom
+  .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: #e8faf0;
+}
+
+:root:not(.dark)
+  .driver-popover-custom
+  .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: #e8faf0;
+}
+
+/* Dark mode theme */
+.dark .driver-popover-custom {
+  background-color: #052814;
+  color: #b3ffd9;
+  border: 2px solid #00e676;
+}
+
+.dark .driver-popover-custom .driver-popover-title,
+.dark .driver-popover-custom .driver-popover-description,
+.dark .driver-popover-custom .driver-popover-progress-text {
+  color: #b3ffd9;
+}
+
+.dark .driver-popover-custom button {
+  background-color: #00e676;
+  color: #052814;
+  border: 2px solid #00e676;
+  text-shadow: none;
+  font-size: 14px;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.dark .driver-popover-custom button:hover {
+  background-color: #4dffa6;
+  border-color: #4dffa6;
+}
+
+.dark .driver-popover-custom .driver-popover-close-btn {
+  color: #00a544;
+}
+
+.dark .driver-popover-custom .driver-popover-close-btn:hover {
+  color: #00e676;
+}
+
+.dark
+  .driver-popover-custom
+  .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: #052814;
+}
+
+.dark
+  .driver-popover-custom
+  .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: #052814;
+}
+
+.dark
+  .driver-popover-custom
+  .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: #052814;
+}
+
+.dark
+  .driver-popover-custom
+  .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: #052814;
+}
+
+/* Shared styles */
+.driver-popover-custom {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.driver-popover-custom .driver-popover-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.driver-popover-custom .driver-popover-navigation-btns {
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.driver-popover-custom button {
+  flex: 1;
+  text-align: center;
+  transition: all 0.2s ease;
+}
