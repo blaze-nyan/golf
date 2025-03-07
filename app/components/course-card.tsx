@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Image, CardBody } from "@heroui/react";
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
-
+//tour
+import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
 interface CourseCardProps {
   course: any;
+  ready: boolean;
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, ready }: CourseCardProps) {
   const image = usePlaceholderGolfCourseImageLink();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -20,14 +22,30 @@ export default function CourseCard({ course }: CourseCardProps) {
   // Check if description is long enough to potentially need truncation
   // This is a simple heuristic - if text is over 200 chars, assume it might overflow
   const isLongDescription = description.length > 200;
+  useEffect(() => {
+    if (!ready) return; // Ensure data is loaded and component is mounted
+    if (ready) {
+      console.log("i am ready");
+    }
+
+    // Start the tour only after golf courses are ready
+    const tour = createGolfCourseTour();
+    if (tour) {
+      const tourTimeout = setTimeout(() => {
+        tour.drive();
+      }, 3000); // Short delay to ensure DOM is updated
+
+      return () => clearTimeout(tourTimeout);
+    }
+  }, [ready]);
 
   return (
-    <Card className="w-full max-w-[90%] transition-all duration-300 hover:scale-[1.01] sm:min-h-[250px] sm:max-h-[250px] min-h-[550px] max-h-[550px]">
+    <Card className="w-full max-w-[90%] transition-all duration-300 hover:scale-[1.01] sm:min-h-[250px] sm:max-h-[250px] min-h-[550px] max-h-[550px] course-card">
       <CardBody className="flex flex-row flex-wrap p-5 sm:flex-nowrap h-full overflow-hidden">
         <Image
           removeWrapper
           alt={course.golfCourseName}
-          className="h-auto w-full flex-none object-cover object-top md:w-[25%] min-w-[210px]"
+          className="h-auto w-full flex-none object-cover object-top md:w-[25%] min-w-[210px] "
           src={course.golfCourseImageUid || image}
         />
         <div className="px-5 py-3 flex flex-col overflow-hidden w-full">

@@ -292,16 +292,6 @@ const page = () => {
         </CardBody>
       </Card>
 
-      {/* Mobile Next Button */}
-      <div className="flex justify-start pt-4 md:hidden   p-2 shadow-lg">
-        <NextButton />
-      </div>
-
-      {/* Desktop Next Button */}
-      <div className="pt-4 hidden md:flex md:justify-start shadow-lg">
-        <NextButton />
-      </div>
-
       {/* Modal for Payment Success */}
       <Modal isOpen={isOpen} onClose={onClose} size="sm">
         <ModalContent className="dark:bg-gray-800">
