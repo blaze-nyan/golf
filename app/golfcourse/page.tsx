@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Icon } from "@iconify/react"; // Import Iconify for icons
+
 import Link from "next/link";
 import { getGolfCourses } from "@/app/lib/api";
 // components
@@ -27,6 +27,7 @@ interface GolfCourse {
 export default function GolfCoursesPage() {
   const [courses, setCourses] = useState<GolfCourse[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // State to track if courses are still loading
+  //data ready or not
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -51,8 +52,7 @@ export default function GolfCoursesPage() {
         const comingSoonCourse1: GolfCourse = {
           golfCourseId: 123,
           golfCourseName: "The Highland Links",
-          golfCourseDescription:
-            "Coming soon...",
+          golfCourseDescription: "Coming soon...",
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -67,8 +67,7 @@ export default function GolfCoursesPage() {
         const comingSoonCourse2: GolfCourse = {
           golfCourseId: -134,
           golfCourseName: "Sunset Bay Golf Club",
-          golfCourseDescription:
-            "Coming soon...",
+          golfCourseDescription: "Coming soon...",
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -119,14 +118,6 @@ export default function GolfCoursesPage() {
       </section>
 
       {/* Dropdown Icon to indicate scrolling down */}
-      {!loading && (
-        <div className="flex justify-center mb-2">
-          <Icon
-            icon="mdi:chevron-down"
-            className="text-4xl cursor-pointer animate-bounce"
-          />
-        </div>
-      )}
 
       {/* Loading state */}
       {loading ? (
@@ -145,7 +136,7 @@ export default function GolfCoursesPage() {
             }
             className="flex justify-center w-full"
           >
-            <CourseCard course={course} />
+            <CourseCard course={course} ready={loading} />
           </Link>
         ))
       )}

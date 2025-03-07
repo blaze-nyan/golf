@@ -157,28 +157,10 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
     {
       element: ".course-card",
       popover: {
-        title: "Golf Course Selection",
+        title: "Real Course From Api",
         description:
-          "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.",
-        position: "right",
-      },
-    },
-    {
-      element: ".course-card span.border.border-green-500",
-      popover: {
-        title: "Course Information",
-        description:
-          "These badges indicate key course information like the number of holes and par rating.",
+          "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
         position: "bottom",
-      },
-    },
-    {
-      element: ".course-card p.text-m",
-      popover: {
-        title: "Course Description",
-        description:
-          "Read about what makes each course special, including terrain features and difficulty level.",
-        position: "top",
       },
     },
   ];
