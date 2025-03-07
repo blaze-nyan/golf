@@ -180,11 +180,11 @@ export default function ProfilePage() {
 
       // Get clientId from either storage
       const getStoredClientId = () => {
-        const localId = window.localStorage.getItem("clientId");
-        if (localId) return localId;
-
         const sessionId = window.sessionStorage.getItem("clientId");
         if (sessionId) return sessionId;
+
+        const localId = window.localStorage.getItem("clientId");
+        if (localId) return localId;
 
         return null;
       };
@@ -235,7 +235,6 @@ export default function ProfilePage() {
   useEffect(() => {
     // Only execute on the client side
     if (typeof window !== "undefined") {
-      console.log(profileImage);
       window.localStorage.setItem("clientImage", profileImage);
     }
   }, [profileImage]);
@@ -265,8 +264,6 @@ export default function ProfilePage() {
         setProfileData(profileData); // This ensures profileData is set before it's used.
 
         if (imageData.success && imageData.imageInfo) {
-          console.log("TEST");
-          console.log(imageData.imageInfo);
           const base64Image = arrayBufferToBase64(imageData.imageInfo);
           setProfileImage(base64Image);
         }
@@ -277,7 +274,6 @@ export default function ProfilePage() {
           emailData
         );
 
-        console.log(result.emailComm);
         if (result.emailComm !== null) {
           setEmailData(result.emailComm);
         }
@@ -288,7 +284,7 @@ export default function ProfilePage() {
 
         const bookings = await fetchData("bookings");
         const filteredBookings = bookings.filter(
-          (booking: { clientID: any }) => booking.clientID === clientId
+          (booking: { clientID: any }) => booking.clientID === String(clientId)
         );
 
         setBookingData(filteredBookings);
@@ -349,7 +345,6 @@ export default function ProfilePage() {
 
       if (updatedImageData.success && updatedImageData.imageInfo) {
         const base64Image = arrayBufferToBase64(updatedImageData.imageInfo); // Convert to base64
-        console.log(base64Image);
         setProfileImage(base64Image); // Update the profile image state
       }
 
