@@ -52,7 +52,6 @@ export default function ProfileIcon() {
     fetchProfileAndImage();
   }, [profileImage]);
 
-  console.log(profileImage);
   let usedImage: string;
   if (profileImage !== "null" && profileImage) {
     usedImage = profileImage;
