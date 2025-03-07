@@ -31,61 +31,9 @@ export const resetTours = (): void => {
   localStorage.removeItem("visitedPages");
 };
 
-// Define custom theme that matches your website
-const customTheme = {
-  // Light mode colors
-  "--site-primary": "#0E793C", // Your primary green for light mode
-  "--site-primary-rgb": "14, 121, 60",
-
-  // Customize other colors as needed
-  "--driver-popover-bg": "#ffffff",
-  "--driver-popover-text": "#333333",
-  "--driver-stage-bg": "rgba(14, 121, 60, 0.2)",
-  "--driver-next-btn-bg": "#0E793C",
-  "--driver-prev-btn-bg": "#f1f1f1",
-  "--driver-next-btn-text": "#ffffff",
-  "--driver-prev-btn-text": "#333333",
-  "--driver-close-btn-bg": "#f1f1f1",
-  "--driver-close-btn-text": "#333333",
-  "--driver-btn-border-radius": "8px",
-  "--driver-z-index": "10000",
-  "--driver-highlight-radius": "8px",
-};
-
-// Dark mode theme setup
-const darkTheme = {
-  "--site-primary": "#00E676", // Your dark mode green
-  "--site-primary-rgb": "0, 230, 118",
-
-  // Dark mode specific colors
-  "--driver-popover-bg": "#1f2937",
-  "--driver-popover-text": "#f3f4f6",
-  "--driver-stage-bg": "rgba(0, 230, 118, 0.2)",
-  "--driver-next-btn-bg": "#00E676",
-  "--driver-prev-btn-bg": "#374151",
-  "--driver-next-btn-text": "#0f172a",
-  "--driver-prev-btn-text": "#f3f4f6",
-  "--driver-close-btn-bg": "#374151",
-  "--driver-close-btn-text": "#f3f4f6",
-};
-
-// Apply theme based on current mode
-const applyTheme = (darkMode: boolean) => {
-  const theme = darkMode ? { ...customTheme, ...darkTheme } : customTheme;
-  Object.entries(theme).forEach(([key, value]) => {
-    document.documentElement.style.setProperty(key, value);
-  });
-};
-
 // Home page tour
-export const createHomeTour = (
-  forceStart: boolean = false,
-  darkMode: boolean = false
-): any => {
+export const createHomeTour = (forceStart: boolean = false): any => {
   if (!forceStart && !isFirstVisit("home")) return null;
-
-  // Apply theme - this function should set your site's dark/light mode
-  applyTheme(darkMode);
 
   // Define the steps
   const steps = [
@@ -158,14 +106,8 @@ export const createHomeTour = (
 };
 
 // Golf course page tour
-export const createGolfCourseTour = (
-  forceStart: boolean = false,
-  darkMode: boolean = false
-): any => {
+export const createGolfCourseTour = (forceStart: boolean = false): any => {
   if (!forceStart && !isFirstVisit("golfcourse")) return null;
-
-  // Apply theme
-  applyTheme(darkMode);
 
   // Define the steps
   const steps = [
@@ -219,14 +161,8 @@ export const createGolfCourseTour = (
 };
 
 // Profile page tour
-export const createProfileTour = (
-  forceStart: boolean = false,
-  darkMode: boolean = false
-): any => {
+export const createProfileTour = (forceStart: boolean = false): any => {
   if (!forceStart && !isFirstVisit("profile")) return null;
-
-  // Apply theme
-  applyTheme(darkMode);
 
   // Define the steps
   const steps = [
@@ -278,14 +214,8 @@ export const createProfileTour = (
 };
 
 // Booking process tour
-export const createBookingProcessTour = (
-  forceStart: boolean = false,
-  darkMode: boolean = false
-): any => {
+export const createBookingProcessTour = (forceStart: boolean = false): any => {
   if (!forceStart && !isFirstVisit("booking-process")) return null;
-
-  // Apply theme
-  applyTheme(darkMode);
 
   // Define the steps
   const steps = [

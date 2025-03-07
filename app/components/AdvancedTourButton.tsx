@@ -24,7 +24,7 @@ export default function AdvancedTourButton() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
+  const isDarkMode = resolvedTheme;
 
   // Auto-start tour when page loads (only for first visit)
   useEffect(() => {
@@ -33,16 +33,16 @@ export default function AdvancedTourButton() {
       let tourDriver;
 
       if (pathname === "/") {
-        tourDriver = createHomeTour(false, isDarkMode);
+        tourDriver = createHomeTour(false);
       } else if (pathname === "/golfcourse") {
-        tourDriver = createGolfCourseTour(false, isDarkMode);
+        tourDriver = createGolfCourseTour(false);
       } else if (
         pathname.startsWith("/golfcourse/") &&
         pathname.includes("/hole")
       ) {
-        tourDriver = createBookingProcessTour(false, isDarkMode);
+        tourDriver = createBookingProcessTour(false);
       } else if (pathname.startsWith("/profile")) {
-        tourDriver = createProfileTour(false, isDarkMode);
+        tourDriver = createProfileTour(false);
       }
 
       if (tourDriver) {
@@ -57,16 +57,16 @@ export default function AdvancedTourButton() {
     let tourDriver;
 
     if (pathname === "/") {
-      tourDriver = createHomeTour(true, isDarkMode);
+      tourDriver = createHomeTour(true);
     } else if (pathname === "/golfcourse") {
-      tourDriver = createGolfCourseTour(true, isDarkMode);
+      tourDriver = createGolfCourseTour(true);
     } else if (
       pathname.startsWith("/golfcourse/") &&
       pathname.includes("/hole")
     ) {
-      tourDriver = createBookingProcessTour(true, isDarkMode);
+      tourDriver = createBookingProcessTour(true);
     } else if (pathname.startsWith("/profile")) {
-      tourDriver = createProfileTour(true, isDarkMode);
+      tourDriver = createProfileTour(true);
     }
 
     if (tourDriver) {
