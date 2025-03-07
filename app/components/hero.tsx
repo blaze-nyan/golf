@@ -110,7 +110,7 @@ const Hero: React.FC = () => {
   return (
     <main
       ref={heroSectionRef}
-      className="container mx-auto flex flex-1 flex-col items-center overflow-hidden px-4 sm:px-8 py-6 sm:py-10"
+      className="container mx-auto flex flex-1 flex-col items-center overflow-x-auto px-4 sm:px-8 py-6 sm:py-10"
     >
       <section className="z-20 flex flex-col items-center justify-center gap-4 sm:gap-6 w-full max-w-3xl">
         <div
@@ -125,7 +125,7 @@ const Hero: React.FC = () => {
           <span>{headingText}</span>
         </div>
 
-        <p className="text-center font-normal text-base sm:text-lg leading-6 sm:leading-7 text-gray-700 dark:text-gray-300 max-w-[466px]">
+        <p className="text-center font-normal text-base sm:text-lg leading-6 sm:leading-7 text-gray-700 dark:text-gray-300 max-w-[466px] px-6">
           Streamline your golf experience with Splash Golf Club&apos;s intuitive
           online booking platform. Enjoy real-time tee time availability, secure
           member access, and a hassle-free reservation process.
@@ -197,9 +197,8 @@ const Hero: React.FC = () => {
           Stay updated with the weather forecast for the next week.
         </p>
 
-        {/* Use a horizontal scrolling container without complex animations */}
-        <div className="mt-4 sm:mt-6 overflow-x-auto pb-4">
-          <div className="flex space-x-3 px-4 py-2">
+        <div className="mt-4 sm:mt-6 pb-4">
+          <div className="grid grid-cols-3 md:grid-cols-7 gap-4 px-4 py-2 sm:justify-center">
             {weekForecast.map((day, index) => (
               <div
                 key={day.day}
@@ -208,7 +207,7 @@ const Hero: React.FC = () => {
                   bg-white dark:bg-gray-800 
                   border border-gray-200 dark:border-gray-700 
                   rounded-lg shadow-md
-                  p-3 sm:p-4 min-w-[80px] w-[102px] sm:w-24 flex-shrink-0 
+                  p-3 sm:p-4 
                   transition-all duration-300
                   ${index === 0 ? "border-l-green-500 border-l-4" : ""}
                 `}
@@ -226,6 +225,7 @@ const Hero: React.FC = () => {
             ))}
           </div>
         </div>
+
       </section>
     </main>
   );
