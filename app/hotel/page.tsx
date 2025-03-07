@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@heroui/button";
 import { Metadata } from "next";
 export const metadata: Metadata = {
@@ -9,8 +9,7 @@ export const metadata: Metadata = {
   description: "HotelPage",
 };
 // Placeholder images
-const hotelImage =
-"https://media.istockphoto.com/id/472899538/photo/downtown-cleveland-hotel-entrance-and-waiting-taxi-cab.jpg?s=612x612&w=0&k=20&c=rz-WSe_6gKfkID6EL9yxCdN_UIMkXUBsr67884j-X9o=";
+const hotelImage = "/hotel.webp";
 
 export default function page() {
   return (
@@ -29,10 +28,13 @@ export default function page() {
       {/* Hotel Image and Description */}
       <div className="text-center mb-8 max-w-xl w-full">
         <div className="overflow-hidden rounded-lg shadow-md dark:shadow-primary-500/20 transition-transform duration-300 hover:scale-105 mb-6">
-          <img
+          <Image
             src={hotelImage}
-            alt="Hotel"
-            className="w-full h-52 md:h-64 lg:h-72 object-cover"
+            alt="Food"
+            width={800}
+            height={600}
+            className="w-full h-64 object-cover"
+            loading="lazy" // For below-the-fold images
           />
         </div>
         <h3 className="text-xl font-semibold mb-2 dark:text-white">
