@@ -132,45 +132,44 @@ const Hero: React.FC = () => {
         </p>
 
         <div className="flex justify-center space-x-6">
-        <div>
-        <Button
-          as={Link}
-          href="https://expo.dev/artifacts/eas/9gjPVcdPatFjFxf9fJC3rV.apk"
-          variant="light"
-          className="relative text-blue-600 dark:text-green-400 hover:text-blue-700 dark:hover:text-green-500 transition-all duration-300 
+          <div>
+            <Button
+              as={Link}
+              href="https://expo.dev/artifacts/eas/9gjPVcdPatFjFxf9fJC3rV.apk"
+              variant="light"
+              className="relative text-blue-600 dark:text-green-400 hover:text-blue-700 dark:hover:text-green-500 transition-all duration-300 
           after:absolute after:left-0 after:bottom-[-2px] after:h-[2px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full focus:after:w-full active:scale-95"
-          >
-          Get Our App
-        </Button>
+            >
+              Get Our App
+            </Button>
+          </div>
+          <div ref={ctaRef}>
+            <Button
+              as={Link}
+              href="/golfcourse"
+              color="primary"
+              className={`relative overflow-hidden px-6 py-3 shadow-lg rounded-full transition-all duration-300 ${
+                resolvedTheme === "dark"
+                  ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
+                  : "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white book-tee-time"
+              }`}
+              endContent={
+                <span
+                  ref={ctaIconRef}
+                  className="pointer-events-none flex h-[22px] w-[22px] items-center justify-center rounded-full ml-1"
+                >
+                  <Icon
+                    className="text-white [&>path]:stroke-[1.5]"
+                    icon="solar:arrow-right-linear"
+                    width={20}
+                  />
+                </span>
+              }
+            >
+              Book a Tee Time
+            </Button>
+          </div>
         </div>
-        <div ref={ctaRef}>
-          <Button
-            as={Link}
-            href="/golfcourse"
-            color="primary"
-            className={`relative overflow-hidden px-6 py-3 shadow-lg rounded-full transition-all duration-300 ${
-              resolvedTheme === "dark"
-                ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
-                : "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white"
-            }`}
-            endContent={
-              <span
-                ref={ctaIconRef}
-                className="pointer-events-none flex h-[22px] w-[22px] items-center justify-center rounded-full ml-1"
-              >
-                <Icon
-                  className="text-white [&>path]:stroke-[1.5]"
-                  icon="solar:arrow-right-linear"
-                  width={20}
-                />
-              </span>
-            }
-          >
-            Book a Tee Time
-          </Button>
-        </div>
-        </div>
-
       </section>
 
       {/* Weather Section */}
@@ -225,7 +224,6 @@ const Hero: React.FC = () => {
             ))}
           </div>
         </div>
-
       </section>
     </main>
   );

@@ -36,18 +36,27 @@ export const createHomeTour = (forceStart: boolean = false): any => {
   if (!forceStart && !isFirstVisit("home")) return null;
 
   // Define the steps
-  const steps = [
+  let steps = [
     {
-      element: ".hero-section",
+      element: ".nav-section",
       popover: {
         title: "Welcome to Splash Golf Club!",
         description:
-          "Discover a premium golfing experience. This tour will help you explore our platform.",
+          "Discover a premium golfing experience. This tour will help you explore our platform.(will edit later)",
         position: "bottom",
       },
     },
     {
-      element: 'a[href="/golfcourse"]',
+      element: ".burger-menu",
+      popover: {
+        title: "Welcome to Splash Golf Club!",
+        description:
+          "Discover a premium golfing experience. This tour will help you explore our platform.(will edit later)",
+        position: "left",
+      },
+    },
+    {
+      element: ".book-tee-time",
       popover: {
         title: "Book a Tee Time",
         description:
@@ -82,7 +91,41 @@ export const createHomeTour = (forceStart: boolean = false): any => {
         position: "bottom",
       },
     },
+    {
+      element: ".light-dark",
+      popover: {
+        title: "Light And Dark Mode",
+        description:
+          "Log in or sign up to access personalized features, manage bookings, and view your profile.(will edit later)",
+        position: "bottom",
+      },
+    },
+    {
+      element: ".chat-widget",
+      popover: {
+        title: "Chat",
+        description:
+          "Log in or sign up to access personalized features, manage bookings, and view your profile.(will edit later)",
+        position: "left",
+      },
+    },
   ];
+  // **Filter out steps where:**
+  // - The element does not exist
+  // - The element has the `hidden` class
+  // - The element is `display: none` or `visibility: hidden`
+  steps = steps.filter((step) => {
+    const el = document.querySelector(step.element);
+    if (!el) return false; // Skip if element doesn't exist
+
+    const computedStyle = window.getComputedStyle(el);
+    return (
+      !el.classList.contains("hidden") && // Skip if element has "hidden" class
+      computedStyle.display !== "none" && // Skip if element is display: none
+      computedStyle.visibility !== "hidden" // Skip if element is visibility: hidden
+    );
+  });
+  if (steps.length === 0) return null;
 
   // Create driver instance with the custom theme class
   const driverObj = driver({
