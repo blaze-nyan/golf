@@ -45,7 +45,6 @@ body {
 :root:not(.dark) .driver-popover-custom {
   background-color: #e8faf0;
   color: #095028;
-  border: 2px solid #0e793c;
 }
 
 :root:not(.dark) .driver-popover-custom .driver-popover-title,
@@ -70,11 +69,16 @@ body {
 }
 
 :root:not(.dark) .driver-popover-custom .driver-popover-close-btn {
-  color: #74dfa2;
+  color: #0e793c;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
 }
 
 :root:not(.dark) .driver-popover-custom .driver-popover-close-btn:hover {
   color: #0e793c;
+  background-color: transparent;
+  font-size: 18px;
 }
 
 :root:not(.dark)
@@ -105,7 +109,6 @@ body {
 .dark .driver-popover-custom {
   background-color: #052814;
   color: #b3ffd9;
-  border: 2px solid #00e676;
 }
 
 .dark .driver-popover-custom .driver-popover-title,
@@ -116,12 +119,12 @@ body {
 
 .dark .driver-popover-custom button {
   background-color: #00e676;
-  color: #052814;
+  color: #537160;
   border: 2px solid #00e676;
   text-shadow: none;
   font-size: 14px;
-  padding: 5px 8px;
-  border-radius: 6px;
+  /* padding: 5px 8px;
+  border-radius: 6px; */
 }
 
 .dark .driver-popover-custom button:hover {
@@ -131,10 +134,15 @@ body {
 
 .dark .driver-popover-custom .driver-popover-close-btn {
   color: #00a544;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
 }
 
 .dark .driver-popover-custom .driver-popover-close-btn:hover {
   color: #00e676;
+  background-color: transparent;
+  font-size: 18px;
 }
 
 .dark
