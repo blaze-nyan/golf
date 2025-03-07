@@ -18,7 +18,7 @@ export function ThemeSwitcher() {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="light" isIconOnly className="rounded-full">
+        <Button variant="light" isIconOnly className="rounded-full light-dark">
           {theme === "dark" ? (
             <Moon size={25} />
           ) : theme === "light" ? (

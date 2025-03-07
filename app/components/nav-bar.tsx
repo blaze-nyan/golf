@@ -23,7 +23,7 @@ import { cn } from "@heroui/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { checkClientId } from "../lib/general";
-const links = [
+export const links = [
   { href: "/golfcourse", label: "Golf" },
   { href: "/f&b", label: "F&B" },
   { href: "/hotel", label: "Hotel" },
@@ -42,7 +42,7 @@ export default function NavBar(props: NavbarProps) {
     <Navbar
       {...props}
       classNames={{
-        base: cn("border-default-100", {
+        base: cn("border-default-100 nav-section", {
           "bg-default-200/50 dark:bg-default-100/50": isMenuOpen,
         }),
         wrapper: "w-full justify-center",
@@ -88,7 +88,7 @@ export default function NavBar(props: NavbarProps) {
       </NavbarContent>
       <ThemeSwitcher />
 
-      <NavbarMenuToggle className="text-default-400 md:hidden" />
+      <NavbarMenuToggle className="text-default-400 md:hidden burger-menu" />
 
       <NavbarMenu className="top-[calc(var(--navbar-height)_-_1px)] max-h-fit bg-default-200/50 pb-6 pt-6 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50">
         {links.map(({ href, label }) => (
@@ -106,7 +106,7 @@ export default function NavBar(props: NavbarProps) {
         {checkClientId() ? (
           <NavbarMenuItem>
             <Link
-              className="mb-2 w-full text-default-500"
+              className="mb-2 w-full text-default-500 mobile-profile"
               href={`/profile`} // Corrected the template literal usage
               size="md"
             >
