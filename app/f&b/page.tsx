@@ -1,16 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React from "react";
 import { Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-
-// Placeholder images
-const foodImage =
-  "https://media.gettyimages.com/id/1036722774/photo/three-women-making-a-celebratory-toast.jpg?s=612x612&w=gi&k=20&c=cNfAzj9DWcNAHaDPbFlubvvWBRw4L54jDtk8ey_yT44=";
-const beverageImage =
-  "https://media.istockphoto.com/id/1184365682/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%AD%E0%B8%87%E0%B8%84%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%AD%E0%B8%9A%E0%B8%A1%E0%B8%B8%E0%B8%A1%E0%B8%A1%E0%B8%AD%E0%B8%87%E0%B8%94%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9A%E0%B8%99%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B8%AD%E0%B8%B2%E0%B8%AB%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%AD%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%95%E0%B9%88%E0%B8%B2%E0%B8%87%E0%B9%86%E0%B9%83%E0%B8%99%E0%B8%8A%E0%B8%B2%E0%B8%A1.jpg?s=1024x1024&w=is&k=20&c=CM0TXIFzZrQP6FQCgbZBdC6ezgbl7gLwgl-uFINLBWg=";
+import Image from "next/image";
 
 export default function page() {
   return (
@@ -31,10 +25,13 @@ export default function page() {
       <div className="flex flex-col md:flex-row gap-8 mb-8 justify-center w-full max-w-4xl">
         <div className="text-center w-full md:w-1/2 px-4">
           <div className="overflow-hidden rounded-lg shadow-md dark:shadow-primary-500/20 transition-transform duration-300 hover:scale-105">
-            <img
-              src={beverageImage}
+            <Image
+              src="/beverage.webp"
               alt="Food"
+              width={800}
+              height={600}
               className="w-full h-64 object-cover"
+              loading="lazy" // For below-the-fold images
             />
           </div>
           <h3 className="text-xl font-semibold mt-6 mb-2 dark:text-white">
@@ -48,10 +45,13 @@ export default function page() {
 
         <div className="text-center w-full md:w-1/2 px-4">
           <div className="overflow-hidden rounded-lg shadow-md dark:shadow-primary-500/20 transition-transform duration-300 hover:scale-105">
-            <img
-              src={foodImage}
-              alt="Beverages"
+            <Image
+              src="/food.webp"
+              alt="Food"
+              width={800}
+              height={600}
               className="w-full h-64 object-cover"
+              loading="lazy" // For below-the-fold images
             />
           </div>
           <h3 className="text-xl font-semibold mt-6 mb-2 dark:text-white">
