@@ -24,7 +24,7 @@ export default function SignupForm({ verifiedEmail }: SignupFormProps) {
   const [formData, setFormData] = useState({
     firstName: "",
     surname: "",
-    email: verifiedEmail,
+    email: "",
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
@@ -127,9 +127,7 @@ export default function SignupForm({ verifiedEmail }: SignupFormProps) {
             type="email"
             variant="bordered"
             value={formData.email}
-            readOnly
-            disabled={true}
-            className="opacity-70"
+            onChange={handleInputChange}
           />
           <Input
             isRequired

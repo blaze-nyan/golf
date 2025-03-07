@@ -185,7 +185,7 @@ export default function MembershipPage() {
 
       {/* Register Button */}
       {selectedMembership && (
-        <Link href="/menu" className="mb-4">
+        <Link href="https://demo.ob.cimsoweb.com/" className="mb-4">
           <Button
             variant="solid"
             color="primary"
@@ -198,7 +198,7 @@ export default function MembershipPage() {
       )}
 
       {/* Link to learn more */}
-      <Link href="/menu">
+      <Link href="https://demo.ob.cimsoweb.com/">
         <Button
           variant="light"
           className="flex items-center gap-2 dark:text-gray-300 hover:dark:text-white transition-colors"

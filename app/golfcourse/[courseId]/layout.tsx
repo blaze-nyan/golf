@@ -77,7 +77,7 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      style={{ height: "calc(100dvh - 130px)" }}
+      style={{ height: "calc(100dvh - 180px)" }}
       className="w-full max-w-[100%]  relative  flex overflow-hidden"
     >
       {/* Main content area */}

@@ -131,6 +131,18 @@ const Hero: React.FC = () => {
           member access, and a hassle-free reservation process.
         </p>
 
+        <div className="flex justify-center space-x-6">
+        <div>
+        <Button
+          as={Link}
+          href="https://expo.dev/artifacts/eas/9gjPVcdPatFjFxf9fJC3rV.apk"
+          variant="light"
+          className="relative text-blue-600 dark:text-green-400 hover:text-blue-700 dark:hover:text-green-500 transition-all duration-300 
+          after:absolute after:left-0 after:bottom-[-2px] after:h-[2px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full focus:after:w-full active:scale-95"
+          >
+          Get Our App
+        </Button>
+        </div>
         <div ref={ctaRef}>
           <Button
             as={Link}
@@ -157,6 +169,8 @@ const Hero: React.FC = () => {
             Book a Tee Time
           </Button>
         </div>
+        </div>
+
       </section>
 
       {/* Weather Section */}
