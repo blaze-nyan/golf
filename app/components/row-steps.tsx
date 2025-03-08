@@ -180,6 +180,7 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
                   key={stepIdx}
                   ref={ref}
                   aria-current={status === "active" ? "step" : undefined}
+                  disabled={status === "inactive"? true: false}
                   className={cn(
                     "group flex w-full cursor-pointer flex-row items-center justify-center gap-x-3 rounded-large py-2.5",
                     stepClassName

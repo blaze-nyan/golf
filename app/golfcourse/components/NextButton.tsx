@@ -6,20 +6,23 @@ import { useRouter } from "next/navigation";
 import { STEPS } from "../context/progress-context";
 import { Button } from "@heroui/button";
 
-export function NextButton() {
+export function NextButton({ disabled = false }) {
   const { currentStep, completeStep, courseId } = useProgress();
   const router = useRouter();
 
   const handleNext = () => {
     // Complete current step
-    completeStep(currentStep);
-
-    // Move to next step if not on last step
-    if (currentStep < STEPS.length - 1) {
-      const nextStep = STEPS[currentStep + 1];
-      router.push(nextStep.path(courseId));
+    if (!disabled){
+      completeStep(currentStep);
+  
+      // Move to next step if not on last step
+      if (currentStep < STEPS.length - 1) {
+        const nextStep = STEPS[currentStep + 1];
+        router.push(nextStep.path(courseId));
+      }
     }
   };
+
 
   // Don't show button on last step
   if (currentStep === STEPS.length - 1) {
@@ -27,7 +30,8 @@ export function NextButton() {
   }
 
   return (
-    <Button onPress={handleNext} color="primary">
+
+    <Button onPress={handleNext} color={disabled? "default":`primary`}>
       Next
     </Button>
   );

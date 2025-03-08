@@ -123,6 +123,8 @@ const page = () => {
 
   const [selectedTimeCode, setSelectedTimeCode] = useState<number | null>(null);
 
+  const [disabledNext, setDisabledNext] = useState<boolean>(true);
+
   const [isLoading, setLoading] = useState(true);
   const [showTimeFilters, setShowTimeFilters] = useState(false);
 
@@ -167,6 +169,7 @@ const page = () => {
 
   const handleCardClick = (timeCode: number) => {
     setSelectedTimeCode(timeCode === selectedTimeCode ? null : timeCode);
+    setDisabledNext(timeCode === selectedTimeCode? true: false);
   };
 
   useEffect(() => {
@@ -195,6 +198,7 @@ const page = () => {
         teeTime: null,
       }));
       setSelectedTimeCode(null);
+      setDisabledNext(true);
     }
   }, [selectedDate, setBookingDetails]);
 
@@ -531,12 +535,12 @@ const page = () => {
       {/* Next button - fixed position at bottom for mobile */}
 
       <div className="flex justify-start pt-4 md:hidden   p-2 shadow-lg">
-        <NextButton />
+        <NextButton disabled={disabledNext}/>
       </div>
 
       {/* Desktop next button */}
       <div className="pt-4 hidden md:flex md:justify-start">
-        <NextButton />
+        <NextButton  disabled={disabledNext}/>
       </div>
     </div>
   );
