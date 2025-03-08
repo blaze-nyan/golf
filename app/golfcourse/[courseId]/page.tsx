@@ -74,10 +74,15 @@ const CoursePage = () => {
 
   useEffect(() => {
     if (golfCourse) {
+      const clientID =
+      typeof window !== "undefined"
+        ? window.sessionStorage.getItem("clientId")
+        : null;
       setBookingDetails((prevBookingDetails: any) => ({
         ...prevBookingDetails,
         courseId: courseId,
         courseName: golfCourse.golfCourseName,
+        clientID: clientID,
         courseLocation:
           "52 347 Phahonyothin Rd, Tambon Lak Hok, Amphoe Mueang Pathum Thani",
       }));
