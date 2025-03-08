@@ -23,6 +23,7 @@ import { getClientInfo } from "@/app/lib/api";
 
 const page = () => {
   const { setBookingDetails, bookingDetails } = useProgress();
+  const [disableNext, setDisableNext] = useState(true)
 
   useEffect(() => {
     const clientID =
@@ -33,7 +34,6 @@ const page = () => {
       ...prevBookingDetails,
       clientID: clientID,
     }));
-    console.log(clientID)
     if (clientID) {
       getClientInfo(Number(clientID)).then((clientInfo) => {
         setGolferList([
@@ -41,8 +41,7 @@ const page = () => {
             ? clientInfo["Given Name"]
             : `${clientInfo["First Name"]} ${clientInfo["Surname"]}`,
         ]);
-
-        console.log(clientInfo["Given Name"]);
+        setDisableNext(false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -339,7 +338,7 @@ const page = () => {
         Total: {totalPrice} THB
       </div>
       <div className="mt-6 flex justify-start w-[100%]">
-        <NextButton />
+        <NextButton disabled={disableNext}/>
       </div>
     </div>
   );

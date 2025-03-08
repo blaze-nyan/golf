@@ -42,7 +42,8 @@ const GolfFeesTable = () => {
             <tr>
               <td className="px-4 py-2 text-center border-b">Fee (THB)</td>
               {tableData9Hole.map(([_, fee], index) => {
-                console.log(_);
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                _;
                 return (
                   <td key={index} className="px-4 py-2 text-center border-b">
                     {fee}
@@ -72,7 +73,8 @@ const GolfFeesTable = () => {
             <tr>
               <td className="px-4 py-2 text-center border-b">Fee (THB)</td>
               {tableData18Hole.map(([_, fee], index) => {
-                console.log(_);
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                _;
                 return (
                   <td key={index} className="px-4 py-2 text-center border-b">
                     {fee}

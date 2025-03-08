@@ -75,6 +75,13 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     pathname.match(new RegExp(step.path(courseId).replace(/\//g, "\\/") + "$"))
   );
 
+  const [hydrated, setHydrated] = useState(false);
+
+  // Effect to indicate initial render is done
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   // Load progress from window.localStorage on mount
   useEffect(() => {
     if (courseId && typeof window !== "undefined") {
@@ -89,46 +96,58 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, [courseId]);
 
+
   useEffect(() => {
-    if (courseId && typeof window !== "undefined") {
+    console.log("HYdaration", hydrated)
+    if (courseId && typeof window !== "undefined" && hydrated) {
       const savedBookingDetails = window.localStorage.getItem(
         `bookingDetails_${courseId}`
       );
-      console.log(savedBookingDetails);
-      if (savedBookingDetails) {
-        setBookingDetails(JSON.parse(savedBookingDetails));
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (courseId && typeof window !== "undefined") {
+      console.log(savedBookingDetails)
+      console.log(bookingDetails)
       window.localStorage.setItem(
         `bookingDetails_${courseId}`,
         JSON.stringify(bookingDetails)
       );
     }
+    if (!hydrated) {
+      if (courseId && typeof window !== "undefined") {
+        const savedBookingDetails = window.localStorage.getItem(
+          `bookingDetails_${courseId}`
+        );
+        if (savedBookingDetails) {
+          setBookingDetails(JSON.parse(savedBookingDetails));
+        }
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookingDetails, courseId]);
 
   useEffect(() => {
-    if (courseId && maxCompletedStep >= 0 && typeof window !== "undefined") {
+    if (courseId && currentStep >= 0 && typeof window !== "undefined") {
       window.localStorage.setItem(
         `golfCourseProgress_${courseId}`,
-        String(maxCompletedStep)
+        String(currentStep)
       );
     }
-  }, [maxCompletedStep, courseId]);
+  }, [currentStep, courseId]);
 
   useEffect(() => {
     if (courseId && currentStep > maxCompletedStep + 1) {
+      let step = 0;
+      if (typeof window !== "undefined") {
+        step = Number(window.localStorage.getItem(
+          `golfCourseProgress_${courseId}`
+        ));
+      }
       const allowedPath =
-        STEPS[maxCompletedStep + 1]?.path(courseId) || STEPS[0].path(courseId);
+        STEPS[step].path(courseId);
       router.replace(allowedPath);
     }
   }, [currentStep, maxCompletedStep, router, courseId]);
 
   const completeStep = (step: number) => {
-    setMaxCompletedStep((prev) => Math.max(prev, step));
+    setMaxCompletedStep(step);
   };
 
   const canAccess = (step: number) => {
