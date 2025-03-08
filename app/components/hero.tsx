@@ -143,7 +143,7 @@ const Hero: React.FC = () => {
               Get Our App
             </Button>
           </div>
-          <div ref={ctaRef}>
+          <div ref={ctaRef} className="book-tee-time">
             <Button
               as={Link}
               href="/golfcourse"
@@ -151,7 +151,7 @@ const Hero: React.FC = () => {
               className={`relative overflow-hidden px-6 py-3 shadow-lg rounded-full transition-all duration-300 ${
                 resolvedTheme === "dark"
                   ? "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
-                  : "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white book-tee-time"
+                  : "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white "
               }`}
               endContent={
                 <span
