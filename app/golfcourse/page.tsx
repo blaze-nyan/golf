@@ -117,11 +117,9 @@ export default function GolfCoursesPage() {
         </p>
       </section>
 
-      {/* Dropdown Icon to indicate scrolling down */}
-
       {/* Loading state */}
       {loading ? (
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center items-center mt-10">
           <AnimatedLoading />
         </div>
       ) : (

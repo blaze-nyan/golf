@@ -460,7 +460,7 @@ const page = () => {
           {/* Tee time grid - RESPONSIVE GRID that adjusts based on panel visibility */}
           {filteredTeeTimes.length > 0 && (
             <div
-              className={`w-full max-h-[350px] sm:max-h-[400px] md:max-h-[255px] p-2 sm:p-4 grid ${getGridColumnClass()} gap-2 sm:gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md transition-all duration-300`}
+              className={`w-full  max-h-[350px] sm:max-h-[400px]  p-2 sm:p-4 grid ${getGridColumnClass()} gap-2 sm:gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md transition-all duration-300`}
             >
               {availableTeeTimes.map((data, index) => {
                 if (!compareTime(data["Tee Minute"], startTime, endTime)) {
