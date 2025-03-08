@@ -2,18 +2,23 @@
 // app/auth/components/SignupForm.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Input, Checkbox, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { signUp } from "@/app/lib/api";
-import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface SignupFormProps {
-  verifiedEmail: string;
+  onProceedToVerification: (userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    surname: string;
+  }) => void;
 }
 
-export default function SignupForm({ verifiedEmail }: SignupFormProps) {
-  const router = useRouter();
+export default function SignupForm({
+  onProceedToVerification,
+}: SignupFormProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [error, setError] = useState("");
@@ -29,14 +34,6 @@ export default function SignupForm({ verifiedEmail }: SignupFormProps) {
     confirmPassword: "",
     agreeToTerms: false,
   });
-
-  // Update email when verifiedEmail changes
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      email: verifiedEmail,
-    }));
-  }, [verifiedEmail]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -65,19 +62,38 @@ export default function SignupForm({ verifiedEmail }: SignupFormProps) {
     setIsLoading(true);
 
     try {
-      const response = await signUp({
+      // First check if email already exists
+      const checkResponse = await axios.post("/api/check-email-exists", {
         email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        surname: formData.surname,
       });
-      console.log(response);
 
-      // If signup successful, redirect to login
-      router.push("/auth/login");
+      if (checkResponse.data.exists) {
+        setError(
+          `An account with email ${formData.email} already exists. Please log in instead.`
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // If email doesn't exist, send OTP
+      const otpResponse = await axios.post("/api/verify-email", {
+        email: formData.email,
+      });
+
+      if (otpResponse.data.success) {
+        // Proceed to verification step with the form data
+        onProceedToVerification({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          surname: formData.surname,
+        });
+      } else {
+        setError("Failed to send verification code. Please try again.");
+      }
     } catch (err: any) {
       setError(
-        err.response?.data?.message || "Signup failed. Please try again."
+        err.response?.data?.error || "An error occurred. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -128,6 +144,7 @@ export default function SignupForm({ verifiedEmail }: SignupFormProps) {
             variant="bordered"
             value={formData.email}
             onChange={handleInputChange}
+            disabled={isLoading}
           />
           <Input
             isRequired
@@ -202,7 +219,7 @@ export default function SignupForm({ verifiedEmail }: SignupFormProps) {
             </Link>
           </Checkbox>
           <Button color="primary" type="submit" isLoading={isLoading}>
-            {isLoading ? "Signing up..." : "Sign Up"}
+            {isLoading ? "Processing..." : "Sign Up"}
           </Button>
         </form>
         <p className="text-center text-small">
