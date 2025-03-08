@@ -15,7 +15,6 @@ import { useTheme } from "next-themes";
 import {
   createHomeTour,
   createGolfCourseTour,
-  resetTours,
   createSingleGolfCourseTour,
 } from "@/app/lib/advance-tour-service";
 
@@ -75,10 +74,10 @@ export default function AdvancedTourButton() {
     }
   };
 
-  const handleResetTours = () => {
-    resetTours();
-    setIsOpen(false);
-  };
+  // const handleResetTours = () => {
+  //   resetTours();
+  //   setIsOpen(false);
+  // };
 
   return (
     <Dropdown isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)}>
@@ -103,14 +102,14 @@ export default function AdvancedTourButton() {
         >
           Start Page Guide
         </DropdownItem>
-        <DropdownItem
+        {/* <DropdownItem
           key="reset"
           startContent={<Icon icon="heroicons:arrow-path" />}
           onPress={handleResetTours}
           className="text-red-500 dark:text-red-400"
         >
           Reset All Guides
-        </DropdownItem>
+        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );

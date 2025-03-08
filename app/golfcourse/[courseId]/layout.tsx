@@ -16,7 +16,7 @@ export default function GolfCourseLayout({
     <ProgressProvider>
       <AuthRedirect></AuthRedirect>
       <div className="flex flex-col min-h-[60%] m-4 mr-0 md:m-10 md:mr-0 md:mt-1  mt-3">
-        <div className="hidden md:block">
+        <div className="">
           <Stepper />
         </div>
         <ProgressConsumer>{children}</ProgressConsumer>

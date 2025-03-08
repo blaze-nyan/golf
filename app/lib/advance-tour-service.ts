@@ -153,7 +153,7 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
   if (!forceStart && !isFirstVisit("golfcourse")) return null;
 
   // Define the steps
-  const steps = [
+  let steps = [
     {
       element: ".course-card",
       popover: {
@@ -164,6 +164,22 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
       },
     },
   ];
+  // **Filter out steps where:**
+  // - The element does not exist
+  // - The element has the `hidden` class
+  // - The element is `display: none` or `visibility: hidden`
+  steps = steps.filter((step) => {
+    const el = document.querySelector(step.element);
+    if (!el) return false; // Skip if element doesn't exist
+
+    const computedStyle = window.getComputedStyle(el);
+    return (
+      !el.classList.contains("hidden") && // Skip if element has "hidden" class
+      computedStyle.display !== "none" && // Skip if element is display: none
+      computedStyle.visibility !== "hidden" // Skip if element is visibility: hidden
+    );
+  });
+  if (steps.length === 0) return null;
 
   const driverObj = driver({
     animate: true,
@@ -191,7 +207,7 @@ export const createSingleGolfCourseTour = (
   if (!forceStart && !isFirstVisit("golfcourse")) return null;
 
   // Define the steps
-  const steps = [
+  let steps = [
     {
       element: ".stepper",
       popover: {
@@ -229,7 +245,22 @@ export const createSingleGolfCourseTour = (
     //   },
     // },
   ];
+  // **Filter out steps where:**
+  // - The element does not exist
+  // - The element has the `hidden` class
+  // - The element is `display: none` or `visibility: hidden`
+  steps = steps.filter((step) => {
+    const el = document.querySelector(step.element);
+    if (!el) return false; // Skip if element doesn't exist
 
+    const computedStyle = window.getComputedStyle(el);
+    return (
+      !el.classList.contains("hidden") && // Skip if element has "hidden" class
+      computedStyle.display !== "none" && // Skip if element is display: none
+      computedStyle.visibility !== "hidden" // Skip if element is visibility: hidden
+    );
+  });
+  if (steps.length === 0) return null;
   const driverObj = driver({
     animate: true,
     opacity: 0.75,
