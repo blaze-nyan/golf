@@ -29,14 +29,14 @@ const MembershipInfoList: React.FC<MembershipInfoListProps> = ({
   membershipsList,
 }) => {
   return (
-    <Card className="md:col-span-3 p-5">
+    <Card className="md:col-span-3 p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm box-border outline-none">
       <CardHeader>
         <h3 className="text-lg font-semibold">Membership Information</h3>
       </CardHeader>
       <CardBody>
         <div className="overflow-x-auto max-w-full">
           {/* Header Row */}
-          <div className="grid grid-cols-3 md:grid-cols-8 gap-4 font-semibold text-gray-700 bg-gray-100 p-3 rounded-md shadow-sm">
+          <div className="grid grid-cols-3 md:grid-cols-8 gap-4     font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-3 rounded-md shadow-sm">
             <div className="text-sm">Membership ID</div>
             <div className="text-sm hidden md:block">Membership Type</div>
             <div className="text-sm">Membership Number</div>
