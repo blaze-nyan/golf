@@ -195,9 +195,8 @@ const Hero: React.FC = () => {
         <p className="text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 mt-2 sm:mt-3 mx-auto">
           Stay updated with the weather forecast for the next week.
         </p>
-
-        <div className="mt-4 sm:mt-6 pb-4">
-          <div className="grid grid-cols-3 md:grid-cols-7 gap-4 px-4 py-2 sm:justify-center">
+        <div className="mt-4 sm:mt-6 overflow-x-auto  pb-4">
+          <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 pt-4 w-[300px] sm:w-full">
             {weekForecast.map((day, index) => (
               <div
                 key={day.day}
@@ -205,9 +204,10 @@ const Hero: React.FC = () => {
                 className={`
                   bg-white dark:bg-gray-800 
                   border border-gray-200 dark:border-gray-700 
-                  rounded-lg shadow-md
-                  p-3 sm:p-4 
+                  rounded-lg shadow-md dark:shadow-gray-900/30
+                  p-3 sm:p-4 min-w-[40px] w-[102px] sm:w-24 flex-shrink-0 
                   transition-all duration-300
+                  cursor-pointer
                   ${index === 0 ? "border-l-green-500 border-l-4" : ""}
                 `}
               >
