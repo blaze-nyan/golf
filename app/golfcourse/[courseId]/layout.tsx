@@ -15,7 +15,7 @@ export default function GolfCourseLayout({
   return (
     <ProgressProvider>
       <AuthRedirect></AuthRedirect>
-      <div className="flex flex-col min-h-[60%] m-4 mr-0 md:m-10 md:mr-0 md:mt-1 mb-5 mt-3">
+      <div className="flex flex-col min-h-[60%] m-4 mr-0 md:m-10 md:mr-0 md:mt-1  mt-3">
         <div className="hidden md:block">
           <Stepper />
         </div>
@@ -77,7 +77,7 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      style={{ height: "calc(100dvh - 180px)" }}
+      style={{ height: "calc(100dvh - 167px)" }}
       className="w-full max-w-[100%]  relative  flex overflow-hidden"
     >
       {/* Main content area */}
