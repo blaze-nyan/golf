@@ -28,7 +28,9 @@ export default function AdvancedTourButton() {
 
   // Auto-start tour when page loads (only for first visit)
   useEffect(() => {
-    // Short delay to ensure the DOM is fully loaded
+    // Determine delay based on pathname
+    const delay = pathname === "/golfcourse" ? 2000 : 800; // 2s for /golfcourse, 800ms for others
+
     const tourTimeout = setTimeout(() => {
       let tourDriver;
 
@@ -48,7 +50,7 @@ export default function AdvancedTourButton() {
       if (tourDriver) {
         tourDriver.drive();
       }
-    }, 800);
+    }, delay);
 
     return () => clearTimeout(tourTimeout);
   }, [pathname, isDarkMode]);

@@ -55,7 +55,7 @@ const BookingDetails = () => {
             <Icon
               icon="mdi-golf"
               className="text-green-600 dark:text-green-500"
-            />{" "}
+            />
             Booking Type:{" "}
             {bookingDetails.bookingType == 1 ? "9-Hole" : "18-Hole"}
           </span>
