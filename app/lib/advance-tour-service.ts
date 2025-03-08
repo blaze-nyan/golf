@@ -40,18 +40,18 @@ export const createHomeTour = (forceStart: boolean = false): any => {
     {
       element: ".nav-section",
       popover: {
-        title: "Welcome to Splash Golf Club!",
+        title: "Navigation Menu",
         description:
-          "Discover a premium golfing experience. This tour will help you explore our platform.(will edit later)",
+          "Access different sections of our website including Golf Courses, F&B, Hotel, and Membership options.",
         position: "bottom",
       },
     },
     {
       element: ".burger-menu",
       popover: {
-        title: "Welcome to Splash Golf Club!",
+        title: "Mobile Menu",
         description:
-          "Discover a premium golfing experience. This tour will help you explore our platform.(will edit later)",
+          "On smaller screens, tap here to access the navigation menu with all site sections.",
         position: "left",
       },
     },
@@ -69,7 +69,7 @@ export const createHomeTour = (forceStart: boolean = false): any => {
       popover: {
         title: "Weather Forecast",
         description:
-          "Check real-time weather conditions to plan your perfect golfing day.",
+          "Check real-time weather conditions to plan your perfect golfing day. Includes current temperature and playing conditions.",
         position: "top",
       },
     },
@@ -78,34 +78,34 @@ export const createHomeTour = (forceStart: boolean = false): any => {
       popover: {
         title: "Frequently Asked Questions",
         description:
-          "Find answers to common questions about memberships, bookings, and course policies.",
+          "Find answers to common questions about bookings, cancellations, and course policies.",
         position: "top",
       },
     },
     {
       element: 'a[href="/auth/login"]',
       popover: {
-        title: "User Account",
+        title: "Login / Sign Up",
         description:
-          "Log in or sign up to access personalized features, manage bookings, and view your profile.",
+          "Create an account or sign in to book tee times, manage reservations, and view your profile.",
         position: "bottom",
       },
     },
     {
       element: ".light-dark",
       popover: {
-        title: "Light And Dark Mode",
+        title: "Theme Switcher",
         description:
-          "Log in or sign up to access personalized features, manage bookings, and view your profile.(will edit later)",
+          "Toggle between light and dark mode for your preferred viewing experience.",
         position: "bottom",
       },
     },
     {
       element: ".chat-widget",
       popover: {
-        title: "Chat",
+        title: "Golf Assistant",
         description:
-          "Log in or sign up to access personalized features, manage bookings, and view your profile.(will edit later)",
+          "Need help? Chat with our virtual assistant for immediate answers to your questions about courses, bookings, or amenities.",
         position: "left",
       },
     },
@@ -159,7 +159,7 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
       popover: {
         title: "Real Course From Api",
         description:
-          "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
+          "This is the only real course that we got form the api. Rest of the courses are fake we created to demonstrate the designs if we have multiple courses",
         position: "bottom",
       },
     },
@@ -211,39 +211,12 @@ export const createSingleGolfCourseTour = (
     {
       element: ".stepper",
       popover: {
-        title: "Golf Tour",
+        title: "Booking Progress",
         description:
-          "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
+          "This navigation bar tracks your progress through the booking process. Complete each step to finalize your tee time reservation.",
         position: "bottom",
       },
     },
-    // {
-    //   element: ".hole",
-    //   popover: {
-    //     title: "Hole",
-    //     description:
-    //       "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
-    //     position: "bottom",
-    //   },
-    // },
-    // {
-    //   element: ".price",
-    //   popover: {
-    //     title: "Price",
-    //     description:
-    //       "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
-    //     position: "bottom",
-    //   },
-    // },
-    // {
-    //   element: ".panel-button",
-    //   popover: {
-    //     title: "Panel Button",
-    //     description:
-    //       "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
-    //     position: "bottom",
-    //   },
-    // },
   ];
   // **Filter out steps where:**
   // - The element does not exist
@@ -261,112 +234,6 @@ export const createSingleGolfCourseTour = (
     );
   });
   if (steps.length === 0) return null;
-  const driverObj = driver({
-    animate: true,
-    opacity: 0.75,
-    padding: 5,
-    showButtons: ["next", "previous", "close"],
-    doneBtnText: "Finish",
-    closeBtnText: "Skip",
-    nextBtnText: "Next",
-    prevBtnText: "Previous",
-    keyboardControl: true,
-    overlayClickNext: false,
-    stagePadding: 10,
-    smoothScroll: true,
-    popoverClass: "driver-popover-custom",
-    steps: steps,
-  });
-
-  return driverObj;
-};
-
-// Profile page tour
-export const createProfileTour = (forceStart: boolean = false): any => {
-  if (!forceStart && !isFirstVisit("profile")) return null;
-
-  // Define the steps
-  const steps = [
-    {
-      element: ".profile-summary",
-      popover: {
-        title: "Your Profile",
-        description:
-          "This is your profile dashboard where you can manage your personal information.",
-        position: "right",
-      },
-    },
-    {
-      element: 'button:contains("Edit")',
-      popover: {
-        title: "Edit Profile",
-        description: "Click here to update your profile details.",
-        position: "left",
-      },
-    },
-    {
-      element: 'h3:contains("Bookings")',
-      popover: {
-        title: "Your Bookings",
-        description: "View and manage all your tee time bookings here.",
-        position: "bottom",
-      },
-    },
-  ];
-
-  const driverObj = driver({
-    animate: true,
-    opacity: 0.75,
-    padding: 5,
-    showButtons: ["next", "previous", "close"],
-    doneBtnText: "Finish",
-    closeBtnText: "Skip",
-    nextBtnText: "Next",
-    prevBtnText: "Previous",
-    keyboardControl: true,
-    overlayClickNext: false,
-    stagePadding: 10,
-    smoothScroll: true,
-    popoverClass: "driver-popover-custom",
-    steps: steps,
-  });
-
-  return driverObj;
-};
-
-// Booking process tour
-export const createBookingProcessTour = (forceStart: boolean = false): any => {
-  if (!forceStart && !isFirstVisit("booking-process")) return null;
-
-  // Define the steps
-  const steps = [
-    {
-      element: "h1",
-      popover: {
-        title: "Booking Process",
-        description:
-          "Follow these steps to complete your tee time reservation.",
-        position: "bottom",
-      },
-    },
-    {
-      element: '.date-picker, [role="calendar"]',
-      popover: {
-        title: "Select Date",
-        description: "Choose your preferred golf day from the available dates.",
-        position: "right",
-      },
-    },
-    {
-      element: ".time-selector, select, .dropdown",
-      popover: {
-        title: "Choose Time",
-        description: "Select your preferred tee time from the available slots.",
-        position: "top",
-      },
-    },
-  ];
-
   const driverObj = driver({
     animate: true,
     opacity: 0.75,
