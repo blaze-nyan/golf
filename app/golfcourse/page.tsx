@@ -8,7 +8,7 @@ import { getGolfCourses } from "@/app/lib/api";
 // components
 import CourseCard from "../components/course-card";
 import AnimatedLoading from "../components/animated-loading";
-
+import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
 interface GolfCourse {
   golfCourseId: number;
   golfCourseName: string;
@@ -95,6 +95,18 @@ export default function GolfCoursesPage() {
 
     fetchCourses();
   }, []);
+  useEffect(() => {
+    if (loading) return;
+
+    const handleLoad = () => {
+      const tour = createGolfCourseTour();
+      if (tour) tour.drive();
+    };
+
+    window.addEventListener("load", handleLoad);
+
+    return () => window.removeEventListener("load", handleLoad);
+  }, [loading]);
 
   return (
     <div className="flex flex-col items-center justify-center my-10 mx-5 mb-20 gap-4 ">
