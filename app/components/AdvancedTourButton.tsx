@@ -10,21 +10,22 @@ import {
   DropdownItem,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   createHomeTour,
   createGolfCourseTour,
-  createBookingProcessTour,
-  createProfileTour,
   resetTours,
+  createSingleGolfCourseTour,
 } from "@/app/lib/advance-tour-service";
 
 export default function AdvancedTourButton() {
   const pathname = usePathname();
+  const params = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme;
+  const courseId = params.courseId;
 
   // Auto-start tour when page loads (only for first visit)
   useEffect(() => {
@@ -38,13 +39,13 @@ export default function AdvancedTourButton() {
         tourDriver = createHomeTour(false);
       } else if (pathname === "/golfcourse") {
         tourDriver = createGolfCourseTour(false);
-      } else if (
-        pathname.startsWith("/golfcourse/") &&
-        pathname.includes("/hole")
-      ) {
-        tourDriver = createBookingProcessTour(false);
-      } else if (pathname.startsWith("/profile")) {
-        tourDriver = createProfileTour(false);
+      } else if (pathname.startsWith("/golfcourse") && courseId) {
+        // Extra delay for dynamic golf course pages
+        setTimeout(() => {
+          tourDriver = createSingleGolfCourseTour(false);
+          if (tourDriver) tourDriver.drive();
+        }, 2000);
+        return;
       }
 
       if (tourDriver) {
@@ -62,13 +63,8 @@ export default function AdvancedTourButton() {
       tourDriver = createHomeTour(true);
     } else if (pathname === "/golfcourse") {
       tourDriver = createGolfCourseTour(true);
-    } else if (
-      pathname.startsWith("/golfcourse/") &&
-      pathname.includes("/hole")
-    ) {
-      tourDriver = createBookingProcessTour(true);
-    } else if (pathname.startsWith("/profile")) {
-      tourDriver = createProfileTour(true);
+    } else if (pathname.startsWith("/golfcourse") && courseId) {
+      tourDriver = createSingleGolfCourseTour(true);
     }
 
     if (tourDriver) {
