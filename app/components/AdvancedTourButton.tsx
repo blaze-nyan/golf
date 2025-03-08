@@ -93,9 +93,7 @@ export default function AdvancedTourButton() {
               className="text-xl text-green-600 dark:text-green-400"
             />
           }
-        >
-          Interactive Guide
-        </Button>
+        ></Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Tour options">
         <DropdownItem

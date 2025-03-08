@@ -12,7 +12,7 @@ export const STEPS = [
   },
   {
     title: "Booking",
-    path: (courseId: string) => `/golfcourse/${courseId}/hole`,
+    path: (courseId: string) => `/golfcourse/${courseId}/booking-time`,
   },
   {
     title: "Details",
@@ -20,7 +20,7 @@ export const STEPS = [
   },
   {
     title: "Payment",
-    path: (courseId: string) => `/golfcourse/${courseId}/booking`,
+    path: (courseId: string) => `/golfcourse/${courseId}/booking-payment`,
   },
   {
     title: "Done",
@@ -96,15 +96,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, [courseId]);
 
-
   useEffect(() => {
-    console.log("HYdaration", hydrated)
+    console.log("HYdaration", hydrated);
     if (courseId && typeof window !== "undefined" && hydrated) {
       const savedBookingDetails = window.localStorage.getItem(
         `bookingDetails_${courseId}`
       );
-      console.log(savedBookingDetails)
-      console.log(bookingDetails)
+      console.log(savedBookingDetails);
+      console.log(bookingDetails);
       window.localStorage.setItem(
         `bookingDetails_${courseId}`,
         JSON.stringify(bookingDetails)
@@ -120,7 +119,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         }
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookingDetails, courseId]);
 
   useEffect(() => {
@@ -136,12 +135,11 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     if (courseId && currentStep > maxCompletedStep + 1) {
       let step = 0;
       if (typeof window !== "undefined") {
-        step = Number(window.localStorage.getItem(
-          `golfCourseProgress_${courseId}`
-        ));
+        step = Number(
+          window.localStorage.getItem(`golfCourseProgress_${courseId}`)
+        );
       }
-      const allowedPath =
-        STEPS[step].path(courseId);
+      const allowedPath = STEPS[step].path(courseId);
       router.replace(allowedPath);
     }
   }, [currentStep, maxCompletedStep, router, courseId]);
