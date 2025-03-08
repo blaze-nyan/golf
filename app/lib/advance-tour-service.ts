@@ -184,6 +184,71 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
 
   return driverObj;
 };
+// Individual Golf course page tour
+export const createSingleGolfCourseTour = (
+  forceStart: boolean = false
+): any => {
+  if (!forceStart && !isFirstVisit("golfcourse")) return null;
+
+  // Define the steps
+  const steps = [
+    {
+      element: ".stepper",
+      popover: {
+        title: "Golf Tour",
+        description:
+          "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
+        position: "bottom",
+      },
+    },
+    // {
+    //   element: ".hole",
+    //   popover: {
+    //     title: "Hole",
+    //     description:
+    //       "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
+    //     position: "bottom",
+    //   },
+    // },
+    // {
+    //   element: ".price",
+    //   popover: {
+    //     title: "Price",
+    //     description:
+    //       "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
+    //     position: "bottom",
+    //   },
+    // },
+    // {
+    //   element: ".panel-button",
+    //   popover: {
+    //     title: "Panel Button",
+    //     description:
+    //       "Browse through our premium golf courses. Each card shows important course details like the number of holes and par.(will edit later)",
+    //     position: "bottom",
+    //   },
+    // },
+  ];
+
+  const driverObj = driver({
+    animate: true,
+    opacity: 0.75,
+    padding: 5,
+    showButtons: ["next", "previous", "close"],
+    doneBtnText: "Finish",
+    closeBtnText: "Skip",
+    nextBtnText: "Next",
+    prevBtnText: "Previous",
+    keyboardControl: true,
+    overlayClickNext: false,
+    stagePadding: 10,
+    smoothScroll: true,
+    popoverClass: "driver-popover-custom",
+    steps: steps,
+  });
+
+  return driverObj;
+};
 
 // Profile page tour
 export const createProfileTour = (forceStart: boolean = false): any => {

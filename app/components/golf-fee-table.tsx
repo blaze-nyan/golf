@@ -23,7 +23,7 @@ const GolfFeesTable = () => {
   const tableData18Hole = Object.entries(golfFees18Hole); // Convert the object to an array of key-value pairs for 18 hole
 
   return (
-    <div className="overflow-x-auto py-4">
+    <div className="overflow-x-auto py-4 price">
       {/* 9-Hole Table */}
       <div className="mb-8">
         <h2 className="text-lg mb-2">9-Hole Course Prices Per Golfer</h2>

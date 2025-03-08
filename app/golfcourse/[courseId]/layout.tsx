@@ -94,7 +94,7 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
 
       {currentStep <= 3 && (
         <div
-          className="absolute z-50 right-0 top-0 transition-all duration-300 ease-in-out flex"
+          className="absolute z-50 right-0 top-0 transition-all duration-300 ease-in-out flex "
           style={{
             transform: isPanelVisible ? "translateX(0)" : "translateX(100%)",
             width: getPanelWidth(),
@@ -106,7 +106,7 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
             onClick={togglePanel}
             className="absolute left-0 top-[43%] transform -translate-x-full -translate-y-1/2 z-50 
                       bg-green-500 hover:bg-green-600 text-white h-16 w-8 rounded-l-md 
-                      flex items-center justify-center shadow-md sm:flex"
+                      flex items-center justify-center shadow-md sm:flex "
             style={{
               display: isMobile && isPanelVisible ? "none" : "flex", // Hide on mobile when panel is open
             }}

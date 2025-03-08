@@ -75,9 +75,9 @@ const CoursePage = () => {
   useEffect(() => {
     if (golfCourse) {
       const clientID =
-      typeof window !== "undefined"
-        ? window.sessionStorage.getItem("clientId")
-        : null;
+        typeof window !== "undefined"
+          ? window.sessionStorage.getItem("clientId")
+          : null;
       setBookingDetails((prevBookingDetails: any) => ({
         ...prevBookingDetails,
         courseId: courseId,
@@ -114,8 +114,8 @@ const CoursePage = () => {
         {golfCourse.golfCourseName || placeholderGolfCourse.golfCourseName}
       </h1>
 
-      <div className="flex flex-wrap gap-2 sm:gap-4">
-        <div className="flex items-center">
+      <div className="flex flex-wrap gap-2 sm:gap-4 hole">
+        <div className="flex items-center ">
           <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             Holes:{" "}
             {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
