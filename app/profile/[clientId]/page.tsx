@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { addToast } from "@heroui/toast";
 import { useParams, useRouter } from "next/navigation";
 import { decryptData } from "@/app/lib/dataEncrypt";
 import axios from "axios";
@@ -86,6 +87,7 @@ export default function ProfilePage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -96,8 +98,6 @@ export default function ProfilePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
-
-  const [message, setMessage] = useState("");
 
   const [phoneData, setPhoneData] = useState<Communication>({
     "Communication ID": 0,
@@ -232,6 +232,9 @@ export default function ProfilePage() {
     return phoneRegex.test(phone);
   };
 
+  const toastShownRef = useRef(false); // Track if toast is shown
+  const toastPhoneShowRef = useRef(false);
+
   useEffect(() => {
     // Only execute on the client side
     if (typeof window !== "undefined") {
@@ -348,8 +351,7 @@ export default function ProfilePage() {
         setProfileImage(base64Image); // Update the profile image state
       }
 
-      setMessage("Profile picture updated successfully!");
-      setTimeout(() => setMessage(""), 3000); // Clear after 3s
+      // Clear after 3s
     } catch (err) {
       setError("Failed to upload image");
       console.error(err);
@@ -385,6 +387,18 @@ export default function ProfilePage() {
       ...prev,
       "Communication Detail": newEmail,
     }));
+
+    if (
+      !isValidEmail(emailData["Communication Detail"]) &&
+      isEditing &&
+      !toastShownRef.current // Ensure it's not shown before
+    ) {
+      addToast({
+        title: "Invalid email will not be saved.",
+        color: "danger",
+      });
+      toastShownRef.current = true; // Prevent future toasts
+    }
   };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -394,6 +408,18 @@ export default function ProfilePage() {
       ...prev,
       "Communication Detail": newPhone,
     }));
+
+    if (
+      !isValidPhoneNumber(phoneData["Communication Detail"]) &&
+      isEditing &&
+      !toastPhoneShowRef.current // Ensure it's not shown before
+    ) {
+      addToast({
+        title: "Invalid phonenumber will not be saved.",
+        color: "danger",
+      });
+      toastPhoneShowRef.current = true; // Prevent future toasts
+    }
   };
 
   useEffect(() => {
@@ -449,14 +475,22 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!profileData) return;
+
+    setIsSaving(true);
     try {
       await updateClientInfo(profileData);
       setIsEditing(false);
-      setMessage("Profile updated successfully!");
-      setTimeout(() => setMessage(""), 3000); // Clear after 3s
+
+      addToast({
+        title: "Profile updated successfully!",
+        color: "success",
+      });
+      // Clear after 3s
     } catch (err) {
       setError("Failed to update profile");
       console.error(err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -483,7 +517,7 @@ export default function ProfilePage() {
       <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         {/* Profile Summary Card */}
         <Card className="md:col-span-1 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <CardBody className="items-center gap-4 text-center">
+          <CardBody className="items-center justify-center gap-4 text-center">
             <div className="relative inline-block">
               <Avatar
                 className="h-24 w-24 sm:h-32 sm:w-32 text-large"
@@ -530,8 +564,15 @@ export default function ProfilePage() {
               color={isEditing ? "success" : "primary"}
               variant="flat"
               startContent={
-                isEditing ? <Save size={18} /> : <Edit2 size={18} />
+                isEditing ? (
+                  isSaving ? null : (
+                    <Save size={18} />
+                  )
+                ) : (
+                  <Edit2 size={18} />
+                )
               }
+              isLoading={isSaving}
               onPress={() => (isEditing ? handleSave() : setIsEditing(true))}
               className={
                 isEditing
@@ -539,112 +580,122 @@ export default function ProfilePage() {
                   : ""
               }
             >
-              {isEditing ? "Save" : "Edit"}
+              {isEditing ? (isSaving ? "Saving..." : "Save") : "Edit"}
             </Button>
           </CardHeader>
           <CardBody className="gap-4">
             <div className="grid gap-4 md:grid-cols-2">
               {isEditing ? (
-                <Select
-                  label="Title"
-                  defaultSelectedKeys={[profileData["Title"]]}
-                  onChange={handleInputChange("Title")}
-                >
-                  {titles.map((title) => (
-                    <SelectItem key={title} value={title}>
-                      {title}
-                    </SelectItem>
-                  ))}
-                </Select>
+                <>
+                  <Select
+                    label="Title"
+                    defaultSelectedKeys={[profileData["Title"]]}
+                    onChange={handleInputChange("Title")}
+                  >
+                    {titles.map((title) => (
+                      <SelectItem key={title} value={title}>
+                        {title}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    label="Gender"
+                    defaultSelectedKeys={[profileData["Gender"]]}
+                    disabled={!isEditing}
+                    onChange={handleInputChange("Gender")}
+                  >
+                    {genders.map((gender) => (
+                      <SelectItem key={gender.value} value={gender.value}>
+                        {gender.label}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Input
+                    label="First Name"
+                    defaultValue={profileData["First Name"]}
+                    isReadOnly={!isEditing}
+                    onChange={handleInputChange("First Name")}
+                  />
+                  <Input
+                    label="Surname"
+                    defaultValue={profileData["Surname"]}
+                    isReadOnly={!isEditing}
+                    onChange={handleInputChange("Surname")}
+                  />
+                  <Input
+                    label="Given Name"
+                    defaultValue={profileData["Given Name"]}
+                    isReadOnly={!isEditing}
+                    onChange={handleInputChange("Given Name")}
+                  />
+                  <Input
+                    label="Company"
+                    defaultValue={profileData["Company"]}
+                    isReadOnly={!isEditing}
+                    onChange={handleInputChange("Company")}
+                  />
+                  <>
+                    <Input
+                      label="Email"
+                      defaultValue={emailData["Communication Detail"]}
+                      isReadOnly={!isEditing}
+                      onChange={handleEmailChange}
+                    />
+                  </>
+
+                  <>
+                    <Input
+                      label="Phone Number"
+                      defaultValue={phoneData["Communication Detail"]}
+                      isReadOnly={!isEditing}
+                      onChange={handlePhoneChange}
+                    />
+                  </>
+                </>
               ) : (
-                <p className=" bg-default-50 text-default-700 px-3 py-2 rounded-md flex flex-col justify-center text-sm">
-                  <span>Title</span>
-                  {profileData["Title"] || "N/A"}
-                </p>
+                <>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Title</span>
+                    {profileData["Title"] || "N/A"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Gender</span>
+                    {profileData["Gender"] === "M"
+                      ? "Male"
+                      : profileData["Gender"] === "F"
+                      ? "Female"
+                      : "Unspecified"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>First Name</span>
+                    {profileData["First Name"] || "N/A"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Surname</span>
+                    {profileData["Surname"] || "N/A"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Given Name</span>
+                    {profileData["Given Name"] || "N/A"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Company</span>
+                    {profileData["Company"] || "N/A"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Email</span>
+                    {emailData["Communication Detail"] || "N/A"}
+                  </p>
+                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                    <span>Phone Number</span>
+                    {phoneData["Communication Detail"] || "N/A"}
+                  </p>
+                </>
               )}
-              {isEditing ? (
-                <Select
-                  label="Gender"
-                  defaultSelectedKeys={[profileData["Gender"]]}
-                  disabled={!isEditing}
-                  onChange={handleInputChange("Gender")}
-                >
-                  {genders.map((gender) => (
-                    <SelectItem key={gender.value} value={gender.value}>
-                      {gender.label}
-                    </SelectItem>
-                  ))}
-                </Select>
-              ) : (
-                <p className=" bg-default-50 text-default-700 px-3 py-2 rounded-md flex flex-col justify-center text-sm">
-                  <span>Gender</span>
-                  {profileData["Gender"] || "N/A"}
-                </p>
-              )}
-
-              <Input
-                label="First Name"
-                defaultValue={profileData["First Name"]}
-                isReadOnly={!isEditing}
-                onChange={handleInputChange("First Name")}
-              />
-
-              <Input
-                label="Surname"
-                defaultValue={profileData["Surname"]}
-                isReadOnly={!isEditing}
-                onChange={handleInputChange("Surname")}
-              />
-
-              <Input
-                label="Given Name"
-                defaultValue={profileData["Given Name"]}
-                isReadOnly={!isEditing}
-                onChange={handleInputChange("Given Name")}
-              />
-
-              <Input
-                label="Company"
-                defaultValue={profileData["Company"]}
-                isReadOnly={!isEditing}
-                onChange={handleInputChange("Company")}
-              />
-
-              <div>
-                <Input
-                  label="Email"
-                  defaultValue={emailData["Communication Detail"]}
-                  isReadOnly={!isEditing}
-                  onChange={handleEmailChange}
-                />
-                {!isValidEmail(emailData["Communication Detail"]) &&
-                  isEditing && (
-                    <div className="text-gray-500 dark:text-gray-400 text-sm px-3 pt-1">
-                      Invalid email will not be saved.
-                    </div>
-                  )}
+              {/* button */}
+              <div className="md:col-span-2 mt-2">
+                <LogoutButton />
               </div>
-
-              <div>
-                <Input
-                  label="Phone Number"
-                  defaultValue={phoneData["Communication Detail"]}
-                  isReadOnly={!isEditing}
-                  onChange={handlePhoneChange}
-                />
-                {!isValidPhoneNumber(phoneData["Communication Detail"]) &&
-                  isEditing && (
-                    <div className="text-gray-500 dark:text-gray-400 text-sm px-3 pt-1">
-                      Invalid phone number will not be saved.
-                    </div>
-                  )}
-              </div>
-
-              {message && (
-                <div className="bg-green-500 text-white p-2 rounded col-span-2">
-                  {message}
-                </div>
-              )}
             </div>
           </CardBody>
         </Card>
@@ -757,10 +808,6 @@ export default function ProfilePage() {
             </div>
           </CardBody>
         </Card>
-
-        <div className="md:col-span-3 mt-2">
-          <LogoutButton />
-        </div>
 
         {/* Use the BookingModal component */}
         <BookingModal
