@@ -67,6 +67,8 @@ export const getGolfCourseSingle = async (
   };
 };
 
+// app/lib/api.ts (update the signUp function)
+
 export const signUp = async (userData: SignUpRequest) => {
   try {
     const response = await axios.post("/api/signup", userData);

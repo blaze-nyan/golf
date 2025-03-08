@@ -3,23 +3,38 @@
 import React, { useState } from "react";
 //components
 import SignupForm from "../components/SignupForm";
-import VerifyEmailForm from "../components/VerifyEmailForm";
+import VerifyOtpForm from "../components/VerifyOtpForm";
 
 const SignupPage = () => {
-  const [step, setStep] = useState<"verify" | "signup">("signup");
-  const [verifiedEmail, setVerifiedEmail] = useState("");
+  const [step, setStep] = useState<"signup" | "verify">("signup");
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    surname: "",
+  });
 
-  const handleVerificationComplete = (email: string) => {
-    setVerifiedEmail(email);
-    setStep("signup");
+  const handleProceedToVerification = (formData: typeof userData) => {
+    setUserData(formData);
+    setStep("verify");
+  };
+
+  const handleVerificationComplete = () => {
+    // This will be called after successful verification and account creation
+    // You might want to redirect to login or show a success message
+    window.location.href = "/auth/login";
   };
 
   return (
     <div>
-      {step === "verify" ? (
-        <VerifyEmailForm onVerificationComplete={handleVerificationComplete} />
+      {step === "signup" ? (
+        <SignupForm onProceedToVerification={handleProceedToVerification} />
       ) : (
-        <SignupForm verifiedEmail={verifiedEmail} />
+        <VerifyOtpForm
+          email={userData.email}
+          userData={userData}
+          onVerificationComplete={handleVerificationComplete}
+        />
       )}
     </div>
   );

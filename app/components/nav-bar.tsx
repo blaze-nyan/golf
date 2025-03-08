@@ -112,7 +112,6 @@ export default function NavBar(props: NavbarProps) {
             >
               Profile
             </Link>
-            <Divider className="opacity-50" />
           </NavbarMenuItem>
         ) : (
           <NavbarMenuItem>
