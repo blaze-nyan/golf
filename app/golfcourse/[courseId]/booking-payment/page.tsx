@@ -23,6 +23,7 @@ import {
 } from "@heroui/react";
 import { postData } from "@/app/lib/api-placeholder-db";
 import AnimatedLoading from "@/app/components/animated-loading";
+import ExpiryDateInput from "@/app/components/ExpiryDateInput";
 
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
@@ -246,10 +247,16 @@ const page = () => {
               <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
                 Expiry Date (MM/YY)
               </label>
-              <Input
+              {/* <Input
                 type="text"
                 value={expiryDate}
                 onChange={(e) => setExpiryDate(e.target.value)}
+                className="w-full"
+                placeholder="MM/YY"
+              /> */}
+              <ExpiryDateInput
+                value={expiryDate}
+                onChange={setExpiryDate}
                 className="w-full"
                 placeholder="MM/YY"
               />
