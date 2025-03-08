@@ -94,7 +94,7 @@ export function WeatherWidget() {
   const playability = getPlayabilityStatus(weather);
 
   return (
-    <Card className="max-w-[400px] min-w-[300px] flex items-center justify-center">
+    <Card className="max-w-[400px] min-w-[300px] flex items-center justify-center weather-widget">
       <CardBody>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">

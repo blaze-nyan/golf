@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -6,6 +7,7 @@ import { Icon } from "@iconify/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { fetchData } from "@/app/lib/api-placeholder-db";
+// import { setClientId } from "@/app/lib/auth";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -39,36 +41,43 @@ export default function LoginForm() {
         password: formData.password,
       });
 
-      console.log("Login response:", response.data); // For debugging
+      console.log("Login response:", response.data);
 
       if (response.data.clientId) {
-        // Check for browser environment before using localStorage
-        if (typeof window !== "undefined") {
-          // Always store clientId, use remember for persistence duration
-          window.localStorage.setItem(
-            "clientId",
-            response.data.clientId.toString()
-          );
+        const clientIdStr = response.data.clientId.toString();
+
+        // Set to both storage mechanisms temporarily (to debug the issue)
+        // In production, you'd use only one based on remember me
+        if (formData.remember) {
+          window.localStorage.setItem("clientId", clientIdStr);
+        } else {
+          window.sessionStorage.setItem("clientId", clientIdStr);
         }
 
-        const staffList = await fetchData("staffList");
+        // Debug storage after setting
+        console.log(
+          "After login - localStorage:",
+          localStorage.getItem("clientId")
+        );
+        console.log(
+          "After login - sessionStorage:",
+          sessionStorage.getItem("clientId")
+        );
 
+        const staffList = await fetchData("staffList");
         const clientIds = staffList.map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (staff: { [x: string]: any }) => staff["Client ID"]
         );
-        console.log(staffList);
-        console.log(clientIds);
 
+        // Use router.replace instead of push for more reliable navigation
         if (clientIds.includes(response.data.clientId.toString())) {
-          router.push("/dashboard");
+          router.replace("/dashboard");
         } else {
-          router.push("/profile");
+          router.replace("/profile");
         }
       } else {
         setError("Login failed - no client ID received");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
@@ -140,7 +149,11 @@ export default function LoginForm() {
             >
               Remember me
             </Checkbox>
-            <Link className="text-default-500" href="#" size="sm">
+            <Link
+              className="text-default-500"
+              href="/auth/forgot-password"
+              size="sm"
+            >
               Forgot password?
             </Link>
           </div>

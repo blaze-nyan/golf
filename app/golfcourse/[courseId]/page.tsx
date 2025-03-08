@@ -5,9 +5,10 @@ import { NextButton } from "../components/NextButton";
 import { Image } from "@heroui/react";
 import { useProgress } from "@/app/golfcourse/context/progress-context";
 import { getGolfCourseSingle } from "@/app/lib/api";
-import { Spinner } from "@heroui/react";
+
 import GolfFeesTable from "@/app/components/golf-fee-table";
 import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
+import AnimatedLoading from "@/app/components/animated-loading";
 
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
@@ -73,10 +74,15 @@ const CoursePage = () => {
 
   useEffect(() => {
     if (golfCourse) {
+      const clientID =
+        typeof window !== "undefined"
+          ? window.sessionStorage.getItem("clientId")
+          : null;
       setBookingDetails((prevBookingDetails: any) => ({
         ...prevBookingDetails,
         courseId: courseId,
         courseName: golfCourse.golfCourseName,
+        clientID: clientID,
         courseLocation:
           "52 347 Phahonyothin Rd, Tambon Lak Hok, Amphoe Mueang Pathum Thani",
       }));
@@ -86,7 +92,7 @@ const CoursePage = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[300px]">
-        <Spinner size="lg" />
+        <AnimatedLoading />
       </div>
     );
   }
@@ -94,22 +100,22 @@ const CoursePage = () => {
   if (!golfCourse) {
     return (
       <div className="p-4 text-center text-red-600 dark:text-red-400">
-        Failed to load golf course information. Please try again.
+        Only the Hackathon golf course is available in the prototype.
       </div>
     );
-  } 
+  }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const image = () => usePlaceholderGolfCourseImageLink();
 
   return (
-    <div className="px-4 md:px-6 pb-16 max-w-6xl space-y-6">
+    <div className="px-4 md:px-6 pb-2 max-w-6xl space-y-6">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mt-4">
         {golfCourse.golfCourseName || placeholderGolfCourse.golfCourseName}
       </h1>
 
-      <div className="flex flex-wrap gap-2 sm:gap-4">
-        <div className="flex items-center">
+      <div className="flex flex-wrap gap-2 sm:gap-4 hole">
+        <div className="flex items-center ">
           <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             Holes:{" "}
             {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
@@ -132,7 +138,6 @@ const CoursePage = () => {
         />
       </div>
 
-
       <div className="prose prose-sm sm:prose max-w-none dark:prose-invert">
         <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300">
           {golfCourse.golfCourseDescription ||
@@ -144,13 +149,12 @@ const CoursePage = () => {
         <GolfFeesTable />
       </div>
 
-      
       <div className="overflow-hidden flex justify-between">
         <div className="h-auto w-[48%] space-y-3">
           <Image
             removeWrapper
             className=" object-cover object-center"
-            src={"/1_0.png"}
+            src={"/1_0.webp"}
             alt="Golf course"
           />
           <h2 className="text-l font-semibold text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 pb-2">
@@ -161,7 +165,7 @@ const CoursePage = () => {
           <Image
             removeWrapper
             className=" object-cover object-center"
-            src={"/2_0.png"}
+            src={"/2_0.webp"}
             alt="Golf course"
           />
           <h2 className="text-l font-semibold text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 pb-2">
@@ -361,12 +365,12 @@ const CoursePage = () => {
         <div className="pt-4 md:hidden">
           <NextButton />
         </div>
+        <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-start">
+          <NextButton />
+        </div>
       </div>
 
       {/* Next Button with proper spacing */}
-      <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
-        <NextButton />
-      </div>
     </div>
   );
 };

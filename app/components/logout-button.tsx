@@ -8,23 +8,34 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
+import { clearAuthData } from "@/app/lib/auth";
 
 const LogoutButton = () => {
   const router = useRouter();
-
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
-      window.localStorage.removeItem("clientImage");
-      window.localStorage.removeItem("clientId");
+      console.log("Logging out, clearing auth data");
+      clearAuthData();
+
+      // Verify storage was cleared
+      console.log(
+        "After logout - localStorage clientId:",
+        localStorage.getItem("clientId")
+      );
+      console.log(
+        "After logout - sessionStorage clientId:",
+        sessionStorage.getItem("clientId")
+      );
+
       router.push("/auth/login");
       setIsLogoutModalOpen(false);
     }
   };
 
   const closeModal = () => {
-    setIsLogoutModalOpen(false); // Close the modal without logging out
+    setIsLogoutModalOpen(false);
   };
 
   const handleConfirmation = () => {

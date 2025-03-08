@@ -1,9 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Button,
   Dropdown,
@@ -14,8 +14,7 @@ import {
 import { Selection } from "@heroui/react";
 
 // Placeholder images
-const membershipImage =
-  "https://img.freepik.com/premium-photo/female-hands-hold-card-paper-with-text-membership-yellow-background-business-finance-concept_324489-3756.jpg";
+const membershipImage = "/membership.webp";
 
 // Membership options
 const membershipOptions = [
@@ -67,10 +66,13 @@ export default function MembershipPage() {
       {/* Membership Options */}
       <div className="text-center mb-8 max-w-md w-full">
         <div className="overflow-hidden rounded-lg shadow-md dark:shadow-primary-500/20 transition-transform duration-300 hover:scale-105 mb-6">
-          <img
+          <Image
             src={membershipImage}
-            alt="Membership"
-            className="w-full h-48 md:h-64 object-cover"
+            alt="Food"
+            width={800}
+            height={600}
+            className="w-full h-64 object-cover"
+            loading="lazy" // For below-the-fold images
           />
         </div>
         <h3 className="text-xl font-semibold mb-4 dark:text-white">
@@ -183,7 +185,7 @@ export default function MembershipPage() {
 
       {/* Register Button */}
       {selectedMembership && (
-        <Link href="/menu" className="mb-4">
+        <Link href="https://demo.ob.cimsoweb.com/" className="mb-4">
           <Button
             variant="solid"
             color="primary"
@@ -196,7 +198,7 @@ export default function MembershipPage() {
       )}
 
       {/* Link to learn more */}
-      <Link href="/menu">
+      <Link href="https://demo.ob.cimsoweb.com/">
         <Button
           variant="light"
           className="flex items-center gap-2 dark:text-gray-300 hover:dark:text-white transition-colors"

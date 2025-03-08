@@ -67,12 +67,23 @@ export const getGolfCourseSingle = async (
   };
 };
 
+// app/lib/api.ts (update the signUp function)
+
 export const signUp = async (userData: SignUpRequest) => {
   try {
     const response = await axios.post("/api/signup", userData);
     return response.data;
   } catch (error) {
     console.error("Error in signup:", error);
+    throw error;
+  }
+};
+export const verifyEmail = async (token: string) => {
+  try {
+    const response = await axios.get(`/api/verify?token=${token}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying email:", error);
     throw error;
   }
 };

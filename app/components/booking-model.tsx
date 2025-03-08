@@ -46,22 +46,22 @@ const BookingModal: React.FC<BookingModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="w-[80%] max-w-[800px] h-[80%]"
+      className="w-[80%] max-w-[800px] md:h-[85%] h-[90%]"
     >
       <ModalContent className="w-[100%]">
         {booking ? (
-          <div className="flex flex-col items-center space-y-4 m-0 w-[100%] h-[100%]">
-            <Card className="p-0 w-[100%] h-[100%] bg-white shadow-md  overflow-auto">
+          <div className="flex flex-col items-center space-y-4 m-0 w-[100%] h-[100%] text-white">
+            <Card className="p-0 w-[100%] h-[100%] bg-white dark:bg-gray-800 shadow-md  overflow-auto">
               {/* Header */}
               <div className="bg-green-700 text-white py-3 text-center text-lg font-bold">
                 Booking Details
               </div>
 
-              <div className="p-4 text-sm text-gray-700 space-y-3 mx-5">
+              <div className="p-4 text-sm text-gray-700 dark:text-white space-y-3 mx-5">
                 {/* Course Section */}
-                <div className="flex gap-3 border-b border-gray-300 py-2">
+                <div className="flex flex-col md:flex-row gap-3 border-b border-gray-300 py-2">
                   <Image
-                    className="h-32 w-32 rounded-md object-cover"
+                    className="md:h-32 md:w-32 rounded-md object-cover "
                     src={image}
                     alt="Course"
                   />
@@ -69,7 +69,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
                     <div className="font-semibold text-xl">
                       {booking.courseName || "Course Name"}
                     </div>
-                    <div className="text-gray-500">
+                    <div className="text-gray-500 dark:text-white ">
                       {booking.courseLocation || "N/A"}
                     </div>
                     <InfoItem
@@ -189,12 +189,19 @@ const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
 
                 <div className="mt-6 flex justify-between">
-                  <Button onPress={onClose} className="text-white hidden sm:block" color="primary">
-                    Close
-                  </Button>
-
-                  <Button onPress={openConfirmationModal} className="text-white hidden sm:block bg-red-500" color="primary">
+                  <Button
+                    onPress={openConfirmationModal}
+                    className="text-white  bg-red-500"
+                    color="primary"
+                  >
                     Cancel Booking
+                  </Button>
+                  <Button
+                    onPress={onClose}
+                    className="text-white "
+                    color="primary"
+                  >
+                    Close
                   </Button>
                 </div>
               </div>

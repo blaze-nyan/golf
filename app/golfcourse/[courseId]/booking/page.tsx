@@ -14,7 +14,6 @@ import {
   Input,
   Select,
   SelectItem,
-  Spinner,
   Modal,
   ModalContent,
   ModalHeader,
@@ -23,6 +22,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { postData } from "@/app/lib/api-placeholder-db";
+import AnimatedLoading from "@/app/components/animated-loading";
 
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
@@ -30,6 +30,10 @@ const page = () => {
     "fullPayment"
   );
   const [amountToPay, setAmountToPay] = useState(bookingDetails.price);
+
+  // State to track panel visibility
+  const [isPanelVisible, setIsPanelVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Credit card form state
   const [cardNumber, setCardNumber] = useState("");
@@ -45,6 +49,38 @@ const page = () => {
     onClose: onErrorClose,
   } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false); // Loading state
+
+  // Monitor screen size and panel visibility
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Check for panel visibility from localStorage or custom events
+    const checkPanelState = () => {
+      const panelState = localStorage.getItem("panelVisible");
+      if (panelState) {
+        setIsPanelVisible(panelState === "true");
+      }
+    };
+
+    handleResize();
+    checkPanelState();
+
+    window.addEventListener("resize", handleResize);
+
+    // Listen for panel toggle events
+    const handlePanelToggle = (e: CustomEvent) => {
+      setIsPanelVisible(e.detail.visible);
+    };
+
+    window.addEventListener("panelToggle" as any, handlePanelToggle);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("panelToggle" as any, handlePanelToggle);
+    };
+  }, []);
 
   useEffect(() => {
     if (paymentType === "prepayment") {
@@ -72,7 +108,7 @@ const page = () => {
     }));
   }, [amountToPay, setBookingDetails]);
 
-  // Simple validation function (you can improve it)
+  // Simple validation function
   const validateCreditCard = () => {
     if (cardNumber.length < 16) {
       onErrorOpen();
@@ -102,19 +138,31 @@ const page = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 max-w-4xl">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3 md:mb-5">
+    <div
+      className={`
+        space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300
+        w-full mx-auto h-full
+        ${
+          isMobile
+            ? ""
+            : isPanelVisible
+            ? "max-w-2xl"
+            : "max-w-2xl md:max-w-3xl mx-auto"
+        }
+      `}
+    >
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-5">
         Payment Page
       </h1>
 
       {/* Payment Type Selection */}
-      <div className="space-y-3">
-        <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
+      <div className="space-y-2 sm:space-y-3">
+        <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
           Select Payment Type
         </h2>
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
-            className={`w-full ${
+            className={`w-full py-2 sm:py-2.5 text-sm sm:text-base ${
               paymentType === "prepayment"
                 ? "bg-green-700 text-white dark:bg-green-600"
                 : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
@@ -124,7 +172,7 @@ const page = () => {
             Prepayment (30%)
           </Button>
           <Button
-            className={`w-full ${
+            className={`w-full py-2 sm:py-2.5 text-sm sm:text-base ${
               paymentType === "fullPayment"
                 ? "bg-green-700 text-white dark:bg-green-600"
                 : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
@@ -138,33 +186,33 @@ const page = () => {
 
       {/* Payment Amount Display */}
       <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-        <CardHeader className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <CardHeader className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200">
             Amount to Pay
           </h2>
         </CardHeader>
-        <CardBody className="px-4 py-3">
-          <div className="text-lg md:text-xl font-bold text-gray-800 dark:text-green-400">
+        <CardBody className="px-3 sm:px-4 py-2 sm:py-3">
+          <div className="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-green-400">
             {amountToPay} THB
           </div>
         </CardBody>
       </Card>
 
-      <div className="text-red-600 dark:text-red-400 font-bold text-sm md:text-md p-3 md:p-4 border border-red-500 dark:border-red-700 bg-red-50 dark:bg-red-900/20 rounded-md my-1">
+      <div className="text-red-600 dark:text-red-400 font-bold text-xs sm:text-sm md:text-md p-2 sm:p-3 md:p-4 border border-red-500 dark:border-red-700 bg-red-50 dark:bg-red-900/20 rounded-md my-1">
         There will be no refund after payment is made.
       </div>
 
       {/* Credit Card Input Form */}
       <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-        <CardHeader className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
+        <CardHeader className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
             Credit Card Details
           </h2>
         </CardHeader>
-        <CardBody className="px-4 py-3 space-y-4">
+        <CardBody className="px-3 sm:px-4 py-2 sm:py-3 space-y-3 sm:space-y-4">
           {/* Select Payment Method */}
           <div>
-            <label className="block text-sm font-semibold mb-2 visible text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 visible text-gray-700 dark:text-gray-300">
               Select Payment Method
             </label>
             <Select
@@ -179,7 +227,7 @@ const page = () => {
           </div>
           {/* Card Number */}
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
               Card Number
             </label>
             <Input
@@ -193,9 +241,9 @@ const page = () => {
           </div>
 
           {/* Expiry Date and CVV */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="w-full sm:w-1/2">
-              <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
                 Expiry Date (MM/YY)
               </label>
               <Input
@@ -206,8 +254,8 @@ const page = () => {
                 placeholder="MM/YY"
               />
             </div>
-            <div className="w-full sm:w-1/2 mt-4 sm:mt-0">
-              <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            <div className="w-full sm:w-1/2 mt-3 sm:mt-0">
+              <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
                 CVV
               </label>
               <Input
@@ -223,7 +271,7 @@ const page = () => {
 
           {/* Cardholder Name */}
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
               Cardholder Name
             </label>
             <Input
@@ -237,7 +285,7 @@ const page = () => {
 
           <Button
             onPress={handleSubmit}
-            className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white mt-6 py-2"
+            className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white mt-4 sm:mt-6 py-2"
           >
             Submit Payment
           </Button>
@@ -253,7 +301,7 @@ const page = () => {
           <ModalBody>
             {isLoading ? (
               <div className="w-full py-6 flex justify-center items-center">
-                <Spinner size="lg" />
+                <AnimatedLoading />
               </div>
             ) : (
               <div className="text-center py-4 dark:text-gray-200">

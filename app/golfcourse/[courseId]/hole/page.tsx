@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, TimeInput, Select, SelectItem, Spinner } from "@heroui/react";
+import { Card, TimeInput, Select, SelectItem } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 // components
@@ -19,7 +19,9 @@ import {
   convertCalendarDateToEncoding,
 } from "@/app/components/date-functionalities";
 import { fetchData } from "@/app/lib/api-placeholder-db";
+import AnimatedLoading from "@/app/components/animated-loading";
 
+// Placeholder data remains the same
 const placeholderData = [
   {
     "Tee Minute": 374,
@@ -109,24 +111,65 @@ const placeholderData = [
 
 const page = () => {
   const today = new Date();
-  today.setDate(today.getDate() + 2); // Adds one day to today's date
+  today.setDate(today.getDate() + 2);
 
   const formattedDate = parseDate(today.toISOString().split("T")[0]);
 
   const [selectedDate, setSelectedDate] = useState(formattedDate);
   const [bookingType, setBookingType] = useState(1);
 
-  const { courseId, setBookingDetails } = useProgress(); //currentStep, canAccess,
+  const { courseId, setBookingDetails, currentStep } = useProgress();
   const [availableTeeTimes, setAvailableTeeTimes] = useState(placeholderData);
 
   const [selectedTimeCode, setSelectedTimeCode] = useState<number | null>(null);
 
-  const [isLoading, setLoading] = useState(true);
+  const [disabledNext, setDisabledNext] = useState<boolean>(true);
 
-  const titles = ["9 Hole", "18 Hole"]; // Options for booking type
+  const [isLoading, setLoading] = useState(true);
+  const [showTimeFilters, setShowTimeFilters] = useState(false);
+
+  // Check if booking panel is visible (depends on current step and screen size)
+  const [isPanelVisible, setIsPanelVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const titles = ["9 Hole", "18 Hole"];
+
+  // Add a resize listener to detect panel visibility based on window size
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 640);
+
+      // Check for panel visibility based on localStorage or some other state manager
+      // This assumes you're storing panel visibility state somewhere
+      const panelState = localStorage.getItem("panelVisible");
+      if (panelState) {
+        setIsPanelVisible(panelState === "true");
+      } else {
+        // Default: visible on desktop, hidden on mobile
+        setIsPanelVisible(width >= 640);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Listen to any custom events that might be triggered when panel visibility changes
+  useEffect(() => {
+    const handlePanelToggle = (e: CustomEvent) => {
+      setIsPanelVisible(e.detail.visible);
+    };
+
+    window.addEventListener("panelToggle" as any, handlePanelToggle);
+    return () =>
+      window.removeEventListener("panelToggle" as any, handlePanelToggle);
+  }, []);
 
   const handleCardClick = (timeCode: number) => {
     setSelectedTimeCode(timeCode === selectedTimeCode ? null : timeCode);
+    setDisabledNext(timeCode === selectedTimeCode? true: false);
   };
 
   useEffect(() => {
@@ -155,6 +198,7 @@ const page = () => {
         teeTime: null,
       }));
       setSelectedTimeCode(null);
+      setDisabledNext(true);
     }
   }, [selectedDate, setBookingDetails]);
 
@@ -165,7 +209,7 @@ const page = () => {
     const minDate = parseDate(tomorrow.toISOString().split("T")[0]);
     fetchCourses();
     setSelectedDate(minDate);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [startTime, setStartTime] = useState(new Time(6, 0));
@@ -256,73 +300,121 @@ const page = () => {
     }
   }, [selectedDate, unavailableTeeDates]); // This will rerun when selectedDate or unavailableTeeDates changes
 
+  // Toggle time filter visibility on mobile
+  const toggleTimeFilters = () => {
+    setShowTimeFilters(!showTimeFilters);
+  };
+
+  // Function to get filtered tee times
+
+  // Rest of your state hooks and handlers remain the same...
+
+  // Function to determine grid column count based on panel visibility
+  const getGridColumnClass = () => {
+    if (isMobile) return "grid-cols-2";
+    if (isPanelVisible && currentStep <= 3) {
+      return "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
+    }
+    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7";
+  };
+
+  // Function to get filtered tee times
+  const getFilteredTeeTimes = () => {
+    return availableTeeTimes.filter(
+      (data) =>
+        compareTime(data["Tee Minute"], startTime, endTime) &&
+        data["Available"].includes(bookingType)
+    );
+  };
+
+  const filteredTeeTimes = getFilteredTeeTimes();
+
   return (
-    <div className="space-y-5 p-4">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+    <div className="space-y-4 sm:space-y-5 p-2 sm:p-4 h-full">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1 sm:mb-2">
         Select Booking
       </h1>
 
-      {/* Filters section - stack vertically on mobile, horizontal on larger screens */}
-      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 items-center">
-        <div className="w-full md:w-[120px]">
-          <Select
-            label="Booking Type"
-            defaultSelectedKeys={[bookingType === 1 ? "9 Hole" : "18 Hole"]}
-            onChange={handleBookingTypeChange}
-            className="w-full"
-          >
-            {titles.map((title: any) => (
-              <SelectItem key={title} value={title}>
-                {title}
-              </SelectItem>
-            ))}
-          </Select>
+      {/* Primary filters - Always visible */}
+      <div className="flex flex-col space-y-3 sm:space-y-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
+          <div className="w-full">
+            <Select
+              label="Booking Type"
+              defaultSelectedKeys={[bookingType === 1 ? "9 Hole" : "18 Hole"]}
+              onChange={handleBookingTypeChange}
+              className="w-full"
+            >
+              {titles.map((title: any) => (
+                <SelectItem key={title} value={title}>
+                  {title}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+
+          <div className="w-full">
+            <DatePicker
+              isRequired
+              className="w-full"
+              label="Booking Date"
+              value={selectedDate}
+              minValue={formattedDate}
+              defaultValue={selectedDate}
+              onChange={handleDateChange}
+            />
+          </div>
         </div>
 
-        <div className="w-full md:w-auto">
-          <DatePicker
-            isRequired
-            className="w-full"
-            label="Booking Date"
-            value={selectedDate}
-            minValue={formattedDate}
-            defaultValue={selectedDate}
-            onChange={handleDateChange}
+        {/* Mobile toggle for time filters */}
+        <button
+          onClick={toggleTimeFilters}
+          className="flex items-center justify-between w-full p-2 bg-gray-100 dark:bg-gray-700 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 md:hidden"
+        >
+          <span>Time Range Filters</span>
+          <Icon
+            icon={showTimeFilters ? "mdi:chevron-up" : "mdi:chevron-down"}
+            className="text-lg"
           />
-        </div>
+        </button>
 
-        <div className="w-full md:w-auto">
-          <TimeInput
-            id="start-time"
-            isRequired
-            value={startTime}
-            onChange={handleStartTimeChange}
-            className="w-full"
-            label="Start Time Range"
-          />
-        </div>
+        {/* Time filters - toggleable on mobile, always visible on larger screens */}
+        <div className={`${showTimeFilters ? "block" : "hidden"} md:block`}>
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 md:flex md:space-x-4">
+            <div className="w-full md:w-auto">
+              <TimeInput
+                id="start-time"
+                isRequired
+                value={startTime}
+                onChange={handleStartTimeChange}
+                className="w-full"
+                label="Start Time"
+              />
+            </div>
 
-        <div className="w-full md:w-auto">
-          <TimeInput
-            id="end-time"
-            isRequired
-            value={endTime}
-            onChange={handleEndTimeChange}
-            className="w-full"
-            label="End Time Range"
-          />
+            <div className="w-full md:w-auto">
+              <TimeInput
+                id="end-time"
+                isRequired
+                value={endTime}
+                onChange={handleEndTimeChange}
+                className="w-full"
+                label="End Time"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Selection summary - responsive layout */}
-      <div className="text-sm md:text-base text-gray-800 dark:text-gray-200 pt-2">
-        <p className="mb-2">Showing available tee times for:</p>
-        <div className="flex flex-wrap gap-2 mb-2">
-          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full shadow-sm">
+      <div className="text-xs sm:text-sm md:text-base text-gray-800 dark:text-gray-200 pt-1 sm:pt-2">
+        <p className="mb-1 sm:mb-2">Showing available tee times for:</p>
+        <div className="flex flex-wrap gap-1 sm:gap-2 mb-1 sm:mb-2">
+          <span className="inline-block px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             {selectedDate.toDate("UTC").toLocaleDateString()}
           </span>
 
-          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full shadow-sm">
+          <span className="inline-block px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             {startTime.hour % 12 === 0 ? 12 : startTime.hour % 12}:
             {startTime.minute < 10 ? "0" : ""}
             {startTime.minute} {startTime.hour < 12 ? "AM" : "PM"}
@@ -332,89 +424,123 @@ const page = () => {
             {endTime.minute} {endTime.hour < 12 ? "AM" : "PM"}
           </span>
 
-          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold rounded-full shadow-sm">
+          <span className="inline-block px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             {bookingType == 1 ? "9-Hole" : "18-Hole"}
           </span>
         </div>
       </div>
 
-      {/* Loading state */}
-      {isLoading ? (
-        <div className="w-full h-64 flex flex-col align-middle items-center justify-center">
-          <Spinner />
-        </div>
-      ) : (
-        /* Tee time grid - responsive grid with different column counts */
-        <div className="w-full max-h-[400px] md:max-h-[255px] p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md">
-          {availableTeeTimes.map((data, index) => {
-            if (!compareTime(data["Tee Minute"], startTime, endTime)) {
-              return null;
-            }
-
-            if (!data["Available"].includes(bookingType)) {
-              return null;
-            }
-
-            return (
-              <Card
-                key={index}
-                className={`p-2 cursor-pointer transition-transform duration-200 h-[115px] border border-gray-200 dark:border-gray-700
-                ${
-                  selectedTimeCode === data["Tee Minute"]
-                    ? "bg-green-200 dark:bg-green-800 scale-105"
-                    : "hover:scale-105 dark:bg-gray-700"
-                }
-                ${
-                  unavailableTeeTimes.includes(data["Tee Minute"])
-                    ? "opacity-50 pointer-events-none"
-                    : ""
-                }`}
-              >
-                <div
-                  onClick={() => {
-                    if (!unavailableTeeTimes.includes(data["Tee Minute"])) {
-                      handleCardClick(data["Tee Minute"]);
-                    }
-                  }}
-                >
-                  <div className="flex mb-1">
-                    <div
-                      className={`w-full flex items-center justify-center rounded-md p-1 ${
-                        selectedTimeCode === data["Tee Minute"]
-                          ? "bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-100"
-                          : "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
-                      }`}
-                    >
-                      <span className="px-2 font-semibold">
-                        {`${convertMinutesToTimeWithAMPM(data["Tee Minute"])}`}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div>
-                      <Icon
-                        icon="mdi:account"
-                        className="text-3xl md:text-4xl text-gray-700 dark:text-gray-300"
-                      />
-                    </div>
-                    <span className="px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200">
-                      {`${data["Online Golfer Count"]} Maximum`}
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="pt-4 md:hidden">
-        <NextButton />
+      {/* Results count */}
+      <div className="flex justify-between items-center">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {filteredTeeTimes.length} available time
+          {filteredTeeTimes.length !== 1 ? "s" : ""}
+        </p>
       </div>
 
-      {/* Fixed position for next button on mobile */}
-      <div className="pt-4 hidden bottom-4 right-4 md:static md:bottom-auto md:right-auto md:flex md:justify-end">
-        <NextButton />
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="w-full h-48 sm:h-64 flex flex-col align-middle items-center justify-center">
+          <AnimatedLoading />
+        </div>
+      ) : (
+        <>
+          {/* Empty state */}
+          {filteredTeeTimes.length === 0 && !isLoading && (
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-md p-4 text-center">
+              <Icon
+                icon="mdi:calendar-clock"
+                className="text-4xl mb-2 text-gray-400 dark:text-gray-500 mx-auto"
+              />
+              <p className="text-gray-600 dark:text-gray-300">
+                No available tee times match your criteria.
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Try adjusting your filters.
+              </p>
+            </div>
+          )}
+
+          {/* Tee time grid - RESPONSIVE GRID that adjusts based on panel visibility */}
+          {filteredTeeTimes.length > 0 && (
+            <div
+              className={`w-full  max-h-[350px] sm:max-h-[400px]  p-2 sm:p-4 grid ${getGridColumnClass()} gap-2 sm:gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md transition-all duration-300`}
+            >
+              {availableTeeTimes.map((data, index) => {
+                if (!compareTime(data["Tee Minute"], startTime, endTime)) {
+                  return null;
+                }
+
+                if (!data["Available"].includes(bookingType)) {
+                  return null;
+                }
+
+                return (
+                  <Card
+                    key={index}
+                    className={`p-2 cursor-pointer transition-transform duration-200 h-[95px] sm:h-[115px] border border-gray-200 dark:border-gray-700
+                    ${
+                      selectedTimeCode === data["Tee Minute"]
+                        ? "bg-green-200 dark:bg-green-800 scale-105"
+                        : "hover:scale-105 dark:bg-gray-700"
+                    }
+                    ${
+                      unavailableTeeTimes.includes(data["Tee Minute"])
+                        ? "opacity-50 pointer-events-none"
+                        : ""
+                    }`}
+                  >
+                    <div
+                      onClick={() => {
+                        if (!unavailableTeeTimes.includes(data["Tee Minute"])) {
+                          handleCardClick(data["Tee Minute"]);
+                        }
+                      }}
+                    >
+                      <div className="flex mb-1">
+                        <div
+                          className={`w-full flex items-center justify-center rounded-md p-1 ${
+                            selectedTimeCode === data["Tee Minute"]
+                              ? "bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-100"
+                              : "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
+                          }`}
+                        >
+                          <span className="px-1 sm:px-2 text-xs sm:text-sm font-semibold truncate">
+                            {`${convertMinutesToTimeWithAMPM(
+                              data["Tee Minute"]
+                            )}`}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div>
+                          <Icon
+                            icon="mdi:account"
+                            className="text-2xl sm:text-3xl md:text-4xl text-gray-700 dark:text-gray-300"
+                          />
+                        </div>
+                        <span className="px-1 sm:px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200 truncate">
+                          {`${data["Online Golfer Count"]} Maximum`}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Next button - fixed position at bottom for mobile */}
+
+      <div className="flex justify-start pt-4 md:hidden   p-2 shadow-lg">
+        <NextButton disabled={disabledNext}/>
+      </div>
+
+      {/* Desktop next button */}
+      <div className="pt-4 hidden md:flex md:justify-start">
+        <NextButton  disabled={disabledNext}/>
       </div>
     </div>
   );

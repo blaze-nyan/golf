@@ -52,11 +52,10 @@ export default function ProfileIcon() {
     fetchProfileAndImage();
   }, [profileImage]);
 
-  console.log(profileImage);
   let usedImage: string;
   if (profileImage !== "null" && profileImage) {
     usedImage = profileImage;
-  } else usedImage = "/golfball.jpg";
+  } else usedImage = "/golfball.webp";
 
   return (
     <Link href="/profile">

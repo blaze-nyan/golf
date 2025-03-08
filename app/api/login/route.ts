@@ -32,13 +32,24 @@ export async function POST(request: Request) {
       { headers }
     );
     console.log("Login response:", response.data);
+    // In app/api/login/route.ts
+    console.log("Full API response:", JSON.stringify(response.data, null, 2));
+    console.log("Authentication result:", response.data.payload);
 
     // Check the response structure and get Client ID
     const clientId = response.data.payload["Client ID"];
+    const errorCode = response.data["error_code"];
 
     if (!clientId || clientId === 0) {
       return NextResponse.json(
-        { error: "Authentication failed" },
+        { error: "Make sure your password and emails are correct." },
+        { status: 401 }
+      );
+    }    
+    
+    if (errorCode !== 0) {
+      return NextResponse.json(
+        { error: "Make sure your password and emails are correct." },
         { status: 401 }
       );
     }

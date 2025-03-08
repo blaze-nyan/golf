@@ -159,7 +159,10 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
     }, [color, className]);
 
     return (
-      <nav aria-label="Progress" className="max-w-fit overflow-x-auto pb-2">
+      <nav
+        aria-label="Progress"
+        className="max-w-fit overflow-x-auto pb-2 stepper"
+      >
         <ol
           className={cn("flex flex-row flex-nowrap gap-x-3", colors, className)}
         >
@@ -180,6 +183,7 @@ const RowSteps = React.forwardRef<HTMLButtonElement, RowStepsProps>(
                   key={stepIdx}
                   ref={ref}
                   aria-current={status === "active" ? "step" : undefined}
+                  disabled={status === "inactive" ? true : false}
                   className={cn(
                     "group flex w-full cursor-pointer flex-row items-center justify-center gap-x-3 rounded-large py-2.5",
                     stepClassName

@@ -9,6 +9,12 @@ interface ChatMessage {
   content: string;
 }
 
+const quickReplies = [
+  "Sendible features & plans",
+  "I'm already a customer",
+  "Request a demo",
+];
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -148,16 +154,12 @@ export function ChatWidget() {
 
     try {
       const aiResponse = await getAiResponse(inputMessage);
-
       const responseText = aiResponse[0]?.text;
       const finalText = responseText
         ? removeAsterisks(responseText)
         : "I'm sorry, I couldn't understand that.";
 
-      const botMessage: ChatMessage = {
-        type: "bot",
-        content: finalText,
-      };
+      const botMessage: ChatMessage = { type: "bot", content: finalText };
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
@@ -172,6 +174,12 @@ export function ChatWidget() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const quickmessage = (reply: string) => {
+    setInputMessage(reply);
+    handleSendMessage();
+    console.log("hello");
   };
 
   // const handleResizeMouseDown = (event: React.MouseEvent) => {
@@ -208,7 +216,7 @@ export function ChatWidget() {
   if (!isClient) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50 chat-widget">
       {isOpen ? (
         <div
           ref={chatBoxRef}
@@ -251,9 +259,24 @@ export function ChatWidget() {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50 dark:bg-gray-900">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500 dark:text-gray-400 my-8">
-                <p>Welcome to the Golf Assistant!</p>
-                <p className="text-sm mt-2">How can I help you today?</p>
+              <div className="text-start mt-4">
+                <p className="p-2 rounded-lg max-w-[85%] bg-gray-200 text-gray-800">
+                  Hey 👋 Got any questions?
+                </p>
+                <p className="text-sm mt-2 p-2 rounded-lg max-w-[85%] bg-gray-200 text-gray-800">
+                  I&apos;ll be glad to assist! What can I help you with?
+                </p>
+                <div className="mt-6 space-y-2">
+                  {quickReplies.map((reply, index) => (
+                    <Button
+                      key={index}
+                      onPress={() => quickmessage(reply)}
+                      className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm bg-transparent"
+                    >
+                      {reply}
+                    </Button>
+                  ))}
+                </div>
               </div>
             ) : (
               messages.map((message, index) => (
@@ -294,24 +317,6 @@ export function ChatWidget() {
                 </div>
               ))
             )}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="p-3 rounded-lg bg-gray-200 dark:bg-gray-700">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
-                    <div
-                      className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"
-                      style={{ animationDelay: "0.2s" }}
-                    ></div>
-                    <div
-                      className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"
-                      style={{ animationDelay: "0.4s" }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
@@ -323,17 +328,13 @@ export function ChatWidget() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type a message..."
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg"
                 disabled={isLoading}
               />
               <Button
                 onPress={handleSendMessage}
                 disabled={isLoading || !inputMessage.trim()}
-                className={`px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors ${
-                  isLoading || !inputMessage.trim()
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
+                className="px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-colors"
               >
                 <Send className="h-5 w-5" />
               </Button>
@@ -351,7 +352,7 @@ export function ChatWidget() {
       ) : (
         <Button
           onPress={() => setIsOpen(true)}
-          className="text-white p-3 rounded-full shadow-lg transition-colors bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+          className="text-white p-3 rounded-full shadow-lg bg-green-600"
         >
           <MessageCircle className="h-6 w-6" />
         </Button>

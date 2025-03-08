@@ -2,14 +2,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Icon } from "@iconify/react"; // Import Iconify for icons
+
 import Link from "next/link";
 import { getGolfCourses } from "@/app/lib/api";
 // components
 import CourseCard from "../components/course-card";
-// import { Spinner } from "@heroui/react";
-import CustomLoading from "../components/custom-loading";
-
+import AnimatedLoading from "../components/animated-loading";
+import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
 interface GolfCourse {
   golfCourseId: number;
   golfCourseName: string;
@@ -28,6 +27,7 @@ interface GolfCourse {
 export default function GolfCoursesPage() {
   const [courses, setCourses] = useState<GolfCourse[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // State to track if courses are still loading
+  //data ready or not
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -52,8 +52,7 @@ export default function GolfCoursesPage() {
         const comingSoonCourse1: GolfCourse = {
           golfCourseId: 123,
           golfCourseName: "The Highland Links",
-          golfCourseDescription:
-            "A picturesque course nestled in the foothills, offering scenic views of the surrounding valleys and rugged terrain. Perfect for both seasoned golfers and newcomers alike, this course will challenge your skills and reward you with beautiful landscapes.",
+          golfCourseDescription: "Coming soon...",
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -68,8 +67,7 @@ export default function GolfCoursesPage() {
         const comingSoonCourse2: GolfCourse = {
           golfCourseId: -134,
           golfCourseName: "Sunset Bay Golf Club",
-          golfCourseDescription:
-            "Located along the coastline, this course offers breathtaking sunset views over the bay. With a mix of water hazards and rolling fairways, it's a course that will keep you on your toes while offering a relaxing atmosphere.",
+          golfCourseDescription: "Coming soon...",
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -83,8 +81,8 @@ export default function GolfCoursesPage() {
 
         // Append the placeholder course to the courses array
         setCourses([
-          comingSoonCourse1,
           ...data,
+          comingSoonCourse1,
           comingSoonCourse2,
           comingSoonCourse,
         ]);
@@ -97,12 +95,26 @@ export default function GolfCoursesPage() {
 
     fetchCourses();
   }, []);
+  useEffect(() => {
+    if (loading) return;
+
+    const handleLoad = () => {
+      const tour = createGolfCourseTour();
+      if (tour) tour.drive();
+    };
+
+    window.addEventListener("load", handleLoad);
+
+    return () => window.removeEventListener("load", handleLoad);
+  }, [loading]);
 
   return (
     <div className="flex flex-col items-center justify-center my-10 mx-5 mb-20 gap-4 ">
       {/* Section for explanation about golf courses */}
       <section className="text-center mb-5 max-w-4xl">
-        <h2 className="text-4xl font-semibold">Discover Our Golf Courses</h2>
+        <h2 className="text-4xl font-semibold text-green-400">
+          Discover Our Golf Courses
+        </h2>
         <p className="text-lg  mt-3">
           We offer a wide selection of beautifully designed golf courses that
           cater to players of all skill levels. Whether you are looking for a
@@ -117,21 +129,10 @@ export default function GolfCoursesPage() {
         </p>
       </section>
 
-      {/* Dropdown Icon to indicate scrolling down */}
-      {!loading && (
-        <div className="flex justify-center mb-2">
-          <Icon
-            icon="mdi:chevron-down"
-            className="text-4xl cursor-pointer animate-bounce"
-          />
-        </div>
-      )}
-
       {/* Loading state */}
       {loading ? (
-        <div className="flex justify-center mb-5">
-          {/* <Spinner size="lg" /> */}
-          <CustomLoading />
+        <div className="flex justify-center items-center mt-10">
+          <AnimatedLoading />
         </div>
       ) : (
         // Golf Course Cards Section
@@ -145,7 +146,7 @@ export default function GolfCoursesPage() {
             }
             className="flex justify-center w-full"
           >
-            <CourseCard course={course} />
+            <CourseCard course={course} ready={loading} />
           </Link>
         ))
       )}
