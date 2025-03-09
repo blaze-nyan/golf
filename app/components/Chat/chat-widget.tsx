@@ -3,7 +3,7 @@ import getAiResponse from "@/app/lib/getAiResponse";
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Maximize, Minimize, Send } from "lucide-react";
 import { Button } from "@heroui/button";
-
+import { logger } from "@/app/lib/logger";
 interface ChatMessage {
   type: "user" | "bot";
   content: string;
@@ -163,7 +163,7 @@ export function ChatWidget() {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Error fetching AI response:", error);
+      logger.error("Error fetching AI response:", error);
       setMessages((prev) => [
         ...prev,
         {
@@ -179,7 +179,7 @@ export function ChatWidget() {
   const quickmessage = (reply: string) => {
     setInputMessage(reply);
     handleSendMessage();
-    console.log("hello");
+    logger.log("hello");
   };
 
   // const handleResizeMouseDown = (event: React.MouseEvent) => {

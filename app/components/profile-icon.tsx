@@ -2,7 +2,7 @@ import { Avatar } from "@heroui/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getClientImage, getClientInfo } from "../lib/api";
-
+import { logger } from "@/app/lib/logger";
 export default function ProfileIcon() {
   const clientImage =
     typeof window !== "undefined"
@@ -45,7 +45,7 @@ export default function ProfileIcon() {
           }
         }
       } catch (err) {
-        console.error("Error fetching profile image:", err);
+        logger.error("Error fetching profile image:", err);
       }
     };
 

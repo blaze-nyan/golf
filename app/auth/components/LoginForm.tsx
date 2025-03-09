@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { fetchData } from "@/app/lib/api-placeholder-db";
+import { logger } from "@/app/lib/logger";
 // import { setClientId } from "@/app/lib/auth";
 
 export default function LoginForm() {
@@ -41,7 +42,7 @@ export default function LoginForm() {
         password: formData.password,
       });
 
-      console.log("Login response:", response.data);
+      logger.log("Login response:", response.data);
 
       if (response.data.clientId) {
         const clientIdStr = response.data.clientId.toString();
@@ -55,11 +56,11 @@ export default function LoginForm() {
         }
 
         // Debug storage after setting
-        console.log(
+        logger.log(
           "After login - localStorage:",
           localStorage.getItem("clientId")
         );
-        console.log(
+        logger.log(
           "After login - sessionStorage:",
           sessionStorage.getItem("clientId")
         );

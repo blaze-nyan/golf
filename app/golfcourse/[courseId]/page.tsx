@@ -9,7 +9,7 @@ import { getGolfCourseSingle } from "@/app/lib/api";
 import GolfFeesTable from "@/app/components/golf-fee-table";
 import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
 import AnimatedLoading from "@/app/components/animated-loading";
-
+import { logger } from "@/app/lib/logger";
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
   golfCourseId: 1,
@@ -64,7 +64,7 @@ const CoursePage = () => {
         setGolfCourse(data);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching golf courses:", error);
+        logger.error("Error fetching golf courses:", error);
         setIsLoading(false);
       }
     };

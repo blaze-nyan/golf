@@ -4,7 +4,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-
+import { logger } from "@/app/lib/logger";
 export const STEPS = [
   {
     title: "Course",
@@ -97,13 +97,13 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, [courseId]);
 
   useEffect(() => {
-    console.log("HYdaration", hydrated);
+    logger.log("HYdaration", hydrated);
     if (courseId && typeof window !== "undefined" && hydrated) {
       const savedBookingDetails = window.localStorage.getItem(
         `bookingDetails_${courseId}`
       );
-      console.log(savedBookingDetails);
-      console.log(bookingDetails);
+      logger.log(savedBookingDetails);
+      logger.log(bookingDetails);
       window.localStorage.setItem(
         `bookingDetails_${courseId}`,
         JSON.stringify(bookingDetails)

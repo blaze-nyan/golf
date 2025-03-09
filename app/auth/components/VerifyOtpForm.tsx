@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Input, Link } from "@heroui/react";
 import axios from "axios";
 import { signUp } from "@/app/lib/api";
-
+import { logger } from "@/app/lib/logger";
 interface VerifyOtpFormProps {
   email: string;
   userData: {
@@ -47,7 +47,7 @@ export default function VerifyOtpForm({
   // For development, get the OTP
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {
-      console.log("Development mode: checking for OTP...");
+      logger.log("Development mode: checking for OTP...");
       // Find OTP in local storage or console logs
       // This is just a placeholder - in real production code
       // you should remove any debugging OTP features

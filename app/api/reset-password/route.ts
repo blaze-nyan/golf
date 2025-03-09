@@ -2,7 +2,7 @@
 // app/api/reset-password/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       );
     }
   } catch (error: any) {
-    console.error("Password reset error:", error.response?.data || error);
+    logger.error("Password reset error:", error.response?.data || error);
     return NextResponse.json(
       { success: false, error: "Failed to reset password" },
       { status: 500 }

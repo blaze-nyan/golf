@@ -24,7 +24,7 @@ import {
 import { postData } from "@/app/lib/api-placeholder-db";
 import AnimatedLoading from "@/app/components/animated-loading";
 import ExpiryDateInput from "@/app/components/ExpiryDateInput";
-
+import { logger } from "@/app/lib/logger";
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
   const [paymentType, setPaymentType] = useState<"prepayment" | "fullPayment">(
@@ -129,7 +129,7 @@ const page = () => {
   const handleSubmit = () => {
     if (validateCreditCard()) {
       onOpen(); // Open the success modal on successful payment
-      console.log(bookingDetails);
+      logger.log(bookingDetails);
       postData("bookings", bookingDetails);
       setIsLoading(true); // Show loading spinner
       setTimeout(() => {
