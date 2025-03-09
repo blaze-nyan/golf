@@ -1,7 +1,7 @@
 // app/api/auth/signup/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ clientId, success: true });
   } catch (error) {
-    console.error("Error in signup:", error);
+    logger.error("Error in signup:", error);
     return NextResponse.json({ error: "Signup failed" }, { status: 500 });
   }
 }

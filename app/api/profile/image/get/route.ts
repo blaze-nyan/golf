@@ -2,7 +2,7 @@
 // app/api/profile/image/get/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -66,10 +66,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, imageInfo: null });
   } catch (error: any) {
-    console.error(
-      "Error getting client images:",
-      error.response?.data || error
-    );
+    logger.error("Error getting client images:", error.response?.data || error);
     return NextResponse.json(
       { error: "Failed to get profile image" },
       { status: 500 }

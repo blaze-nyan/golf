@@ -6,6 +6,7 @@ import { Card, Image, CardBody } from "@heroui/react";
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
 //tour
 import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
+import { logger } from "@/app/lib/logger";
 interface CourseCardProps {
   course: any;
   ready: boolean;
@@ -25,7 +26,7 @@ export default function CourseCard({ course, ready }: CourseCardProps) {
   useEffect(() => {
     if (!ready) return; // Ensure data is loaded and component is mounted
     if (ready) {
-      console.log("i am ready");
+      logger.log("i am ready");
     }
 
     // Start the tour only after golf courses are ready

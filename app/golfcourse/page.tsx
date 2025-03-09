@@ -9,6 +9,7 @@ import { getGolfCourses } from "@/app/lib/api";
 import CourseCard from "../components/course-card";
 import AnimatedLoading from "../components/animated-loading";
 import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
+import { logger } from "@/app/lib/logger";
 interface GolfCourse {
   golfCourseId: number;
   golfCourseName: string;
@@ -87,7 +88,7 @@ export default function GolfCoursesPage() {
           comingSoonCourse,
         ]);
       } catch (error) {
-        console.error("Error fetching golf courses:", error);
+        logger.error("Error fetching golf courses:", error);
       } finally {
         setLoading(false); // Once the data is fetched, set loading to false
       }

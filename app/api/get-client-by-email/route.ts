@@ -2,7 +2,7 @@
 // app/api/get-client-by-email/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     // Let's debug the response structure
-    console.log("Searching for email:", email);
+    logger.log("Searching for email:", email);
 
     // First try to authenticate with this email to get clientId directly
     // This is a more direct approach than searching
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       { headers }
     );
 
-    console.log(
+    logger.log(
       "Auth response for email check:",
       JSON.stringify(authResponse.data, null, 2)
     );
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         { headers }
       );
 
-      console.log(
+      logger.log(
         "Client details:",
         JSON.stringify(clientResponse.data, null, 2)
       );
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
       { headers }
     );
 
-    console.log(
+    logger.log(
       "Comms search response:",
       JSON.stringify(commsResponse.data, null, 2)
     );
@@ -145,7 +145,7 @@ export async function POST(request: Request) {
       { status: 404 }
     );
   } catch (error: any) {
-    console.error("Error finding client:", error.response?.data || error);
+    logger.error("Error finding client:", error.response?.data || error);
     return NextResponse.json(
       { success: false, error: "Error finding account" },
       { status: 500 }

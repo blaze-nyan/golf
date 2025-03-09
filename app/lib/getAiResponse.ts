@@ -1,4 +1,5 @@
 const apiKey = "AIzaSyDyzOZC03QelmCuk2yvVoEZ0IHqFNtsuSQ";
+import { logger } from "@/app/lib/logger";
 interface ResponseData {
   candidates?: {
     content: {
@@ -27,7 +28,8 @@ export default async function getAiResponse(
             text: `output: You can go to the to login and go to the booking to book golf  https://ta-golf.netlify.app/auth/login! Afterwards you can just go booking at https://ta-golf.netlify.app/golfcourse!`,
           },
           { text: "input: Sendible features & plans" },
-          { text: `output: Splash Golf Club offers an intuitive online booking platform designed for a seamless golf experience. Our features include:
+          {
+            text: `output: Splash Golf Club offers an intuitive online booking platform designed for a seamless golf experience. Our features include:
                              **Real-time tee time availability** for easy scheduling.
                              **Secure member access** to manage your reservations.
                              **Hassle-free booking process**, letting you focus on your game.
@@ -42,22 +44,27 @@ export default async function getAiResponse(
                              **Hackathon Golf Course**: Championship course with lush greens.
                              **Sunset Bay Golf Club**: Coastal course with breathtaking views.
 
-                            Plan your week ahead with our **detailed weather forecast**, ensuring optimal playing conditions.` },
+                            Plan your week ahead with our **detailed weather forecast**, ensuring optimal playing conditions.`,
+          },
           { text: "input: I'm already a customer" },
-          { text: `output: Thank you for being a valued member of **Splash Golf Club**! Here’s how you can manage your experience:
+          {
+            text: `output: Thank you for being a valued member of **Splash Golf Club**! Here’s how you can manage your experience:
       
                           🔹 **View Your Booking Details:** Log into your account and check your upcoming tee times and reservations.  
                           🔹 **Modify or Cancel a Booking:** Navigate to the "My Bookings" section to adjust your schedule.  
                           🔹 **Enjoy Exclusive Benefits:** As a member, you get access to priority booking, exclusive events, and special discounts.  
-        ` },
+        `,
+          },
           { text: "input: Request a demo" },
-          { text: `output: Interested in a demo? We'd love to show you how **Splash Golf Club's online booking system** works!
+          {
+            text: `output: Interested in a demo? We'd love to show you how **Splash Golf Club's online booking system** works!
       
                   📅 **Schedule a live demo:** Book a one-on-one walkthrough with our team to explore our intuitive platform, membership benefits, and golf course features.  
                   🎥 **Watch a demo video:** Learn how to book tee times, manage reservations, and access exclusive member perks.  
                   📧 **Contact us:** Have specific questions? Reach out to our team for a personalized consultation.
 
-                  ➡️ **[Schedule a Demo](#)** | 🎥 **[Watch Demo Video](#)** | 📩 **[Contact Us](#)**` },
+                  ➡️ **[Schedule a Demo](#)** | 🎥 **[Watch Demo Video](#)** | 📩 **[Contact Us](#)**`,
+          },
           { text: `input: ${userMessage}` },
           { text: "output" },
         ],
@@ -99,7 +106,7 @@ export default async function getAiResponse(
     }
   } catch (error) {
     // Handle errors such as failed API requests
-    console.error("Error fetching AI response:", error);
+    logger.error("Error fetching AI response:", error);
     return [{ type: "text", text: "There was an error with the request." }];
   }
 }

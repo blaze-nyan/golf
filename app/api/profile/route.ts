@@ -1,7 +1,7 @@
 // app/api/profile/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -37,12 +37,12 @@ export async function POST(request: Request) {
 
     // Response will have the same structure as your Postman response
 
-    console.log(response.data);
+    logger.log(response.data);
     // It includes Title, First Name, Surname, Given Name, Company, Gender, etc.
     return NextResponse.json(response.data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Profile fetch error:", error.response?.data || error);
+    logger.error("Profile fetch error:", error.response?.data || error);
     return NextResponse.json(
       { error: "Failed to fetch profile" },
       { status: 500 }

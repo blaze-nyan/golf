@@ -7,6 +7,7 @@ import {
   ProfileData,
   ClientInfo,
 } from "./types";
+import { logger } from "@/app/lib/logger";
 export const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -74,7 +75,7 @@ export const signUp = async (userData: SignUpRequest) => {
     const response = await axios.post("/api/signup", userData);
     return response.data;
   } catch (error) {
-    console.error("Error in signup:", error);
+    logger.error("Error in signup:", error);
     throw error;
   }
 };
@@ -83,7 +84,7 @@ export const verifyEmail = async (token: string) => {
     const response = await axios.get(`/api/verify?token=${token}`);
     return response.data;
   } catch (error) {
-    console.error("Error verifying email:", error);
+    logger.error("Error verifying email:", error);
     throw error;
   }
 };
@@ -97,20 +98,20 @@ export const getClientInfo = async (clientId: number): Promise<ProfileData> => {
     });
     return response.data.payload;
   } catch (error) {
-    console.error("Error fetching client info:", error);
+    logger.error("Error fetching client info:", error);
     throw error;
   }
 };
 
 export const updateClientInfo = async (clientInfo: ClientInfo) => {
-  console.log(clientInfo);
+  logger.log(clientInfo);
   try {
     const response = await axios.post("/api/profile/update", {
       Client_Info: clientInfo,
     });
     return response.data;
   } catch (error) {
-    console.error("Error setting client image:", error);
+    logger.error("Error setting client image:", error);
     throw error;
   }
 };
@@ -122,7 +123,7 @@ export const setClientImage = async (clientId: number) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error setting client image:", error);
+    logger.error("Error setting client image:", error);
     throw error;
   }
 };
@@ -136,7 +137,7 @@ export const uploadBinaryObject = async (imageUID: string, file: File) => {
     const response = await axios.post("/api/profile/image/binary", formData);
     return response.data;
   } catch (error) {
-    console.error("Error uploading image:", error);
+    logger.error("Error uploading image:", error);
     throw error;
   }
 };
@@ -147,7 +148,7 @@ export const getClientImage = async (clientId: number) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error getting client image:", error);
+    logger.error("Error getting client image:", error);
     throw error;
   }
 };
@@ -162,7 +163,7 @@ export async function getGolfBookingTypes() {
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -177,7 +178,7 @@ export async function getGolfCourseAvailability(GolfCourseID: any, day: any) {
     });
     return response.data;
   } catch (error) {
-    console.error("Error getting client image:", error);
+    logger.error("Error getting client image:", error);
     throw error;
   }
 }
@@ -192,7 +193,7 @@ export async function getGolfCourseAvailabilityResponse() {
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -217,7 +218,7 @@ export async function setGolfCourseDateLock(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -232,7 +233,7 @@ export async function getRecentGolfersForClient(ClientID: string) {
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -258,7 +259,7 @@ export async function getGolfBookingsForClient(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -273,7 +274,7 @@ export async function getstheGolfBooking() {
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -326,7 +327,7 @@ export async function setGolfBooking(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -344,7 +345,7 @@ export async function getTheTotalAmountOfPpaymentForTheBooking(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -377,7 +378,7 @@ export async function SetThepPaymentForTheBooking(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -402,7 +403,7 @@ export async function getGolfEffectiveCourse(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -417,7 +418,7 @@ export async function getGolfBookingItems(GolfBookingID: string) {
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -438,7 +439,7 @@ export async function setGolfBookingItems(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -460,7 +461,7 @@ export async function setGolfBookingLock(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -481,7 +482,7 @@ export async function getHnaLookup(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -508,7 +509,7 @@ export async function makeFolfBookingPrepayment(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -524,7 +525,7 @@ export async function getGolfBookingChangeLog(GolfBookingID: string) {
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }
@@ -551,7 +552,7 @@ export async function getGolfShotguns(
     },
     { headers }
   );
-  console.log(response);
+  logger.log(response);
   if (!response.data.payload) return undefined;
   return response.data.payload;
 }

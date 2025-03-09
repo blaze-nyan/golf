@@ -2,7 +2,7 @@
 // app/api/auth/verify-email/route.ts
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-
+import { logger } from "@/app/lib/logger";
 // Initialize Resend with your API key
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     // Log OTP in development for easier testing
     if (process.env.NODE_ENV === "development") {
-      console.log(`🔐 VERIFICATION CODE for ${email}: ${otp}`);
+      logger.log(`🔐 VERIFICATION CODE for ${email}: ${otp}`);
     }
 
     try {
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       });
 
       if (error) {
-        console.error("Email sending error:", error);
+        logger.error("Email sending error:", error);
         return NextResponse.json(
           {
             error: "Failed to send verification email",
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
         );
       }
 
-      console.log("Email sent successfully, ID:", data?.id);
+      logger.log("Email sent successfully, ID:", data?.id);
       return NextResponse.json({
         success: true,
         message: "Verification code sent",
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
         otp: process.env.NODE_ENV === "development" ? otp : undefined,
       });
     } catch (emailError: any) {
-      console.error("Email API error:", emailError);
+      logger.error("Email API error:", emailError);
       return NextResponse.json(
         {
           error: "Failed to send verification email",
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
       );
     }
   } catch (error: any) {
-    console.error("Server error:", error.message);
+    logger.error("Server error:", error.message);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -132,7 +132,7 @@ export async function PUT(request: Request) {
       message: "Email verified successfully",
     });
   } catch (error) {
-    console.error("Error verifying email:", error);
+    logger.error("Error verifying email:", error);
     return NextResponse.json(
       { error: "Failed to verify email" },
       { status: 500 }

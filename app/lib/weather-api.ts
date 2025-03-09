@@ -1,6 +1,6 @@
 // app/lib/weather-api.ts
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 // const WEATHER_API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 const WEATHER_API_KEY = "cae50330c3191ca2c0ab67eaf7da15be";
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
@@ -58,7 +58,7 @@ export const getWeather = async (lat: number, lon: number) => {
       uvIndex: response.data.uvi || 0, // Note: UV index might not be available in free plan
     };
   } catch (error) {
-    console.error("Error fetching weather:", error);
+    logger.error("Error fetching weather:", error);
     throw error;
   }
 };

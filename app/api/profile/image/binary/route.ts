@@ -1,6 +1,7 @@
 // app/api/profile/image/binary/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -21,9 +22,9 @@ export async function POST(request: Request) {
     const buffer = await file.arrayBuffer();
     const base64String = Buffer.from(buffer).toString("base64");
     const uint8Array = new Uint8Array(buffer);
-    
+
     // Read 4 bytes at offset 20 (little-endian format)
-    const binaryObjectSize = 
+    const binaryObjectSize =
       uint8Array[20] |
       (uint8Array[21] << 8) |
       (uint8Array[22] << 16) |
@@ -43,12 +44,12 @@ export async function POST(request: Request) {
       { headers }
     );
 
-    console.log(response.data)
+    logger.log(response.data);
 
     return NextResponse.json(response.data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Binary upload error:", error);
+    logger.error("Binary upload error:", error);
     return NextResponse.json(
       { error: "Failed to upload image data" },
       { status: 500 }
