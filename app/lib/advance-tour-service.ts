@@ -82,15 +82,15 @@ export const createHomeTour = (forceStart: boolean = false): any => {
         position: "top",
       },
     },
-    {
-      element: 'a[href="/auth/login"]',
-      popover: {
-        title: "Login / Sign Up",
-        description:
-          "Create an account or sign in to book tee times, manage reservations, and view your profile.",
-        position: "bottom",
-      },
-    },
+    // {
+    //   element: 'a[href="/auth/login"]',
+    //   popover: {
+    //     title: "Login / Sign Up",
+    //     description:
+    //       "Create an account or sign in to book tee times, manage reservations, and view your profile.",
+    //     position: "bottom",
+    //   },
+    // },
     {
       element: ".light-dark",
       popover: {
