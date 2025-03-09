@@ -24,7 +24,11 @@ export const metadata: Metadata = {
   description:
     "Experience world-class golfing at Splash Golf Club. Enjoy scenic courses, professional coaching, and exclusive membership benefits. Book your tee time today. Easily book tee times at top golf courses near you. Enjoy hassle-free online golf club reservations with the best rates. Golf Club Booking. Reserve your spot today!",
   icons: {
-    icon: "/favicon.ico", // Optional: Apple touch icon
+    icon: [
+      { url: "/favicon.webp", type: "image/webp" },
+      { url: "/favicon.ico", sizes: "any" }, // Fallback for browsers that don't support WebP
+    ],
+    apple: { url: "/apple-icon.png", sizes: "180x180" },
   },
 };
 
@@ -35,6 +39,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <link rel="icon" href="/favicon.webp" type="image/webp" />
+      <link rel="icon" href="/favicon.ico" sizes="any" /> {/* Fallback */}
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
