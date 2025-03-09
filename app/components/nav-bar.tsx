@@ -15,6 +15,7 @@ import {
   Button,
   Divider,
 } from "@heroui/react";
+import Image from "next/image";
 //componets
 import ProfileIcon from "./profile-icon";
 import { ThemeSwitcher } from "@/app/components/theme-switcher";
@@ -56,7 +57,14 @@ export default function NavBar(props: NavbarProps) {
       {/* Left Content */}
       <NavbarBrand>
         <Link href="/" className="font-bold text-inherit">
-          GOLF CLUB
+          <Image
+            src="/logo.webp"
+            alt="logo"
+            width={50}
+            height={50}
+            priority={true}
+          />
+          <span>SPLASH GOLF CLUB</span>
         </Link>
       </NavbarBrand>
 
