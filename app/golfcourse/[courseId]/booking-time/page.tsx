@@ -20,7 +20,7 @@ import {
 } from "@/app/components/date-functionalities";
 import { fetchData } from "@/app/lib/api-placeholder-db";
 import AnimatedLoading from "@/app/components/animated-loading";
-
+import { logger } from "@/app/lib/logger";
 // Placeholder data remains the same
 const placeholderData = [
   {
@@ -169,7 +169,7 @@ const page = () => {
 
   const handleCardClick = (timeCode: number) => {
     setSelectedTimeCode(timeCode === selectedTimeCode ? null : timeCode);
-    setDisabledNext(timeCode === selectedTimeCode? true: false);
+    setDisabledNext(timeCode === selectedTimeCode ? true : false);
   };
 
   useEffect(() => {
@@ -221,11 +221,11 @@ const page = () => {
         courseId,
         convertCalendarDateToNumber(selectedDate)
       );
-      console.log(data);
+      logger.log(data);
       setAvailableTeeTimes(data.availabilities);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching golf courses:", error);
+      logger.error("Error fetching golf courses:", error);
       setLoading(false);
     }
   };
@@ -258,7 +258,7 @@ const page = () => {
         );
         setAvailableTeeTimes(data.availabilities);
       } catch (error) {
-        console.error("Error fetching golf courses:", error);
+        logger.error("Error fetching golf courses:", error);
       }
     };
 
@@ -535,12 +535,12 @@ const page = () => {
       {/* Next button - fixed position at bottom for mobile */}
 
       <div className="flex justify-start pt-4 md:hidden   p-2 shadow-lg">
-        <NextButton disabled={disabledNext}/>
+        <NextButton disabled={disabledNext} />
       </div>
 
       {/* Desktop next button */}
       <div className="pt-4 hidden md:flex md:justify-start">
-        <NextButton  disabled={disabledNext}/>
+        <NextButton disabled={disabledNext} />
       </div>
     </div>
   );

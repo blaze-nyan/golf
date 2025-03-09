@@ -37,34 +37,34 @@ export default function Home(): JSX.Element {
   const reviews: ReviewProps[] = [
     {
       content:
-        "Arcu dui vivamus arcu felis bibendum. Amet tellus cras adipiscing enim eu turpis egestas pretium.",
-      createdAt: "2021-08-01T12:00:00.000Z",
+        "Booked my tee time in minutes! The course was exactly as described and the weather forecast feature helped me.",
+      createdAt: "2024-07-15T12:00:00.000Z",
       rating: 5,
-      title: "Great product",
+      title: "Quick and easy booking",
       user: {
-        name: "John Doe",
+        name: "Thomas Anderson",
         avatar: "https://i.pravatar.cc/150?u=a04258114e29026708c",
       },
     },
     {
       content:
-        "Facilisis magna etiam tempor orci eu lobortis elementum nibh tellus molestie nunc.",
-      createdAt: "2021-09-15T14:30:00.000Z",
+        "Love the mobile app. Course descriptions are detailed and helpful. Would like more payment options though.",
+      createdAt: "2024-08-22T14:30:00.000Z",
       rating: 4,
-      title: "Very helpful service",
+      title: "Great mobile experience",
       user: {
-        name: "Jane Smith",
+        name: "Sarah Mitchell",
         avatar: "https://i.pravatar.cc/150?u=a04258114e29026702c",
       },
     },
     {
       content:
-        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      createdAt: "2021-10-22T09:15:00.000Z",
+        "Best golf booking site I've used. Real-time availability and simple interface make planning golf outings a breeze.",
+      createdAt: "2024-09-05T09:15:00.000Z",
       rating: 5,
-      title: "Excellent experience",
+      title: "Top-notch service",
       user: {
-        name: "Alex Johnson",
+        name: "David Garcia",
         avatar: "https://i.pravatar.cc/150?u=a04258114e29026703c",
       },
     },

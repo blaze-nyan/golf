@@ -1,7 +1,7 @@
 // app/api/login/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -15,7 +15,7 @@ const headers = {
 export async function POST(request: Request) {
   try {
     const userData = await request.json();
-    console.log("Sending login request with:", {
+    logger.log("Sending login request with:", {
       email: userData.email,
       headers: headers,
     });
@@ -31,10 +31,10 @@ export async function POST(request: Request) {
       },
       { headers }
     );
-    console.log("Login response:", response.data);
+    logger.log("Login response:", response.data);
     // In app/api/login/route.ts
-    console.log("Full API response:", JSON.stringify(response.data, null, 2));
-    console.log("Authentication result:", response.data.payload);
+    logger.log("Full API response:", JSON.stringify(response.data, null, 2));
+    logger.log("Authentication result:", response.data.payload);
 
     // Check the response structure and get Client ID
     const clientId = response.data.payload["Client ID"];
@@ -45,8 +45,8 @@ export async function POST(request: Request) {
         { error: "Make sure your password and emails are correct." },
         { status: 401 }
       );
-    }    
-    
+    }
+
     if (errorCode !== 0) {
       return NextResponse.json(
         { error: "Make sure your password and emails are correct." },
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Login error:", error.response?.data || error);
+    logger.error("Login error:", error.response?.data || error);
     return NextResponse.json({ error: "Login failed" }, { status: 500 });
   }
 }

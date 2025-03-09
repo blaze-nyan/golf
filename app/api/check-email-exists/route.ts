@@ -2,7 +2,7 @@
 // app/api/check-email-exists/route.ts
 import { NextResponse } from "next/server";
 import axios from "axios";
-
+import { logger } from "@/app/lib/logger";
 const BASE_URL = "https://ixschool.cimso.xyz";
 const headers = {
   Authorization: JSON.stringify({
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
     // If we reach here, no matching client was found
     return NextResponse.json({ exists: false });
   } catch (error: any) {
-    console.error("Error checking email:", error.response?.data || error);
+    logger.error("Error checking email:", error.response?.data || error);
     return NextResponse.json(
       { error: "Error checking email" },
       { status: 500 }

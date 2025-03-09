@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { encryptData } from "@/app/lib/dataEncrypt";
 import AnimatedLoading from "../components/animated-loading";
-
+import { logger } from "@/app/lib/logger";
 export default function ProfileRedirect() {
   const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
@@ -14,10 +14,10 @@ export default function ProfileRedirect() {
     if (typeof window === "undefined") return;
 
     // Debug all storage
-    console.log("=== PROFILE REDIRECT DEBUG ===");
-    console.log("localStorage clientId:", localStorage.getItem("clientId"));
-    console.log("sessionStorage clientId:", sessionStorage.getItem("clientId"));
-    console.log(
+    logger.log("=== PROFILE REDIRECT DEBUG ===");
+    logger.log("localStorage clientId:", localStorage.getItem("clientId"));
+    logger.log("sessionStorage clientId:", sessionStorage.getItem("clientId"));
+    logger.log(
       "localStorage clientIdEncrypt:",
       localStorage.getItem("clientIdEncrypt")
     );
@@ -34,12 +34,12 @@ export default function ProfileRedirect() {
     };
 
     const clientId = getClientId();
-    console.log("Final clientId:", clientId);
+    logger.log("Final clientId:", clientId);
 
     if (clientId) {
       try {
         const clientId_ = encryptData(clientId);
-        console.log("Encrypted Client ID:", clientId_);
+        logger.log("Encrypted Client ID:", clientId_);
 
         // Store encrypted ID where it's needed
         window.localStorage.setItem("clientIdEncrypt", clientId_.toString());
@@ -50,12 +50,12 @@ export default function ProfileRedirect() {
         // Redirect to profile with the encrypted ID
         router.push(`/profile/${encodeURIComponent(clientId_)}`);
       } catch (error) {
-        console.error("Encryption error:", error);
+        logger.error("Encryption error:", error);
         setAuthChecked(true);
         router.push("/auth/login");
       }
     } else {
-      console.log("No valid auth, redirecting to login");
+      logger.log("No valid auth, redirecting to login");
       setAuthChecked(true);
       router.push("/auth/login");
     }

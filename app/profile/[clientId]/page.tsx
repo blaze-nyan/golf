@@ -30,6 +30,7 @@ import {
   setClientImage,
   getClientImage,
 } from "@/app/lib/api";
+import { logger } from "@/app/lib/logger";
 
 import { fetchData } from "@/app/lib/api-placeholder-db";
 
@@ -74,14 +75,14 @@ export default function ProfilePage() {
   const clientId_: any = params.clientId;
 
   if (!clientId_) {
-    console.error("clientId_ is undefined");
+    logger.error("clientId_ is undefined");
     router.push("/auth/login");
   }
   const decodedClientId_ = decodeURIComponent(clientId_);
-  console.log("Before decryption (Decoded clientId_):", decodedClientId_);
+  logger.log("Before decryption (Decoded clientId_):", decodedClientId_);
 
   const clientId = decryptData(decodedClientId_);
-  console.log("After decryption (Decrypted clientId):", clientId);
+  logger.log("After decryption (Decrypted clientId):", clientId);
 
   ///////////////////////////////////////////////////
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -168,12 +169,12 @@ export default function ProfilePage() {
   useEffect(() => {
     // Only run this code on the client side
     if (typeof window !== "undefined") {
-      console.log("=== PROFILE PAGE DEBUG ===");
-      console.log("URL clientId:", clientId_);
-      console.log("Decoded clientId_:", decodedClientId_);
-      console.log("Decrypted clientId:", clientId);
-      console.log("localStorage clientId:", localStorage.getItem("clientId"));
-      console.log(
+      logger.log("=== PROFILE PAGE DEBUG ===");
+      logger.log("URL clientId:", clientId_);
+      logger.log("Decoded clientId_:", decodedClientId_);
+      logger.log("Decrypted clientId:", clientId);
+      logger.log("localStorage clientId:", localStorage.getItem("clientId"));
+      logger.log(
         "sessionStorage clientId:",
         sessionStorage.getItem("clientId")
       );
@@ -193,16 +194,16 @@ export default function ProfilePage() {
 
       // If we can't find a client ID in storage, redirect to login
       if (!storedClientId) {
-        console.log("No client ID found in storage, redirecting to login");
+        logger.log("No client ID found in storage, redirecting to login");
         router.push("/auth/login");
         return;
       }
 
       // If the decrypted ID doesn't match what's in storage, redirect to login
       if (clientId.toString() !== storedClientId) {
-        console.log("Client ID mismatch, redirecting to login");
-        console.log("Decrypted:", clientId.toString());
-        console.log("Stored:", storedClientId);
+        logger.log("Client ID mismatch, redirecting to login");
+        logger.log("Decrypted:", clientId.toString());
+        logger.log("Stored:", storedClientId);
         router.push("/auth/login");
         return;
       }
@@ -257,7 +258,7 @@ export default function ProfilePage() {
 
           getClientImage(clientId),
         ]);
-        await console.log(
+        await logger.log(
           "profileData=>",
           profileData,
           "parsedClientId=>",
@@ -293,7 +294,7 @@ export default function ProfilePage() {
         setBookingData(filteredBookings);
       } catch (err) {
         setError("Failed to load profile data");
-        console.error("Error:", err);
+        logger.error("Error:", err);
       } finally {
         setIsLoading(false);
       }
@@ -354,7 +355,7 @@ export default function ProfilePage() {
       // Clear after 3s
     } catch (err) {
       setError("Failed to upload image");
-      console.error(err);
+      logger.error(err);
     } finally {
       setIsUploading(false); // Stop the uploading state
     }
@@ -488,7 +489,7 @@ export default function ProfilePage() {
       // Clear after 3s
     } catch (err) {
       setError("Failed to update profile");
-      console.error(err);
+      logger.error(err);
     } finally {
       setIsSaving(false);
     }
