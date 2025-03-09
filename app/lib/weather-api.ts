@@ -1,8 +1,8 @@
 // app/lib/weather-api.ts
 import axios from "axios";
 import { logger } from "@/app/lib/logger";
-// const WEATHER_API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
-const WEATHER_API_KEY = "cae50330c3191ca2c0ab67eaf7da15be";
+// app/lib/weather-api.ts
+const WEATHER_API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
 
 export interface WeatherData {

@@ -1,6 +1,6 @@
 import CryptoJS from "crypto-js";
 import { logger } from "@/app/lib/logger";
-const SECRET_KEY = "hackathone";
+const SECRET_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
 
 if (!SECRET_KEY) {
   throw new Error(

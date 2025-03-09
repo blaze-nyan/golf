@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { logger } from "@/app/lib/logger";
-const APIDatabase = "https://placeholderdatabase.onrender.com";
+const APIDatabase = process.env.NEXT_PUBLIC_API_DATABASE_URL;
 
 export const fetchData = async (apiRoute: string) => {
   try {

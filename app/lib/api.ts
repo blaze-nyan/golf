@@ -8,12 +8,12 @@ import {
   ClientInfo,
 } from "./types";
 import { logger } from "@/app/lib/logger";
-export const BASE_URL = "https://ixschool.cimso.xyz";
+export const BASE_URL = process.env.NEXT_PUBLIC_CIMSO_BASE_URL;
 const headers = {
   Authorization: JSON.stringify({
-    "Client Login ID": "CiMSO.dev",
-    "Client Password": "CiMSO.dev",
-    hg_pass: "nGXUF1i^57I^ao^o",
+    "Client Login ID": process.env.NEXT_PUBLIC_CIMSO_CLIENT_LOGIN_ID,
+    "Client Password": process.env.NEXT_PUBLIC_CIMSO_CLIENT_PASSWORD,
+    hg_pass: process.env.NEXT_PUBLIC_CIMSO_HG_PASS,
   }),
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
