@@ -310,7 +310,7 @@ export default function ProfilePage() {
     await sleep(1000);
     const bookings = await fetchData("bookings");
     const filteredBookings = bookings.filter(
-      (booking: { clientID: any }) => booking.clientID === clientId
+      (booking: { clientID: any }) => String(booking.clientID) === String(clientId)
     );
     closeBookingModal();
     setBookingData(filteredBookings);

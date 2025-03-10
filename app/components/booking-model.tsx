@@ -191,7 +191,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
                 <div className="mt-6 flex justify-between">
                   <Button
                     onPress={openConfirmationModal}
-                    className="text-white  bg-red-500"
+                    className={`text-white  bg-red-500 ${booking.status === "cancelled"? "hidden": ""}`}
                     color="primary"
                   >
                     Cancel Booking
