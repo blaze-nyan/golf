@@ -309,12 +309,10 @@ export default function ProfilePage() {
   const refetchBookings = async () => {
     await sleep(1000);
     const bookings = await fetchData("bookings");
-    console.log(clientId)
     const filteredBookings = bookings.filter(
       (booking: { clientID: any }) => String(booking.clientID) === String(clientId)
     );
     closeBookingModal();
-    console.log(filteredBookings)
     setBookingData(filteredBookings);
   };
 
