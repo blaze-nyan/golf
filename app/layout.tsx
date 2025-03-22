@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { ThemeProvider } from "next-themes";
 
 //components
 // import NavBar from "./components/NavBar";
@@ -38,19 +39,43 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <link rel="icon" href="/favicon.webp" type="image/webp" />
-      <link rel="icon" href="/favicon.ico" sizes="any" /> {/* Fallback */}
-      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function() {
+              try {
+                const storedTheme = localStorage.getItem('theme');
+                const theme = storedTheme || 
+                  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                
+                if (theme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.colorScheme = 'dark';
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.style.colorScheme = 'light';
+                }
+              } catch (e) {
+                console.error('Theme initialization failed:', e);
+              }
+            })();
+          `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <NavBar />
-          {children}
-          <ChatWidget />
-          <AdvancedTourButton />
-        </Providers>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Providers>
+            <NavBar />
+            {children}
+            <ChatWidget />
+            <AdvancedTourButton />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

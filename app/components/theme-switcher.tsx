@@ -1,7 +1,7 @@
 // app/components/ThemeSwitcher.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import {
   Dropdown,
@@ -14,6 +14,26 @@ import { Sun, Moon, Monitor } from "lucide-react";
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Only run after component mounts on client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // During SSR, render a placeholder button to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <Button
+        variant="light"
+        isIconOnly
+        className="rounded-full light-dark"
+        aria-label="Theme"
+      >
+        {/* No icon during SSR */}
+      </Button>
+    );
+  }
 
   return (
     <Dropdown>

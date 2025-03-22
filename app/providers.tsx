@@ -12,10 +12,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system">
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <HeroUIProvider>
           <ToastProvider placement={"top-right"} toastOffset={60} />
-          <div>{children}</div>
+          {children}
         </HeroUIProvider>
       </ThemeProvider>
     </QueryClientProvider>
