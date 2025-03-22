@@ -5,13 +5,17 @@
 export function getClientId(): string | null {
   if (typeof window === "undefined") return null;
 
-  // First try localStorage
-  const localClientId = window.localStorage.getItem("clientId");
-  if (localClientId) return localClientId;
+  try {
+    // First try localStorage
+    const localClientId = window.localStorage.getItem("clientId");
+    if (localClientId) return localClientId;
 
-  // Then try sessionStorage
-  const sessionClientId = window.sessionStorage.getItem("clientId");
-  if (sessionClientId) return sessionClientId;
+    // Then try sessionStorage
+    const sessionClientId = window.sessionStorage.getItem("clientId");
+    if (sessionClientId) return sessionClientId;
+  } catch (error) {
+    console.error("Error accessing browser storage:", error);
+  }
 
   return null;
 }

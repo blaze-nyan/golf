@@ -30,7 +30,7 @@ export default function Home(): JSX.Element {
   const heroRef = useRef<HTMLDivElement>(null);
   const faqRef = useRef<HTMLDivElement>(null);
   const reviewsRef = useRef<HTMLHeadingElement>(null);
-  const reviewCardsRef = useRef<HTMLDivElement[]>([]);
+  const reviewCardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { theme, resolvedTheme } = useTheme();
 
   // Reviews data
@@ -74,34 +74,36 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Add logic to only show tour for first-time visitors
   useEffect(() => {
     if (!mounted) return;
 
-    // Start the tour
-    const tour = createHomeTour();
-    if (tour) {
-      // Short delay to ensure the DOM is fully loaded
-      const tourTimeout = setTimeout(() => {
-        tour.drive();
-      }, 500);
-
-      return () => clearTimeout(tourTimeout);
+    // Check if user has seen the tour before
+    const hasSeenTour = localStorage.getItem("hasSeenHomeTour");
+    if (!hasSeenTour) {
+      const tour = createHomeTour();
+      if (tour) {
+        const tourTimeout = setTimeout(() => {
+          tour.drive();
+          localStorage.setItem("hasSeenHomeTour", "true");
+        }, 500);
+        return () => clearTimeout(tourTimeout);
+      }
     }
   }, [mounted]);
+
+  // Consolidate animations into a single timeline where possible
   useEffect(() => {
     if (!mounted) return;
+    gsap.registerPlugin(ScrollTrigger);
 
-    // Register ScrollTrigger plugin
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-    }
+    // Create a single master timeline for better performance
+    const masterTl = gsap.timeline();
 
-    // Initial page load animation
-    const tl = gsap.timeline();
-
-    // Hero section entrance animation
+    // Add animations to the timeline with their ScrollTriggers
     if (heroRef.current) {
-      tl.from(heroRef.current, {
+      masterTl.from(heroRef.current, {
         opacity: 0,
         y: 50,
         duration: 1,
@@ -111,7 +113,7 @@ export default function Home(): JSX.Element {
 
     // FAQ section animation
     if (faqRef.current) {
-      gsap.from(faqRef.current, {
+      masterTl.from(faqRef.current, {
         opacity: 0,
         y: 60,
         duration: 0.8,
@@ -126,7 +128,7 @@ export default function Home(): JSX.Element {
 
     // Reviews section header animation
     if (reviewsRef.current) {
-      gsap.from(reviewsRef.current, {
+      masterTl.from(reviewsRef.current, {
         opacity: 0,
         y: 40,
         duration: 0.7,
@@ -140,8 +142,8 @@ export default function Home(): JSX.Element {
     }
 
     // Review cards animation (staggered)
-    if (reviewCardsRef.current.length > 0) {
-      gsap.from(reviewCardsRef.current, {
+    if (reviewCardRefs.current.length > 0) {
+      masterTl.from(reviewCardRefs.current, {
         opacity: 0,
         y: 30,
         duration: 0.5,
@@ -181,13 +183,6 @@ export default function Home(): JSX.Element {
     return () => clearTimeout(themeChangeTimeout);
   }, [theme, resolvedTheme, mounted]);
 
-  // Add a review card to the refs array
-  const addToReviewRefs = (el: HTMLDivElement | null) => {
-    if (el && !reviewCardsRef.current.includes(el)) {
-      reviewCardsRef.current.push(el);
-    }
-  };
-
   // Return empty div if not mounted yet to prevent hydration mismatch
   if (!mounted) {
     return <div className="min-h-screen bg-background"></div>;
@@ -209,8 +204,12 @@ export default function Home(): JSX.Element {
       </div>
 
       {/* Reviews Section */}
-      <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 lg:mt-16 transition-all duration-300">
+      <section
+        aria-labelledby="reviews-heading"
+        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 lg:mt-16 transition-all duration-300"
+      >
         <h2
+          id="reviews-heading"
           ref={reviewsRef}
           className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-6 sm:mb-8 text-gray-800 dark:text-gray-100 transition-colors duration-300"
         >
@@ -221,7 +220,9 @@ export default function Home(): JSX.Element {
           {reviews.map((review, index) => (
             <div
               key={index}
-              ref={addToReviewRefs}
+              ref={(el) => {
+                reviewCardRefs.current[index] = el;
+              }}
               className={`transition-transform duration-300 hover:-translate-y-2 hover:scale-102 ${
                 index === 2 && reviews.length === 3
                   ? "sm:col-span-2 lg:col-span-1"
@@ -238,7 +239,7 @@ export default function Home(): JSX.Element {
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

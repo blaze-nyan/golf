@@ -89,6 +89,15 @@ export default async function getAiResponse(
 
   try {
     const response = await fetch(apiUrl, options); // Use await for fetch to resolve properly
+    if (!response.ok) {
+      logger.error(`API error: ${response.status} ${response.statusText}`);
+      return [
+        {
+          type: "error",
+          text: `Error ${response.status}: ${response.statusText}`,
+        },
+      ];
+    }
     const responseData: ResponseData = await response.json(); // Parse the response with type annotation
 
     // Check if candidates exist and are not empty
