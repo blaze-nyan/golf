@@ -791,7 +791,7 @@ export default function ProfilePage() {
                   Member Since
                 </p>
                 <p className="text-gray-800 dark:text-gray-200">
-                  February 2024
+                  March 2025
                 </p>
               </div>
               <div>
