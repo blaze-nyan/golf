@@ -517,10 +517,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-8 transition-colors duration-200">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 transition-colors duration-200">
       <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         {/* Profile Summary Card */}
-        <Card className="md:col-span-1 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <Card className="col-span-full md:col-span-1 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardBody className="items-center justify-center gap-4 text-center">
             <div className="relative inline-block">
               <Avatar
@@ -531,35 +531,27 @@ export default function ProfilePage() {
               <Button
                 isIconOnly
                 size="sm"
-                className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 shadow-md"
                 onPress={onOpen}
               >
                 <Upload size={16} />
               </Button>
             </div>
+
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mt-2">
                 {profileData["Title"]} {profileData["First Name"]}{" "}
                 {profileData["Surname"]}
               </h2>
               <p className="text-gray-500 dark:text-gray-400">
                 {profileData["Given Name"]}
               </p>
-
-              <div className="mt-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  <strong className="text-gray-600 dark:text-gray-300">
-                    {t("company")}:
-                  </strong>{" "}
-                  {profileData["Company"] || t("notSpecified")}
-                </p>
-              </div>
             </div>
           </CardBody>
         </Card>
 
         {/* Profile Details Card */}
-        <Card className="md:col-span-2 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <Card className="col-span-full md:col-span-2 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardHeader className="flex justify-between items-center px-1 py-2">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {t("profileDetails")}
@@ -578,11 +570,6 @@ export default function ProfilePage() {
               }
               isLoading={isSaving}
               onPress={() => (isEditing ? handleSave() : setIsEditing(true))}
-              className={
-                isEditing
-                  ? "bg-green-100 dark:bg-green-800/30 text-green-700 dark:text-green-400"
-                  : ""
-              }
             >
               {isEditing ? (isSaving ? t("saving") : t("save")) : t("edit")}
             </Button>
@@ -595,6 +582,10 @@ export default function ProfilePage() {
                     label={t("title")}
                     defaultSelectedKeys={[profileData["Title"]]}
                     onChange={handleInputChange("Title")}
+                    className="w-full"
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
                   >
                     {titles.map((title) => (
                       <SelectItem key={title} value={title}>
@@ -607,6 +598,10 @@ export default function ProfilePage() {
                     defaultSelectedKeys={[profileData["Gender"]]}
                     disabled={!isEditing}
                     onChange={handleInputChange("Gender")}
+                    className="w-full"
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
                   >
                     {genders.map((gender) => (
                       <SelectItem key={gender.value} value={gender.value}>
@@ -619,50 +614,65 @@ export default function ProfilePage() {
                     defaultValue={profileData["First Name"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("First Name")}
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
                   />
                   <Input
                     label={t("surname")}
                     defaultValue={profileData["Surname"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("Surname")}
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
                   />
                   <Input
                     label={t("givenName")}
                     defaultValue={profileData["Given Name"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("Given Name")}
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
                   />
                   <Input
                     label={t("company")}
                     defaultValue={profileData["Company"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("Company")}
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
                   />
-                  <>
-                    <Input
-                      label={t("email")}
-                      defaultValue={emailData["Communication Detail"]}
-                      isReadOnly={!isEditing}
-                      onChange={handleEmailChange}
-                    />
-                  </>
 
-                  <>
-                    <Input
-                      label={t("phoneNumber")}
-                      defaultValue={phoneData["Communication Detail"]}
-                      isReadOnly={!isEditing}
-                      onChange={handlePhoneChange}
-                    />
-                  </>
+                  <Input
+                    label={t("email")}
+                    defaultValue={emailData["Communication Detail"]}
+                    isReadOnly={!isEditing}
+                    onChange={handleEmailChange}
+                    classNames={{
+                      label: "text-base font-medium",
+                    }}
+                  />
+
+                  <Input
+                    label={t("phoneNumber")}
+                    defaultValue={phoneData["Communication Detail"]}
+                    isReadOnly={!isEditing}
+                    onChange={handlePhoneChange}
+                    classNames={{
+                      label: "text-base font-medium", // Change this to the size you want
+                    }}
+                  />
                 </>
               ) : (
                 <>
-                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                  <p className=" bg-default-100 font- text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
                     <span>{t("title")}</span>
                     {profileData["Title"] || t("na")}
                   </p>
-                  <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
+                  <p className=" bg-default-100  text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
                     <span>{t("gender")}</span>
                     {profileData["Gender"] === "M"
                       ? t("male")
@@ -703,14 +713,71 @@ export default function ProfilePage() {
             </div>
           </CardBody>
         </Card>
-        <Card className="md:col-span-3 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <Card className="col-span-full p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardHeader className="px-1 py-2">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {t("bookings")}
             </h3>
           </CardHeader>
           <CardBody>
-            <div className="overflow-x-auto w-full">
+            <div className="sm:hidden">
+              {bookingData.length === 0 ? (
+                <div className="text-center text-gray-500 dark:text-gray-400 py-5">
+                  {t("noBookingAvailable")}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {bookingData.map((booking: any) => (
+                    <div
+                      key={booking.id}
+                      className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/40 transition-colors duration-300"
+                      onClick={() => openBookingModal(booking)}
+                    >
+                      <div className="font-medium text-gray-800 dark:text-gray-200 text-base mb-2">
+                        {booking.courseName}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400 mr-1">
+                            {t("date")}:
+                          </span>
+                          <span className="text-gray-800 dark:text-gray-200">
+                            {dateToString(
+                              convertExcelDateToJSDate(booking.teeDate)
+                            )}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400 mr-1">
+                            {t("time")}:
+                          </span>
+                          <span className="text-gray-800 dark:text-gray-200">
+                            {convertMinutesToTimeWithAMPM(booking.teeTime)}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400 mr-1">
+                            {t("golfers")}:
+                          </span>
+                          <span className="text-gray-800 dark:text-gray-200">
+                            {booking.numberOfGolfers}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400 mr-1">
+                            {t("status")}:
+                          </span>
+                          <span className="text-gray-800 dark:text-gray-200">
+                            {booking.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="hidden sm:block overflow-x-auto w-full">
               {/* Header Row */}
               <div className="grid grid-cols-3 md:grid-cols-6 gap-4 font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-3 rounded-md shadow-sm">
                 <div className="text-xs sm:text-sm">{t("courseName")}</div>
@@ -826,8 +893,12 @@ export default function ProfilePage() {
         />
 
         {/* Image Upload Modal */}
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalContent className="bg-white dark:bg-gray-800">
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          className="sm:max-w-md w-[90%] mx-auto"
+        >
+          <ModalContent className="bg-white dark:bg-gray-800 p-4">
             <ModalHeader className="text-gray-800 dark:text-gray-100">
               {t("uploadProfilePicture")}
             </ModalHeader>
@@ -837,6 +908,7 @@ export default function ProfilePage() {
                 accept="image/png, image/jpeg"
                 onChange={handleFileSelect}
                 disabled={isUploading}
+                className="h-12"
               />
               {previewUrl && (
                 <div className="mt-4 flex justify-center">
@@ -850,12 +922,12 @@ export default function ProfilePage() {
                 </div>
               )}
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter className="flex justify-end gap-2">
               <Button
                 color="danger"
                 variant="light"
                 onPress={onClose}
-                className="dark:text-gray-300 dark:hover:text-white"
+                className="dark:text-gray-300 dark:hover:text-white h-12 px-6"
               >
                 {t("cancel")}
               </Button>
@@ -863,7 +935,7 @@ export default function ProfilePage() {
                 color="primary"
                 onPress={handleImageUpload}
                 isLoading={isUploading}
-                className="bg-green-600 dark:bg-green-700 text-white"
+                className="bg-green-600 dark:bg-green-700 text-white h-12 px-6"
               >
                 {t("upload")}
               </Button>
