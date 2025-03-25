@@ -132,6 +132,7 @@ const page = () => {
   // Check if booking panel is visible (depends on current step and screen size)
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const { t } = useLanguage();
 
   const titles = [t("9Hole"), t("18Hole")];
@@ -141,9 +142,9 @@ const page = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 640);
+      setIsTablet(width >= 640 && width < 1024);
 
       // Check for panel visibility based on localStorage or some other state manager
-      // This assumes you're storing panel visibility state somewhere
       const panelState = localStorage.getItem("panelVisible");
       if (panelState) {
         setIsPanelVisible(panelState === "true");
@@ -313,11 +314,24 @@ const page = () => {
 
   // Function to determine grid column count based on panel visibility
   const getGridColumnClass = () => {
-    if (isMobile) return "grid-cols-2";
-    if (isPanelVisible && currentStep <= 3) {
-      return "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
+    if (isMobile) {
+      // Mobile: Larger tap targets with fewer columns
+      return "grid-cols-2 gap-3";
+    } else if (isTablet) {
+      // Tablet layout - adjust based on panel visibility
+      return isPanelVisible && currentStep <= 3
+        ? "grid-cols-2 gap-3" // When panel is visible, fewer columns
+        : "grid-cols-3 gap-2"; // When panel is hidden, more columns
+    } else {
+      // Desktop layout with responsive column counts
+      if (isPanelVisible && currentStep <= 3) {
+        // Panel visible - fewer columns with gradual increase by screen size
+        return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 sm:gap-3";
+      } else {
+        // Panel hidden - more columns available
+        return "grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3";
+      }
     }
-    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7";
   };
 
   // Function to get filtered tee times
@@ -468,7 +482,7 @@ const page = () => {
           {/* Tee time grid - RESPONSIVE GRID that adjusts based on panel visibility */}
           {filteredTeeTimes.length > 0 && (
             <div
-              className={`w-full  max-h-[350px] sm:max-h-[400px]  p-2 sm:p-4 grid ${getGridColumnClass()} gap-2 sm:gap-3 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md transition-all duration-300`}
+              className={`w-full  max-h-[350px] sm:max-h-[400px]  p-2 sm:p-4 grid ${getGridColumnClass()}  overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-md transition-all duration-300`}
             >
               {availableTeeTimes.map((data, index) => {
                 if (!compareTime(data["Tee Minute"], startTime, endTime)) {
@@ -482,7 +496,7 @@ const page = () => {
                 return (
                   <Card
                     key={index}
-                    className={`p-2 cursor-pointer transition-transform duration-200 h-[95px] sm:h-[115px] border border-gray-200 dark:border-gray-700
+                    className={`p-2 cursor-pointer transition-transform duration-200 h-[100px] sm:h-[115px] border border-gray-200 dark:border-gray-700
                     ${
                       selectedTimeCode === data["Tee Minute"]
                         ? "bg-green-200 dark:bg-green-800 scale-105"
@@ -500,6 +514,7 @@ const page = () => {
                           handleCardClick(data["Tee Minute"]);
                         }
                       }}
+                      className="w-full h-full p-1 flex flex-col justify-between"
                     >
                       <div className="flex mb-1">
                         <div
@@ -509,7 +524,7 @@ const page = () => {
                               : "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
                           }`}
                         >
-                          <span className="px-1 sm:px-2 text-xs sm:text-sm font-semibold truncate">
+                          <span className="px-1 sm:px-2 text-sm sm:text-base font-semibold truncate">
                             {`${convertMinutesToTimeWithAMPM(
                               data["Tee Minute"]
                             )}`}
@@ -520,10 +535,10 @@ const page = () => {
                         <div>
                           <Icon
                             icon="mdi:account"
-                            className="text-2xl sm:text-3xl md:text-4xl text-gray-700 dark:text-gray-300"
+                            className="text-2xl sm:text-3xl text-gray-700 dark:text-gray-300"
                           />
                         </div>
-                        <span className="px-1 sm:px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200 truncate">
+                        <span className="px-1 text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
                           {`${data["Online Golfer Count"]} ${t("maximum")}`}
                         </span>
                       </div>

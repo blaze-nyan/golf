@@ -5,7 +5,8 @@ import Stepper from "@/app/components/stepper";
 import { ProgressProvider, useProgress } from "../context/progress-context";
 import BookingDetails from "@/app/components/booking-details";
 import AuthRedirect from "@/app/components/auth-redirect";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, X, ShoppingBag } from "lucide-react";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 export default function GolfCourseLayout({
   children,
@@ -30,6 +31,7 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
+  const { t } = useLanguage();
 
   // Set device type and default panel visibility
   useEffect(() => {
@@ -75,66 +77,105 @@ function ProgressConsumer({ children }: { children: React.ReactNode }) {
     return "66.667%";
   };
 
+  // Enhanced mobile adaptation for the booking details panel
+  // In app/golfcourse/[courseId]/layout.tsx
+
+  // Mobile panel as a bottom sheet that slides up
+  // Improved mobile adaptation for the booking details panel
+  // In app/golfcourse/[courseId]/layout.tsx
+
   return (
     <div
       style={{ height: "calc(100dvh - 167px)" }}
-      className="w-full max-w-[100%]  relative  flex overflow-hidden"
+      className="w-full max-w-[100%] relative flex overflow-hidden"
     >
       {/* Main content area */}
       <div
-        className="transition-all duration-300 ease-in-out overflow-y-auto px-2 font-sans "
+        className="transition-all duration-300 ease-in-out overflow-y-auto px-2 font-sans"
         style={{
-          width: getContentWidth(),
-          display:
-            isMobile && isPanelVisible && currentStep <= 3 ? "none" : "block",
+          width: isMobile ? "100%" : getContentWidth(),
+          opacity: isMobile && isPanelVisible ? 0.5 : 1,
         }}
       >
         {children}
       </div>
 
       {currentStep <= 3 && (
-        <div
-          className="absolute z-50 right-0 top-0 transition-all duration-300 ease-in-out flex "
-          style={{
-            transform: isPanelVisible ? "translateX(0)" : "translateX(100%)",
-            width: getPanelWidth(),
-            height: "calc(100dvh - 60px)",
-          }}
-        >
-          {/* Toggle button - attached to the panel */}
-          <button
-            onClick={togglePanel}
-            className="absolute left-0 top-[43%] transform -translate-x-full -translate-y-1/2 z-50 
-                      bg-green-500 hover:bg-green-600 text-white h-16 w-8 rounded-l-md 
-                      flex items-center justify-center shadow-md sm:flex "
-            style={{
-              display: isMobile && isPanelVisible ? "none" : "flex", // Hide on mobile when panel is open
-            }}
-          >
-            <ChevronLeft
-              size={24}
-              style={{
-                transform: isPanelVisible ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.3s ease",
-              }}
-            />
-          </button>
-
-          {/* Mobile close button (X) */}
-          {isMobile && isPanelVisible && (
+        <>
+          {/* Mobile panel toggle button */}
+          {isMobile && !isPanelVisible && (
             <button
               onClick={togglePanel}
-              className="absolute right-0 top-6 z-30  hover:bg-green-600 text-white h-8 w-8 rounded-full flex items-center justify-center"
+              className="fixed bottom-20 right-4 z-50 bg-green-600 text-white h-12 w-12 rounded-full flex items-center justify-center shadow-lg"
             >
-              <X size={22} />
+              <ShoppingBag className="text-xl" />
             </button>
           )}
 
-          {/* Booking details panel */}
-          <div className="w-full h-full overflow-y-auto">
-            <BookingDetails />
+          <div
+            className={`transition-all duration-300 ease-in-out flex flex-col
+                      ${
+                        isMobile
+                          ? "fixed bottom-0 left-0 right-0 z-50 rounded-t-xl shadow-lg"
+                          : "fixed top-[60px] right-0 z-40"
+                      }`}
+            style={{
+              transform: isPanelVisible
+                ? "translateY(0)"
+                : isMobile
+                ? "translateY(100%)"
+                : "translateX(100%)",
+              width: isMobile ? "100%" : getPanelWidth(),
+              height: isMobile ? "80%" : "calc(100vh - 60px)", // Full height minus navbar
+              maxHeight: isMobile ? "80vh" : "calc(100vh - 60px)",
+              borderRadius: 0,
+            }}
+          >
+            {/* Single unified header for mobile */}
+            {isMobile && (
+              <div className="flex items-center justify-between bg-green-700 text-white rounded-t-xl px-4 py-3">
+                <div className="w-8"></div> {/* Empty space for centering */}
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-1 bg-white/50 rounded-full mb-1"></div>
+                  <span className="text-base font-medium">
+                    {t("yourBooking")}
+                  </span>
+                </div>
+                <button
+                  onClick={togglePanel}
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20"
+                >
+                  <X size={18} color="white" />
+                </button>
+              </div>
+            )}
+
+            {/* Toggle button for desktop */}
+            {!isMobile && (
+              <button
+                onClick={togglePanel}
+                className="absolute left-0 top-[15%] transform -translate-x-full -translate-y-1/2 z-50 
+                        bg-green-500 hover:bg-green-600 text-white h-16 w-8 rounded-l-md 
+                        flex items-center justify-center shadow-md"
+              >
+                <ChevronLeft
+                  size={24}
+                  style={{
+                    transform: isPanelVisible
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
+                />
+              </button>
+            )}
+
+            {/* Content area */}
+            <div className="flex-grow overflow-y-auto">
+              <BookingDetails showHeader={!isMobile} />
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
