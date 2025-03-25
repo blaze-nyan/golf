@@ -1,0 +1,253 @@
+"use client";
+
+import { JSX, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTheme } from "next-themes";
+import Faq from "./components/faq";
+import Hero from "./components/hero";
+import CardReview from "@/app/components/card-review";
+//tour
+import {
+  createHomeTour,
+  setTranslationFunction,
+} from "@/app/lib/advance-tour-service";
+import { useLanguage } from "./contexts/LanguageContext";
+interface User {
+  name: string;
+  avatar: string;
+}
+
+interface ReviewProps {
+  content: string;
+  createdAt: string;
+  rating: number;
+  title: string;
+  user: User;
+}
+
+export default function Home(): JSX.Element {
+  // State for theme/hydration
+  const [mounted, setMounted] = useState(false);
+  const { t } = useLanguage();
+
+  // Refs for animation targets
+  const heroRef = useRef<HTMLDivElement>(null);
+  const faqRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef<HTMLHeadingElement>(null);
+  const reviewCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { theme, resolvedTheme } = useTheme();
+
+  // Reviews data
+  const reviews: ReviewProps[] = [
+    {
+      content:
+        "Booked my tee time in minutes! The course was exactly as described and the weather forecast feature helped me.",
+      createdAt: "2024-07-15T12:00:00.000Z",
+      rating: 5,
+      title: "Quick and easy booking",
+      user: {
+        name: "Thomas Anderson",
+        avatar: "https://i.pravatar.cc/150?u=a04258114e29026708c",
+      },
+    },
+    {
+      content:
+        "Love the mobile app. Course descriptions are detailed and helpful. Would like more payment options though.",
+      createdAt: "2024-08-22T14:30:00.000Z",
+      rating: 4,
+      title: "Great mobile experience",
+      user: {
+        name: "Sarah Mitchell",
+        avatar: "https://i.pravatar.cc/150?u=a04258114e29026702c",
+      },
+    },
+    {
+      content:
+        "Best golf booking site I've used. Real-time availability and simple interface make planning golf outings a breeze.",
+      createdAt: "2024-09-05T09:15:00.000Z",
+      rating: 5,
+      title: "Top-notch service",
+      user: {
+        name: "David Garcia",
+        avatar: "https://i.pravatar.cc/150?u=a04258114e29026703c",
+      },
+    },
+  ];
+
+  // Handle hydration properly
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Add logic to only show tour for first-time visitors
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Set the translation function for the tour service
+    setTranslationFunction(t);
+
+    // Check if user has seen the tour before
+    const hasSeenTour = localStorage.getItem("hasSeenHomeTour");
+    if (!hasSeenTour) {
+      const tour = createHomeTour();
+      if (tour) {
+        const tourTimeout = setTimeout(() => {
+          tour.drive();
+          localStorage.setItem("hasSeenHomeTour", "true");
+        }, 500);
+        return () => clearTimeout(tourTimeout);
+      }
+    }
+  }, [mounted, t]);
+
+  // Consolidate animations into a single timeline where possible
+  useEffect(() => {
+    if (!mounted) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Create a single master timeline for better performance
+    const masterTl = gsap.timeline();
+
+    // Add animations to the timeline with their ScrollTriggers
+    if (heroRef.current) {
+      masterTl.from(heroRef.current, {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power3.out",
+      });
+    }
+
+    // FAQ section animation
+    if (faqRef.current) {
+      masterTl.from(faqRef.current, {
+        opacity: 0,
+        y: 60,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: faqRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // Reviews section header animation
+    if (reviewsRef.current) {
+      masterTl.from(reviewsRef.current, {
+        opacity: 0,
+        y: 40,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: reviewsRef.current,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // Review cards animation (staggered)
+    if (reviewCardRefs.current.length > 0) {
+      masterTl.from(reviewCardRefs.current, {
+        opacity: 0,
+        y: 30,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: "back.out(1.2)",
+        scrollTrigger: {
+          trigger: reviewsRef.current,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // Handle resize events to refresh animations
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [mounted]);
+
+  // Update animations when theme changes
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Short delay to let theme changes complete
+    const themeChangeTimeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 200);
+
+    return () => clearTimeout(themeChangeTimeout);
+  }, [theme, resolvedTheme, mounted]);
+
+  // Return empty div if not mounted yet to prevent hydration mismatch
+  if (!mounted) {
+    return <div className="min-h-screen bg-background"></div>;
+  }
+
+  return (
+    <div className="relative flex w-full flex-col justify-center items-center bg-background  pb-10 overflow-hidden transition-colors duration-300">
+      {/* Hero Section */}
+      <div ref={heroRef}>
+        <Hero />
+      </div>
+
+      {/* FAQ Section */}
+      <div
+        ref={faqRef}
+        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 lg:mt-16 transition-all duration-300"
+      >
+        <Faq />
+      </div>
+
+      {/* Reviews Section */}
+      <section
+        aria-labelledby="reviews-heading"
+        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 lg:mt-16 transition-all duration-300"
+      >
+        <h2
+          id="reviews-heading"
+          ref={reviewsRef}
+          className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-6 sm:mb-8 text-gray-800 dark:text-gray-100 transition-colors duration-300"
+        >
+          {t("whatOurCustomersSay")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Multiple review cards with staggered animation */}
+          {reviews.map((review, index) => (
+            <div
+              key={index}
+              ref={(el) => {
+                reviewCardRefs.current[index] = el;
+              }}
+              className={`transition-transform duration-300 hover:-translate-y-2 hover:scale-102 ${
+                index === 2 && reviews.length === 3
+                  ? "sm:col-span-2 lg:col-span-1"
+                  : ""
+              }`}
+            >
+              <CardReview
+                content={review.content}
+                createdAt={review.createdAt}
+                rating={review.rating}
+                title={review.title}
+                user={review.user}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

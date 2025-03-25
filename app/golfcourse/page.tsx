@@ -1,0 +1,154 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { getGolfCourses } from "@/app/lib/api";
+// components
+import CourseCard from "../components/course-card";
+import AnimatedLoading from "../components/animated-loading";
+import {
+  createGolfCourseTour,
+  setTranslationFunction,
+} from "@/app/lib/advance-tour-service";
+import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
+
+interface GolfCourse {
+  golfCourseId: number;
+  golfCourseName: string;
+  golfCourseDescription: string;
+  golfCourseFeeStockId: number;
+  allowCrossOver: boolean;
+  numberOfHoles: number;
+  golfCoursePar: number;
+  isVirtual: boolean;
+  golfCourseImageUid: string;
+  golfCourseStockStatusId: number;
+  golfCourseHoles: any[];
+  golfCourseNotes: any[];
+}
+
+export default function GolfCoursesPage() {
+  const { t } = useLanguage();
+  const [courses, setCourses] = useState<GolfCourse[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // State to track if courses are still loading
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await getGolfCourses();
+
+        const comingSoonCourse: GolfCourse = {
+          golfCourseId: -1,
+          golfCourseName: t("comingSoon"),
+          golfCourseDescription: t("newExcitingCourseOnTheWay"),
+          golfCourseFeeStockId: 0,
+          allowCrossOver: false,
+          numberOfHoles: 18,
+          golfCoursePar: 72,
+          isVirtual: false,
+          golfCourseImageUid: "", // Optionally, add a placeholder image UID
+          golfCourseStockStatusId: 0,
+          golfCourseHoles: [],
+          golfCourseNotes: [],
+        };
+
+        const comingSoonCourse1: GolfCourse = {
+          golfCourseId: 123,
+          golfCourseName: t("highlandLinks"),
+          golfCourseDescription: t("comingSoon"),
+          golfCourseFeeStockId: 0,
+          allowCrossOver: false,
+          numberOfHoles: 18,
+          golfCoursePar: 72,
+          isVirtual: false,
+          golfCourseImageUid: "",
+          golfCourseStockStatusId: 0,
+          golfCourseHoles: [],
+          golfCourseNotes: [],
+        };
+
+        const comingSoonCourse2: GolfCourse = {
+          golfCourseId: -134,
+          golfCourseName: t("sunsetBayGolfClub"),
+          golfCourseDescription: t("comingSoon"),
+          golfCourseFeeStockId: 0,
+          allowCrossOver: false,
+          numberOfHoles: 18,
+          golfCoursePar: 70,
+          isVirtual: false,
+          golfCourseImageUid: "",
+          golfCourseStockStatusId: 0,
+          golfCourseHoles: [],
+          golfCourseNotes: [],
+        };
+
+        // Append the placeholder course to the courses array
+        setCourses([
+          ...data,
+          comingSoonCourse1,
+          comingSoonCourse2,
+          comingSoonCourse,
+        ]);
+      } catch (error) {
+        logger.error("Error fetching golf courses:", error);
+      } finally {
+        setLoading(false); // Once the data is fetched, set loading to false
+      }
+    };
+
+    fetchCourses();
+  }, [t]);
+
+  useEffect(() => {
+    if (loading) return;
+
+    // Set the translation function for the tour service
+    setTranslationFunction(t);
+
+    // Create and start the tour
+    const tour = createGolfCourseTour();
+    if (tour) {
+      const tourTimeout = setTimeout(() => {
+        tour.drive();
+      }, 500);
+      return () => clearTimeout(tourTimeout);
+    }
+  }, [loading, t]);
+
+  return (
+    <div className="flex flex-col items-center justify-center my-10 mx-5 mb-20 gap-4 ">
+      {/* Section for explanation about golf courses */}
+      <section className="text-center mb-5 max-w-4xl">
+        <h2 className="text-4xl font-semibold text-green-400">
+          {t("discoverOurGolfCourses")}
+        </h2>
+        <p className="text-lg mt-3">{t("golfCoursesDescription")}</p>
+        <p className="text-lg mt-3">{t("exploreCoursesPrompt")}</p>
+      </section>
+
+      {/* Loading state */}
+      {loading ? (
+        <div className="flex justify-center items-center mt-10">
+          <AnimatedLoading />
+        </div>
+      ) : (
+        // Golf Course Cards Section
+        courses.map((course) => (
+          <Link
+            key={course.golfCourseId}
+            href={
+              course.golfCourseId === -1
+                ? "#"
+                : `/golfcourse/${course.golfCourseId}`
+            }
+            className="flex justify-center w-full"
+          >
+            <CourseCard course={course} ready={loading} />
+          </Link>
+        ))
+      )}
+    </div>
+  );
+}

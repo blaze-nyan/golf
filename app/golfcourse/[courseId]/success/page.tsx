@@ -1,0 +1,267 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Button, Card } from "@heroui/react";
+import { useProgress } from "../../context/progress-context";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Confetti from "react-confetti";
+import {
+  dateToString,
+  convertMinutesToTimeWithAMPM,
+  convertExcelDateToJSDate,
+} from "../../../components/date-functionalities";
+import { useRouter } from "next/navigation";
+import { useLanguage } from "@/app/contexts/LanguageContext";
+// import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
+
+const page = () => {
+  const { bookingDetails, currentStep } = useProgress();
+  const isSectionDisabled = (step: any) => currentStep < step;
+  const router = useRouter();
+  const { t } = useLanguage();
+
+  // State for triggering confetti and window dimensions
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowDimension, setWindowDimension] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const goToProfile = () => {
+    router.push("/profile");
+  };
+
+  const detectSize = () => {
+    if (typeof window !== "undefined") {
+      setWindowDimension({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Initialize window dimensions
+    detectSize();
+
+    // Set up window resize listener for responsive confetti
+    window.addEventListener("resize", detectSize);
+    return () => {
+      window.removeEventListener("resize", detectSize);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Trigger the confetti effect once the page has successfully loaded
+    setShowConfetti(true);
+
+    // Optionally, stop the confetti after a few seconds
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 5000); // Stop after 5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="min-h-[100%] w-full py-4 sm:py-6 px-2 sm:px-4 flex flex-col items-center justify-center transition-colors duration-200">
+      {/* Confetti effect - reduce pieces on mobile */}
+      {showConfetti && (
+        <Confetti
+          width={windowDimension.width}
+          height={windowDimension.height}
+          gravity={0.2}
+          numberOfPieces={windowDimension.width < 768 ? 80 : 150}
+          recycle={false}
+          initialVelocityX={5}
+          initialVelocityY={20}
+          confettiSource={{
+            x: 0,
+            y: windowDimension.height,
+            w: windowDimension.width,
+            h: 0,
+          }}
+        />
+      )}
+
+      <Card className="w-full max-w-sm sm:max-w-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+        {/* Header */}
+        <div className="bg-green-700 dark:bg-green-800 text-white py-3 sm:py-4 text-center text-base sm:text-lg md:text-xl font-bold">
+          {t("bookingSuccessful")}
+        </div>
+
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300">
+          {/* Course Section */}
+          <SectionWrapper disabled={isSectionDisabled(0)}>
+            <div className="flex gap-2 sm:gap-3 items-center">
+              {/* <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+                <Image
+                  removeWrapper
+                  className="h-full w-full object-cover"
+                  src={usePlaceholderGolfCourseImageLink()}
+                  alt="golf course"
+                />
+              </div> */}
+              <div>
+                <div className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
+                  {bookingDetails.courseName || t("courseName")}
+                </div>
+                <div className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
+                  {bookingDetails.courseLocation || t("notAvailable")}
+                </div>
+              </div>
+            </div>
+          </SectionWrapper>
+
+          {/* Date & Time Section */}
+          <SectionWrapper disabled={isSectionDisabled(1)}>
+            <InfoGrid>
+              <InfoItem
+                icon="mdi-golf"
+                label={t("type")}
+                value={
+                  bookingDetails.bookingType === 1
+                    ? t("nineHole")
+                    : t("eighteenHole")
+                }
+              />
+              <InfoItem
+                icon="mdi-calendar"
+                label={t("date")}
+                value={
+                  bookingDetails.teeDate
+                    ? dateToString(
+                        convertExcelDateToJSDate(bookingDetails.teeDate)
+                      )
+                    : t("select")
+                }
+              />
+              <InfoItem
+                icon="mdi-clock"
+                label={t("time")}
+                value={
+                  bookingDetails.teeTime
+                    ? convertMinutesToTimeWithAMPM(bookingDetails.teeTime)
+                    : t("select")
+                }
+              />
+            </InfoGrid>
+          </SectionWrapper>
+
+          {/* Booking Details */}
+          <SectionWrapper disabled={isSectionDisabled(2)}>
+            <InfoGrid>
+              <InfoItem
+                icon="mdi-golf"
+                label={t("golfers")}
+                value={bookingDetails.numberOfGolfers || 0}
+              />
+              <InfoItem
+                icon="mdi-person"
+                label={t("guests")}
+                value={bookingDetails.numberOfnonPlayers || 0}
+              />
+              <InfoItem
+                icon="mdi-backpack"
+                label={t("caddies")}
+                value={bookingDetails["Caddies"] || 0}
+              />
+              <InfoItem
+                icon="mdi-car"
+                label={t("carts")}
+                value={bookingDetails["Golf Cart"] || 0}
+              />
+              <InfoItem
+                icon="mdi-food"
+                label={t("food")}
+                value={bookingDetails["Food & Drinks"] || 0}
+              />
+            </InfoGrid>
+          </SectionWrapper>
+
+          {/* Price */}
+          <SectionWrapper disabled={isSectionDisabled(3)}>
+            <div className="flex items-center justify-center gap-2 font-semibold text-sm sm:text-base md:text-lg">
+              <Icon
+                icon="mdi-currency-btc"
+                className="text-green-600 dark:text-green-400 text-lg sm:text-xl"
+              />
+              <span className="text-gray-900 dark:text-green-300">
+                {t("total")}:{" "}
+                {bookingDetails.price
+                  ? `${bookingDetails.price} ${t("thb")}`
+                  : t("notAvailable")}
+              </span>
+            </div>
+          </SectionWrapper>
+
+          <div className="pt-2">
+            <Button
+              className="w-full bg-green-700 dark:bg-green-600 text-white py-2 sm:py-3 rounded-md hover:bg-green-800 dark:hover:bg-green-700 text-sm sm:text-base transition-colors duration-200"
+              onPress={goToProfile}
+            >
+              {t("backToProfile")}
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Booking ID */}
+      <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+        {t("bookingId")}: #{bookingDetails.id || "000000"}
+      </div>
+    </div>
+  );
+};
+
+export default page;
+
+/** Section Wrapper */
+const SectionWrapper = ({
+  children,
+  disabled,
+}: {
+  children: React.ReactNode;
+  disabled: boolean;
+}) => (
+  <div
+    className={`p-2 sm:p-3 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors duration-200 ${
+      disabled
+        ? "opacity-50 pointer-events-none"
+        : "bg-gray-50 dark:bg-gray-800/50"
+    }`}
+  >
+    {children}
+  </div>
+);
+
+/** Info Grid for compact layout */
+const InfoGrid = ({ children }: { children: React.ReactNode }) => (
+  <div className="grid grid-cols-2 xs:grid-cols-2 gap-2 sm:gap-3">
+    {children}
+  </div>
+);
+
+/** Info Item */
+const InfoItem = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string | number;
+}) => (
+  <div className="flex items-center gap-1 sm:gap-2">
+    <Icon
+      icon={icon}
+      className="text-green-600 dark:text-green-400 text-base sm:text-lg flex-shrink-0"
+    />
+    <span className="truncate text-xs sm:text-sm">
+      <strong className="text-gray-800 dark:text-gray-200">{label}:</strong>{" "}
+      <span className="text-gray-700 dark:text-gray-300">{value}</span>
+    </span>
+  </div>
+);
