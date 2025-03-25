@@ -21,6 +21,7 @@ import {
 import { fetchData } from "@/app/lib/api-placeholder-db";
 import AnimatedLoading from "@/app/components/animated-loading";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 // Placeholder data remains the same
 const placeholderData = [
   {
@@ -131,8 +132,9 @@ const page = () => {
   // Check if booking panel is visible (depends on current step and screen size)
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const { t } = useLanguage();
 
-  const titles = ["9 Hole", "18 Hole"];
+  const titles = [t("9Hole"), t("18Hole")];
 
   // Add a resize listener to detect panel visibility based on window size
   useEffect(() => {
@@ -332,7 +334,7 @@ const page = () => {
   return (
     <div className="space-y-4 sm:space-y-5 p-2 sm:p-4 h-full">
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1 sm:mb-2">
-        Select Booking
+        {t("bookingTitle")}
       </h1>
 
       {/* Primary filters - Always visible */}
@@ -340,7 +342,7 @@ const page = () => {
         <div className="grid grid-cols-2 gap-2 sm:gap-4">
           <div className="w-full">
             <Select
-              label="Booking Type"
+              label={t("bookingType")}
               defaultSelectedKeys={[bookingType === 1 ? "9 Hole" : "18 Hole"]}
               onChange={handleBookingTypeChange}
               className="w-full"
@@ -357,7 +359,7 @@ const page = () => {
             <DatePicker
               isRequired
               className="w-full"
-              label="Booking Date"
+              label={t("bookingDate")}
               value={selectedDate}
               minValue={formattedDate}
               defaultValue={selectedDate}
@@ -388,7 +390,7 @@ const page = () => {
                 value={startTime}
                 onChange={handleStartTimeChange}
                 className="w-full"
-                label="Start Time"
+                label={t("startTime")}
               />
             </div>
 
@@ -399,7 +401,7 @@ const page = () => {
                 value={endTime}
                 onChange={handleEndTimeChange}
                 className="w-full"
-                label="End Time"
+                label={t("endTime")}
               />
             </div>
           </div>
@@ -408,7 +410,7 @@ const page = () => {
 
       {/* Selection summary - responsive layout */}
       <div className="text-xs sm:text-sm md:text-base text-gray-800 dark:text-gray-200 pt-1 sm:pt-2">
-        <p className="mb-1 sm:mb-2">Showing available tee times for:</p>
+        <p className="mb-1 sm:mb-2">{t("showingAvailableTeeTimesFor")}</p>
         <div className="flex flex-wrap gap-1 sm:gap-2 mb-1 sm:mb-2">
           <span className="inline-block px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
             {selectedDate.toDate("UTC").toLocaleDateString()}
@@ -425,7 +427,7 @@ const page = () => {
           </span>
 
           <span className="inline-block px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
-            {bookingType == 1 ? "9-Hole" : "18-Hole"}
+            {bookingType === 1 ? t("9Hole") : t("18Hole")}
           </span>
         </div>
       </div>
@@ -433,8 +435,10 @@ const page = () => {
       {/* Results count */}
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          {filteredTeeTimes.length} available time
-          {filteredTeeTimes.length !== 1 ? "s" : ""}
+          {filteredTeeTimes.length}{" "}
+          {t(
+            filteredTeeTimes.length === 1 ? "availableTime" : "availableTimes"
+          )}
         </p>
       </div>
 
@@ -520,7 +524,7 @@ const page = () => {
                           />
                         </div>
                         <span className="px-1 sm:px-2 font-semibold text-xs md:text-sm text-gray-800 dark:text-gray-200 truncate">
-                          {`${data["Online Golfer Count"]} Maximum`}
+                          {`${data["Online Golfer Count"]} ${t("maximum")}`}
                         </span>
                       </div>
                     </div>

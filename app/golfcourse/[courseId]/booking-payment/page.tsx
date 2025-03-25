@@ -25,12 +25,15 @@ import { postData } from "@/app/lib/api-placeholder-db";
 import AnimatedLoading from "@/app/components/animated-loading";
 import ExpiryDateInput from "@/app/components/ExpiryDateInput";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
+
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
   const [paymentType, setPaymentType] = useState<"prepayment" | "fullPayment">(
     "fullPayment"
   );
   const [amountToPay, setAmountToPay] = useState(bookingDetails.price);
+  const { t } = useLanguage();
 
   // State to track panel visibility
   const [isPanelVisible, setIsPanelVisible] = useState(true);
@@ -153,13 +156,13 @@ const page = () => {
       `}
     >
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-5">
-        Payment Page
+        {t("paymentPage")}
       </h1>
 
       {/* Payment Type Selection */}
       <div className="space-y-2 sm:space-y-3">
         <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
-          Select Payment Type
+          {t("selectPaymentType")}
         </h2>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
@@ -170,7 +173,7 @@ const page = () => {
             }`}
             onPress={() => handlePaymentTypeChange("prepayment")}
           >
-            Prepayment (30%)
+            {t("prepayment")}
           </Button>
           <Button
             className={`w-full py-2 sm:py-2.5 text-sm sm:text-base ${
@@ -180,7 +183,7 @@ const page = () => {
             }`}
             onPress={() => handlePaymentTypeChange("fullPayment")}
           >
-            Full Payment
+            {t("fullPayment")}
           </Button>
         </div>
       </div>
@@ -189,47 +192,47 @@ const page = () => {
       <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <CardHeader className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200">
-            Amount to Pay
+            {t("amountToPay")}
           </h2>
         </CardHeader>
         <CardBody className="px-3 sm:px-4 py-2 sm:py-3">
           <div className="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-green-400">
-            {amountToPay} THB
+            {amountToPay} {t("thb")}
           </div>
         </CardBody>
       </Card>
 
       <div className="text-red-600 dark:text-red-400 font-bold text-xs sm:text-sm md:text-md p-2 sm:p-3 md:p-4 border border-red-500 dark:border-red-700 bg-red-50 dark:bg-red-900/20 rounded-md my-1">
-        There will be no refund after payment is made.
+        {t("noRefundWarning")}
       </div>
 
       {/* Credit Card Input Form */}
       <Card className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <CardHeader className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
-            Credit Card Details
+            {t("creditCardDetails")}
           </h2>
         </CardHeader>
         <CardBody className="px-3 sm:px-4 py-2 sm:py-3 space-y-3 sm:space-y-4">
           {/* Select Payment Method */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 visible text-gray-700 dark:text-gray-300">
-              Select Payment Method
+              {t("selectPaymentMethod")}
             </label>
             <Select
-              placeholder="Select a payment method"
-              aria-label="Select a payment method"
+              placeholder={t("selectPaymentMethodPrompt")}
+              aria-label={t("selectPaymentMethod")}
               className="w-full"
             >
               <SelectItem value="visa">Visa</SelectItem>
               <SelectItem value="mastercard">MasterCard</SelectItem>
-              <SelectItem value="amex">American Express</SelectItem>
+              <SelectItem value="amex">{t("americanExpress")}</SelectItem>
             </Select>
           </div>
           {/* Card Number */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
-              Card Number
+              {t("cardNumber")}
             </label>
             <Input
               type="text"
@@ -237,7 +240,7 @@ const page = () => {
               onChange={(e) => setCardNumber(e.target.value)}
               className="w-full"
               maxLength={16}
-              placeholder="Card Number"
+              placeholder={t("cardNumberPlaceholder")}
             />
           </div>
 
@@ -245,15 +248,8 @@ const page = () => {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="w-full sm:w-1/2">
               <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
-                Expiry Date (MM/YY)
+                {t("expiryDate")}
               </label>
-              {/* <Input
-                type="text"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-                className="w-full"
-                placeholder="MM/YY"
-              /> */}
               <ExpiryDateInput
                 value={expiryDate}
                 onChange={setExpiryDate}
@@ -279,14 +275,14 @@ const page = () => {
           {/* Cardholder Name */}
           <div>
             <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-gray-700 dark:text-gray-300">
-              Cardholder Name
+              {t("cardholderName")}
             </label>
             <Input
               type="text"
               value={cardHolderName}
               onChange={(e) => setCardHolderName(e.target.value)}
               className="w-full"
-              placeholder="Cardholder Name"
+              placeholder={t("cardholderNamePlaceholder")}
             />
           </div>
 
@@ -294,7 +290,7 @@ const page = () => {
             onPress={handleSubmit}
             className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white mt-4 sm:mt-6 py-2"
           >
-            Submit Payment
+            {t("submitPayment")}
           </Button>
         </CardBody>
       </Card>
@@ -303,7 +299,7 @@ const page = () => {
       <Modal isOpen={isOpen} onClose={onClose} size="sm">
         <ModalContent className="dark:bg-gray-800">
           <ModalHeader className="text-center dark:text-gray-100">
-            Payment
+            {t("payment")}
           </ModalHeader>
           <ModalBody>
             {isLoading ? (
@@ -312,7 +308,7 @@ const page = () => {
               </div>
             ) : (
               <div className="text-center py-4 dark:text-gray-200">
-                Your payment has been successfully processed.
+                {t("paymentSuccessful")}
               </div>
             )}
           </ModalBody>
@@ -326,12 +322,11 @@ const page = () => {
       <Modal isOpen={errorModalOpen} onClose={onErrorClose} size="sm">
         <ModalContent className="dark:bg-gray-800">
           <ModalHeader className="text-center dark:text-gray-100">
-            Error
+            {t("error")}
           </ModalHeader>
           <ModalBody>
             <div className="text-center text-red-600 dark:text-red-400 py-4">
-              There is an issue with the card details provided. Please check and
-              try again.
+              {t("cardDetailsError")}
             </div>
           </ModalBody>
           <ModalFooter className="flex justify-center">
@@ -339,7 +334,7 @@ const page = () => {
               onPress={onErrorClose}
               className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white"
             >
-              OK
+              {t("ok")}
             </Button>
           </ModalFooter>
         </ModalContent>

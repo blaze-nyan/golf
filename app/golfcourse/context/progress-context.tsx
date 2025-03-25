@@ -4,29 +4,31 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useLanguage } from "@/app/contexts/LanguageContext"; // Make sure to import
 import { logger } from "@/app/lib/logger";
-export const STEPS = [
+
+export const createSteps = (t: (key: string) => string) => [
   {
-    title: "Course",
+    title: t("stepCourse"),
     path: (courseId: string) => `/golfcourse/${courseId}`,
   },
   {
-    title: "Booking",
+    title: t("stepBooking"),
     path: (courseId: string) => `/golfcourse/${courseId}/booking-time`,
   },
   {
-    title: "Details",
+    title: t("stepDetails"),
     path: (courseId: string) => `/golfcourse/${courseId}/other-services`,
   },
   {
-    title: "Payment",
+    title: t("stepPayment"),
     path: (courseId: string) => `/golfcourse/${courseId}/booking-payment`,
   },
   {
-    title: "Done",
+    title: t("stepDone"),
     path: (courseId: string) => `/golfcourse/${courseId}/success`,
   },
-] as const;
+];
 
 type ProgressContextType = {
   currentStep: number;
@@ -36,11 +38,15 @@ type ProgressContextType = {
   canAccess: (step: number) => boolean;
   bookingDetails: any;
   setBookingDetails: (bookingDetails: any) => void;
+  STEPS: any[];
 };
 
 const ProgressContext = createContext<ProgressContextType | null>(null);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useLanguage();
+  const STEPS = createSteps(t);
+
   const [maxCompletedStep, setMaxCompletedStep] = useState(-1);
 
   const [bookingDetails, setBookingDetails] = useState({
@@ -142,7 +148,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       const allowedPath = STEPS[step].path(courseId);
       router.replace(allowedPath);
     }
-  }, [currentStep, maxCompletedStep, router, courseId]);
+  }, [currentStep, maxCompletedStep, router, courseId, STEPS]);
 
   const completeStep = (step: number) => {
     setMaxCompletedStep(step);
@@ -162,6 +168,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         canAccess,
         bookingDetails,
         setBookingDetails,
+        STEPS,
       }}
     >
       {children}

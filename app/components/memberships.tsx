@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Button } from "@heroui/react";
 import Link from "next/link";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 // Function to format date
 const formatDate = (date: any) => {
@@ -28,34 +29,36 @@ interface MembershipInfoListProps {
 const MembershipInfoList: React.FC<MembershipInfoListProps> = ({
   membershipsList,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <Card className="md:col-span-3 p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm box-border outline-none">
       <CardHeader>
-        <h3 className="text-lg font-semibold">Membership Information</h3>
+        <h3 className="text-lg font-semibold">{t("membershipInformation")}</h3>
       </CardHeader>
       <CardBody>
         <div className="overflow-x-auto max-w-full">
           {/* Header Row */}
-          <div className="grid grid-cols-3 md:grid-cols-8 gap-4     font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-3 rounded-md shadow-sm">
-            <div className="text-sm">Membership ID</div>
-            <div className="text-sm hidden md:block">Membership Type</div>
-            <div className="text-sm">Membership Number</div>
-            <div className="text-sm">State</div>
-            <div className="text-sm hidden md:block">Tier</div>
-            <div className="text-sm hidden md:block">Join Date</div>
-            <div className="text-sm hidden md:block">Expiry Date</div>
-            <div className="text-sm hidden md:block">Priority</div>
+          <div className="grid grid-cols-3 md:grid-cols-8 gap-4 font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-3 rounded-md shadow-sm">
+            <div className="text-sm">{t("membershipID")}</div>
+            <div className="text-sm hidden md:block">{t("membershipType")}</div>
+            <div className="text-sm">{t("membershipNumber")}</div>
+            <div className="text-sm">{t("state")}</div>
+            <div className="text-sm hidden md:block">{t("tier")}</div>
+            <div className="text-sm hidden md:block">{t("joinDate")}</div>
+            <div className="text-sm hidden md:block">{t("expiryDate")}</div>
+            <div className="text-sm hidden md:block">{t("priority")}</div>
           </div>
 
           {/* Membership Data Rows or No Data Message */}
           {membershipsList.length === 0 ? (
             <>
               <div className="text-center text-gray-500 py-5">
-                No Membership Available
+                {t("noMembershipAvailable")}
               </div>
               <div className="text-center">
                 <Button as={Link} href="/membership" color="primary">
-                  Go to Memberships
+                  {t("goToMemberships")}
                 </Button>
               </div>
             </>
@@ -69,16 +72,16 @@ const MembershipInfoList: React.FC<MembershipInfoListProps> = ({
                   {membership.membershipID}
                 </div>
                 <div className="text-sm text-gray-600 hidden md:block">
-                  {membership.membershipTypeDescription || "N/A"}
+                  {membership.membershipTypeDescription || t("na")}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {membership.memberNumber || "N/A"}
+                  {membership.memberNumber || t("na")}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {membership.membershipStateDescription || "N/A"}
+                  {membership.membershipStateDescription || t("na")}
                 </div>
                 <div className="text-sm text-gray-600 hidden md:block">
-                  {membership.membershipTierDescription || "N/A"}
+                  {membership.membershipTierDescription || t("na")}
                 </div>
                 <div className="text-sm text-gray-600 hidden md:block">
                   {formatDate(membership.joinDate)}
@@ -87,7 +90,7 @@ const MembershipInfoList: React.FC<MembershipInfoListProps> = ({
                   {formatDate(membership.expiryDate)}
                 </div>
                 <div className="text-sm text-gray-600 hidden md:block">
-                  {membership.priority || "N/A"}
+                  {membership.priority || t("na")}
                 </div>
               </div>
             ))

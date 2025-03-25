@@ -19,21 +19,26 @@ import Image from "next/image";
 //componets
 import ProfileIcon from "./profile-icon";
 import { ThemeSwitcher } from "@/app/components/theme-switcher";
+import { LanguageSwitcher } from "@/app/components/LanguageSwitcher";
+import { useLanguage } from "../contexts/LanguageContext";
 
 import { cn } from "@heroui/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { checkClientId } from "../lib/general";
-export const links = [
-  { href: "/golfcourse", label: "Golf" },
-  { href: "/f&b", label: "F&B" },
-  { href: "/hotel", label: "Hotel" },
-  { href: "/membership", label: "Membership" },
-];
 
 export default function NavBar(props: NavbarProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { t } = useLanguage();
+
+  // Define links with translation keys
+  const links = [
+    { href: "/golfcourse", label: t("golf") },
+    { href: "/f&b", label: t("food") },
+    { href: "/hotel", label: t("hotel") },
+    { href: "/membership", label: t("membership") },
+  ];
 
   if (pathname.startsWith("/dashboard")) {
     return <></>;
@@ -79,6 +84,12 @@ export default function NavBar(props: NavbarProps) {
 
       {/* Right Content */}
       <NavbarContent className="hidden md:flex" justify="end">
+        <NavbarItem>
+          <LanguageSwitcher />
+        </NavbarItem>
+
+        <ThemeSwitcher />
+
         {checkClientId() ? (
           <ProfileIcon />
         ) : (
@@ -89,14 +100,19 @@ export default function NavBar(props: NavbarProps) {
               color="primary"
               variant="flat"
             >
-              Login to Book
+              {t("login")}
             </Button>
           </NavbarItem>
         )}
       </NavbarContent>
-      <ThemeSwitcher />
 
-      <NavbarMenuToggle className="text-default-400 md:hidden burger-menu" />
+      {/* Mobile Language Switcher + Menu Toggle */}
+      <div className="md:hidden flex items-center gap-2">
+        <NavbarItem className="flex md:hidden !items-center">
+          <LanguageSwitcher />
+        </NavbarItem>
+        <NavbarMenuToggle className="text-default-400 burger-menu" />
+      </div>
 
       <NavbarMenu className="top-[calc(var(--navbar-height)_-_1px)] max-h-fit bg-default-200/50 pb-6 pt-6 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50">
         {links.map(({ href, label }) => (
@@ -111,20 +127,23 @@ export default function NavBar(props: NavbarProps) {
             <Divider className="opacity-50" />
           </NavbarMenuItem>
         ))}
+
+        {/* No need for language switcher here anymore */}
+
         {checkClientId() ? (
           <NavbarMenuItem>
             <Link
               className="mb-2 w-full text-default-500 mobile-profile"
-              href={`/profile`} // Corrected the template literal usage
+              href={`/profile`}
               size="md"
             >
-              Profile
+              {t("profile")}
             </Link>
           </NavbarMenuItem>
         ) : (
           <NavbarMenuItem>
             <Button fullWidth as={NextLink} href="/auth/login" variant="faded">
-              Sign In
+              {t("login")}
             </Button>
           </NavbarMenuItem>
         )}

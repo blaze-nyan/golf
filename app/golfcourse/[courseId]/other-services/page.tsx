@@ -8,6 +8,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useProgress } from "../../context/progress-context";
 import { convertExcelDateToJSDate } from "@/app/components/date-functionalities";
 import { golfFees, golfFees18Hole } from "@/app/components/golf-fee-table";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 import {
   Modal,
@@ -23,7 +24,8 @@ import { getClientInfo } from "@/app/lib/api";
 
 const page = () => {
   const { setBookingDetails, bookingDetails } = useProgress();
-  const [disableNext, setDisableNext] = useState(true)
+  const [disableNext, setDisableNext] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const clientID =
@@ -138,7 +140,7 @@ const page = () => {
   return (
     <div className=" p-4 w-[100%] h-full">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-5">
-        Booking Details
+        {t("bookingDetails")}
       </h1>
       {/* Golfers */}
       <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 px-4 rounded-lg mb-4 shadow-sm">
@@ -147,7 +149,7 @@ const page = () => {
             icon="mdi-golf"
             className="text-green-600 dark:text-green-400"
           />
-          Golfers - {feeForDay} THB
+          {t("golfers")} - {feeForDay} {t("thb")}
         </span>
         <div className="flex items-center space-x-3">
           <button
@@ -186,13 +188,13 @@ const page = () => {
         >
           <ModalContent className="max-w-sm mx-auto dark:bg-gray-800">
             <ModalHeader className="dark:text-gray-100">
-              Add New Golfer
+              {t("addNewGolfer")}
             </ModalHeader>
             <ModalBody>
               <Input
                 value={newGolferName}
                 onChange={(e) => setNewGolferName(e.target.value)}
-                placeholder="Enter Golfer's Name"
+                placeholder={t("enterGolferName")}
                 className="w-full"
               />
             </ModalBody>
@@ -201,13 +203,13 @@ const page = () => {
                 onPress={handleAddGolfer}
                 className="bg-green-700 dark:bg-green-600 text-white"
               >
-                Add Golfer
+                {t("addGolfer")}
               </Button>
               <Button
                 onPress={() => setGolferModalOpen(false)}
                 className="dark:bg-gray-700 dark:text-gray-200"
               >
-                Cancel
+                {t("cancel")}
               </Button>
             </ModalFooter>
           </ModalContent>
@@ -220,7 +222,7 @@ const page = () => {
             icon="mdi-person"
             className="text-green-600 dark:text-green-400"
           />
-          Accompanying Persons - 100 THB
+          {t("accompanyingPersons")} - 100 {t("thb")}
         </span>
         <div className="flex flex-col items-center space-y-1">
           <div className="flex items-center space-x-3">
@@ -253,7 +255,7 @@ const page = () => {
               icon="mdi-backpack"
               className="text-green-600 dark:text-green-400"
             />
-            Caddies - 300 THB
+            {t("caddies")} - 300 {t("thb")}
           </span>
           <div className="flex items-center space-x-3">
             <button
@@ -282,7 +284,7 @@ const page = () => {
               icon="mdi-car"
               className="text-green-600 dark:text-green-400"
             />
-            Golf Cart - 500 THB
+            {t("golfCarts")} - 500 {t("thb")}
           </span>
           <div className="flex items-center space-x-3">
             <button
@@ -311,7 +313,7 @@ const page = () => {
               icon="mdi-food"
               className="text-green-600 dark:text-green-400"
             />
-            Food & Drinks - 300 THB
+            {t("foodAndDrinks")} - 300 {t("thb")}
           </span>
           <div className="flex items-center space-x-3">
             <button
@@ -335,10 +337,10 @@ const page = () => {
       </div>
       {/* Total Price */}
       <div className="mt-6 text-lg text-right font-bold text-gray-800 dark:text-green-400">
-        Total: {totalPrice} THB
+        {t("total")}: {totalPrice} {t("thb")}
       </div>
       <div className="mt-6 flex justify-start w-[100%]">
-        <NextButton disabled={disableNext}/>
+        <NextButton disabled={disableNext} />
       </div>
     </div>
   );

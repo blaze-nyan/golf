@@ -17,6 +17,7 @@ import {
   createGolfCourseTour,
   createSingleGolfCourseTour,
 } from "@/app/lib/advance-tour-service";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function AdvancedTourButton() {
   const pathname = usePathname();
@@ -25,6 +26,7 @@ export default function AdvancedTourButton() {
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme;
   const courseId = params.courseId;
+  const { t } = useLanguage();
 
   // Auto-start tour when page loads (only for first visit)
   useEffect(() => {
@@ -74,11 +76,6 @@ export default function AdvancedTourButton() {
     }
   };
 
-  // const handleResetTours = () => {
-  //   resetTours();
-  //   setIsOpen(false);
-  // };
-
   return (
     <Dropdown isOpen={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DropdownTrigger>
@@ -100,16 +97,8 @@ export default function AdvancedTourButton() {
           startContent={<Icon icon="heroicons:play" />}
           onPress={startTour}
         >
-          Start Page Guide
+          {t("startPageGuide")}
         </DropdownItem>
-        {/* <DropdownItem
-          key="reset"
-          startContent={<Icon icon="heroicons:arrow-path" />}
-          onPress={handleResetTours}
-          className="text-red-500 dark:text-red-400"
-        >
-          Reset All Guides
-        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );

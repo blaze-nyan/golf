@@ -13,12 +13,14 @@ import {
   convertExcelDateToJSDate,
 } from "../../../components/date-functionalities";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 // import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
 
 const page = () => {
   const { bookingDetails, currentStep } = useProgress();
   const isSectionDisabled = (step: any) => currentStep < step;
   const router = useRouter();
+  const { t } = useLanguage();
 
   // State for triggering confetti and window dimensions
   const [showConfetti, setShowConfetti] = useState(false);
@@ -87,7 +89,7 @@ const page = () => {
       <Card className="w-full max-w-sm sm:max-w-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-200">
         {/* Header */}
         <div className="bg-green-700 dark:bg-green-800 text-white py-3 sm:py-4 text-center text-base sm:text-lg md:text-xl font-bold">
-          Your Booking was Successful!
+          {t("bookingSuccessful")}
         </div>
 
         <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300">
@@ -104,10 +106,10 @@ const page = () => {
               </div> */}
               <div>
                 <div className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
-                  {bookingDetails.courseName || "Course Name"}
+                  {bookingDetails.courseName || t("courseName")}
                 </div>
                 <div className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
-                  {bookingDetails.courseLocation || "N/A"}
+                  {bookingDetails.courseLocation || t("notAvailable")}
                 </div>
               </div>
             </div>
@@ -118,27 +120,31 @@ const page = () => {
             <InfoGrid>
               <InfoItem
                 icon="mdi-golf"
-                label="Type"
-                value={bookingDetails.bookingType === 1 ? "9-Hole" : "18-Hole"}
+                label={t("type")}
+                value={
+                  bookingDetails.bookingType === 1
+                    ? t("nineHole")
+                    : t("eighteenHole")
+                }
               />
               <InfoItem
                 icon="mdi-calendar"
-                label="Date"
+                label={t("date")}
                 value={
                   bookingDetails.teeDate
                     ? dateToString(
                         convertExcelDateToJSDate(bookingDetails.teeDate)
                       )
-                    : "Select"
+                    : t("select")
                 }
               />
               <InfoItem
                 icon="mdi-clock"
-                label="Time"
+                label={t("time")}
                 value={
                   bookingDetails.teeTime
                     ? convertMinutesToTimeWithAMPM(bookingDetails.teeTime)
-                    : "Select"
+                    : t("select")
                 }
               />
             </InfoGrid>
@@ -149,27 +155,27 @@ const page = () => {
             <InfoGrid>
               <InfoItem
                 icon="mdi-golf"
-                label="Golfers"
+                label={t("golfers")}
                 value={bookingDetails.numberOfGolfers || 0}
               />
               <InfoItem
                 icon="mdi-person"
-                label="Guests"
+                label={t("guests")}
                 value={bookingDetails.numberOfnonPlayers || 0}
               />
               <InfoItem
                 icon="mdi-backpack"
-                label="Caddies"
+                label={t("caddies")}
                 value={bookingDetails["Caddies"] || 0}
               />
               <InfoItem
                 icon="mdi-car"
-                label="Carts"
+                label={t("carts")}
                 value={bookingDetails["Golf Cart"] || 0}
               />
               <InfoItem
                 icon="mdi-food"
-                label="Food"
+                label={t("food")}
                 value={bookingDetails["Food & Drinks"] || 0}
               />
             </InfoGrid>
@@ -183,8 +189,10 @@ const page = () => {
                 className="text-green-600 dark:text-green-400 text-lg sm:text-xl"
               />
               <span className="text-gray-900 dark:text-green-300">
-                Total:{" "}
-                {bookingDetails.price ? `${bookingDetails.price} THB` : "N/A"}
+                {t("total")}:{" "}
+                {bookingDetails.price
+                  ? `${bookingDetails.price} ${t("thb")}`
+                  : t("notAvailable")}
               </span>
             </div>
           </SectionWrapper>
@@ -194,7 +202,7 @@ const page = () => {
               className="w-full bg-green-700 dark:bg-green-600 text-white py-2 sm:py-3 rounded-md hover:bg-green-800 dark:hover:bg-green-700 text-sm sm:text-base transition-colors duration-200"
               onPress={goToProfile}
             >
-              Back to Profile
+              {t("backToProfile")}
             </Button>
           </div>
         </div>
@@ -202,7 +210,7 @@ const page = () => {
 
       {/* Booking ID */}
       <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-        Booking ID: #{bookingDetails.id || "000000"}
+        {t("bookingId")}: #{bookingDetails.id || "000000"}
       </div>
     </div>
   );

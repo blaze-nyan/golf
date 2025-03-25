@@ -4,11 +4,11 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import RowSteps from "./row-steps";
-import { STEPS, useProgress } from "@/app/golfcourse/context/progress-context";
+import { useProgress } from "@/app/golfcourse/context/progress-context";
 
 export default function Stepper() {
   const router = useRouter();
-  const { currentStep, canAccess, courseId } = useProgress();
+  const { currentStep, canAccess, courseId, STEPS } = useProgress();
 
   if (!courseId) return null; // Don't show stepper if no courseId
 
