@@ -20,9 +20,9 @@ export default function Faq() {
         "Our golf club requires all users to register before booking to ensure a seamless experience and track reservations properly. Guest or visitor bookings are not allowed for simplicity.",
     },
     {
-      label: "Can I cancel or reschedule my booking?",
+      label: "Can I reschedule my booking?",
       answer:
-        "No, cancellations, rescheduling, and refunds are not allowed once a booking is confirmed. Please make sure to check your availability before finalizing your reservation.",
+        "No rescheduling, and refunds are not allowed once a booking is confirmed. Please make sure to check your availability before finalizing your reservation.",
     },
     {
       label: "Where can I find my booking details?",
