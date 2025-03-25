@@ -45,14 +45,14 @@ export function WeatherWidget() {
 
   const getPlayabilityStatus = (currentWeather: WeatherData) => {
     if (currentWeather.condition === "stormy")
-      return { status: "Unsafe", color: "text-red-500" };
+      return { status: t("unsafe"), color: "text-red-500" };
     if (currentWeather.windSpeed > 35)
-      return { status: "Not Recommended", color: "text-red-500" };
+      return { status: t("notRecommended"), color: "text-red-500" };
     if (currentWeather.precipitation > 5)
-      return { status: "Poor", color: "text-orange-500" };
+      return { status: t("poor"), color: "text-orange-500" };
     if (currentWeather.windSpeed > 25)
-      return { status: "Challenging", color: "text-yellow-500" };
-    return { status: "Good", color: "text-green-500" };
+      return { status: t("challenging"), color: "text-yellow-500" };
+    return { status: t("good"), color: "text-green-500" };
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export function WeatherWidget() {
         const data = await getWeather(1.3521, 103.8198);
         setWeather(data);
       } catch (err) {
-        setError("Failed to load weather data");
+        setError(t("failedToLoadWeather"));
         throw err;
       } finally {
         setLoading(false);
@@ -71,7 +71,7 @@ export function WeatherWidget() {
     fetchWeather();
     const interval = setInterval(fetchWeather, 30 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [t]);
 
   if (loading || !weather)
     return (
@@ -79,7 +79,12 @@ export function WeatherWidget() {
         <Spinner />
       </div>
     );
-  if (error) return <div>Error: {error}</div>;
+  if (error)
+    return (
+      <div>
+        {t("error")}: {error}
+      </div>
+    );
 
   const playability = getPlayabilityStatus(weather);
 
@@ -92,7 +97,7 @@ export function WeatherWidget() {
             <div>
               <p className="text-2xl font-bold">{weather.temperature}°C</p>
               <p className="text-sm text-gray-500 capitalize">
-                {weather.condition}
+                {t(weather.condition)}
               </p>
             </div>
           </div>
@@ -105,32 +110,34 @@ export function WeatherWidget() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Tooltip content="Strong winds can affect ball trajectory">
+          <Tooltip content={t("windTooltip")}>
             <div>
-              <p className="text-sm text-gray-500">Wind</p>
+              <p className="text-sm text-gray-500">{t("wind")}</p>
               <p className="font-medium">
-                {weather.windSpeed} km/h {weather.windDirection}
+                {weather.windSpeed} {t("kmh")} {t(weather.windDirection)}
               </p>
             </div>
           </Tooltip>
 
-          <Tooltip content="High humidity can affect grip and ball distance">
+          <Tooltip content={t("humidityTooltip")}>
             <div>
-              <p className="text-sm text-gray-500">Humidity</p>
+              <p className="text-sm text-gray-500">{t("humidity")}</p>
               <p className="font-medium">{weather.humidity}%</p>
             </div>
           </Tooltip>
 
-          <Tooltip content="Affects course visibility and shot planning">
+          <Tooltip content={t("visibilityTooltip")}>
             <div>
-              <p className="text-sm text-gray-500">Visibility</p>
-              <p className="font-medium">{weather.visibility} km</p>
+              <p className="text-sm text-gray-500">{t("visibility")}</p>
+              <p className="font-medium">
+                {weather.visibility} {t("km")}
+              </p>
             </div>
           </Tooltip>
 
           {weather.windSpeed > 25 && (
             <div className="mt-4 text-sm text-yellow-600 bg-yellow-50 p-2 rounded">
-              ⚠️ High winds may affect ball flight and club selection
+              ⚠️ {t("highWindWarning")}
             </div>
           )}
         </div>

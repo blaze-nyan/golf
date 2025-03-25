@@ -328,5 +328,48 @@
 
   "priority": "优先级",
   "noMembershipAvailable": "暂无可用会员",
-  "goToMemberships": "前往会员页面"
+  "goToMemberships": "前往会员页面",
+
+  "unsafe": "不安全",
+  "notRecommended": "不推荐",
+  "poor": "差",
+  "challenging": "具挑战性",
+  "good": "良好",
+  "failedToLoadWeather": "加载天气数据失败",
+
+  "sunny": "晴朗",
+  "cloudy": "多云",
+  "rainy": "下雨",
+  "stormy": "暴风雨",
+  "windy": "大风",
+  "wind": "风",
+  "humidity": "湿度",
+  "visibility": "能见度",
+  "km": "km",
+  "kmh": "km/h",
+  "N": "N",
+  "NE": "东北",
+  "E": "NE",
+  "SE": "SE",
+  "S": "S",
+  "SW": "SW",
+  "W": "W",
+  "NW": "NW",
+  "windTooltip": "强风可能影响球的飞行轨迹",
+  "humidityTooltip": "高湿度可能影响握杆手感和球的飞行距离",
+  "visibilityTooltip": "影响球场视野和击球规划",
+  "highWindWarning": "大风可能影响球的飞行和球杆选择",
+  "heroHeading": "随时准备 如同您最佳的挥杆",
+
+  "getOurApp": "获取我们的应用",
+
+  "mon": "周一",
+  "tue": "周二",
+  "wed": "周三",
+  "thu": "周四",
+  "fri": "周五",
+  "sat": "周六",
+  "sun": "周日",
+
+  "partlyCloudy": "局部多云"
 }
