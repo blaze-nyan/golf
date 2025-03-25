@@ -3,6 +3,22 @@
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
+// Store for the translation function that will be set from components
+let translationFunction: ((key: string) => string) | null = null;
+
+// Function to set the translation function from a component
+export const setTranslationFunction = (fn: (key: string) => string): void => {
+  translationFunction = fn;
+};
+
+// Helper function to get translations with fallback
+const t = (key: string): string => {
+  if (translationFunction) {
+    return translationFunction(key);
+  }
+  return key; // Fallback to key if translation function not set
+};
+
 // Helper type for tracking visited pages
 interface VisitedPages {
   [key: string]: boolean;
@@ -40,76 +56,61 @@ export const createHomeTour = (forceStart: boolean = false): any => {
     {
       element: ".nav-section",
       popover: {
-        title: "Navigation Menu",
-        description:
-          "Access different sections of our website including Golf Courses, F&B, Hotel, and Membership options.",
+        title: t("navMenuTitle"),
+        description: t("navMenuDescription"),
         position: "bottom",
       },
     },
     {
       element: ".burger-menu",
       popover: {
-        title: "Mobile Menu",
-        description:
-          "On smaller screens, tap here to access the navigation menu with all site sections.",
+        title: t("mobileMenuTitle"),
+        description: t("mobileMenuDescription"),
         position: "left",
       },
     },
     {
       element: ".book-tee-time",
       popover: {
-        title: "Book a Tee Time",
-        description:
-          "Click here to browse our selection of golf courses and book your preferred tee time.",
+        title: t("bookTeeTimeTitle"),
+        description: t("bookTeeTimeDescription"),
         position: "bottom",
       },
     },
     {
       element: ".weather-widget",
       popover: {
-        title: "Weather Forecast",
-        description:
-          "Check real-time weather conditions to plan your perfect golfing day. Includes current temperature and playing conditions.",
+        title: t("weatherForecastTitle"),
+        description: t("weatherForecastDescription"),
         position: "top",
       },
     },
     {
       element: ".faq-accordion",
       popover: {
-        title: "Frequently Asked Questions",
-        description:
-          "Find answers to common questions about bookings, cancellations, and course policies.",
+        title: t("faqTitleTour"),
+        description: t("faqDescription"),
         position: "top",
       },
     },
-    // {
-    //   element: 'a[href="/auth/login"]',
-    //   popover: {
-    //     title: "Login / Sign Up",
-    //     description:
-    //       "Create an account or sign in to book tee times, manage reservations, and view your profile.",
-    //     position: "bottom",
-    //   },
-    // },
     {
       element: ".light-dark",
       popover: {
-        title: "Theme Switcher",
-        description:
-          "Toggle between light and dark mode for your preferred viewing experience.",
+        title: t("themeSwitcherTitle"),
+        description: t("themeSwitcherDescription"),
         position: "bottom",
       },
     },
     {
       element: ".chat-widget",
       popover: {
-        title: "Golf Assistant",
-        description:
-          "Need help? Chat with our virtual assistant for immediate answers to your questions about courses, bookings, or amenities.",
+        title: t("golfAssistantTitle"),
+        description: t("golfAssistantDescription"),
         position: "left",
       },
     },
   ];
+
   // **Filter out steps where:**
   // - The element does not exist
   // - The element has the `hidden` class
@@ -133,10 +134,10 @@ export const createHomeTour = (forceStart: boolean = false): any => {
     opacity: 0.75,
     padding: 5,
     showButtons: ["next", "previous", "close"],
-    doneBtnText: "Finish",
-    closeBtnText: "Skip",
-    nextBtnText: "Next",
-    prevBtnText: "Previous",
+    doneBtnText: t("finishButton"),
+    closeBtnText: t("skipButton"),
+    nextBtnText: t("nextButton"),
+    prevBtnText: t("previousButton"),
     keyboardControl: true,
     overlayClickNext: false,
     stagePadding: 10,
@@ -157,13 +158,13 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
     {
       element: ".course-card",
       popover: {
-        title: "Real Course From Api",
-        description:
-          "This is the only real course that we got form the api. Rest of the courses are fake we created to demonstrate the designs if we have multiple courses",
+        title: t("realCourseTitle"),
+        description: t("realCourseDescription"),
         position: "bottom",
       },
     },
   ];
+
   // **Filter out steps where:**
   // - The element does not exist
   // - The element has the `hidden` class
@@ -186,10 +187,10 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
     opacity: 0.75,
     padding: 5,
     showButtons: ["next", "previous", "close"],
-    doneBtnText: "Finish",
-    closeBtnText: "Skip",
-    nextBtnText: "Next",
-    prevBtnText: "Previous",
+    doneBtnText: t("finishButton"),
+    closeBtnText: t("skipButton"),
+    nextBtnText: t("nextButton"),
+    prevBtnText: t("previousButton"),
     keyboardControl: true,
     overlayClickNext: false,
     stagePadding: 10,
@@ -200,6 +201,7 @@ export const createGolfCourseTour = (forceStart: boolean = false): any => {
 
   return driverObj;
 };
+
 // Individual Golf course page tour
 export const createSingleGolfCourseTour = (
   forceStart: boolean = false
@@ -211,13 +213,13 @@ export const createSingleGolfCourseTour = (
     {
       element: ".stepper",
       popover: {
-        title: "Booking Progress",
-        description:
-          "This navigation bar tracks your progress through the booking process. Complete each step to finalize your tee time reservation.",
+        title: t("bookingProgressTitle"),
+        description: t("bookingProgressDescription"),
         position: "bottom",
       },
     },
   ];
+
   // **Filter out steps where:**
   // - The element does not exist
   // - The element has the `hidden` class
@@ -234,15 +236,16 @@ export const createSingleGolfCourseTour = (
     );
   });
   if (steps.length === 0) return null;
+
   const driverObj = driver({
     animate: true,
     opacity: 0.75,
     padding: 5,
     showButtons: ["next", "previous", "close"],
-    doneBtnText: "Finish",
-    closeBtnText: "Skip",
-    nextBtnText: "Next",
-    prevBtnText: "Previous",
+    doneBtnText: t("finishButton"),
+    closeBtnText: t("skipButton"),
+    nextBtnText: t("nextButton"),
+    prevBtnText: t("previousButton"),
     keyboardControl: true,
     overlayClickNext: false,
     stagePadding: 10,

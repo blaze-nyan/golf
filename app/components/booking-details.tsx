@@ -8,9 +8,11 @@ import {
   convertExcelDateToJSDate,
 } from "./date-functionalities";
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const BookingDetails = () => {
   const { bookingDetails, currentStep } = useProgress();
+  const { t } = useLanguage();
 
   // Helper function to determine if a section should be grayed out
   const isSectionDisabled = (step: any) => currentStep < step;
@@ -20,7 +22,7 @@ const BookingDetails = () => {
       <Card className="p-0 transition-transform duration-200 bg-white dark:bg-gray-800 w-full overflow-hidden border border-gray-200 dark:border-gray-700">
         {/* Header Section */}
         <div className="bg-green-700 dark:bg-green-800 text-white py-3 text-center">
-          <span className="font-semibold text-xl">Your Booking</span>
+          <span className="font-semibold text-xl">{t("yourBooking")}</span>
         </div>
 
         {/* Course Information Section */}
@@ -33,14 +35,14 @@ const BookingDetails = () => {
             removeWrapper
             className="h-16 w-16 sm:h-20 sm:w-20 rounded-md object-cover"
             src={usePlaceholderGolfCourseImageLink()}
-            alt="booking"
+            alt={t("booking")}
           />
           <div className="flex flex-col">
             <span className="font-semibold text-base sm:text-lg text-gray-700 dark:text-gray-200">
-              {bookingDetails.courseName || "Course Name Placeholder"}
+              {bookingDetails.courseName || t("courseNamePlaceholder")}
             </span>
             <span className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-1">
-              {bookingDetails.courseLocation || "N/A"}
+              {bookingDetails.courseLocation || t("notAvailable")}
             </span>
           </div>
         </div>
@@ -56,28 +58,30 @@ const BookingDetails = () => {
               icon="mdi-golf"
               className="text-green-600 dark:text-green-500"
             />
-            Booking Type:{" "}
-            {bookingDetails.bookingType == 1 ? "9-Hole" : "18-Hole"}
+            {t("bookingType")}:{" "}
+            {bookingDetails.bookingType == 1
+              ? t("nineHole")
+              : t("eighteenHole")}
           </span>
           <span className="font-semibold text-sm sm:text-medium text-gray-700 dark:text-gray-200 flex items-center gap-2">
             <Icon
               icon="mdi-calendar"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            Tee Date:{" "}
+            {t("teeDate")}:{" "}
             {bookingDetails.teeDate
               ? dateToString(convertExcelDateToJSDate(bookingDetails.teeDate))
-              : "Select a date"}
+              : t("selectDate")}
           </span>
           <span className="font-semibold text-sm sm:text-medium text-gray-700 dark:text-gray-200 mt-2 flex items-center gap-2">
             <Icon
               icon="mdi-clock"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            Tee Time:{" "}
+            {t("teeTime")}:{" "}
             {bookingDetails.teeTime
               ? convertMinutesToTimeWithAMPM(bookingDetails.teeTime)
-              : "Select a time"}
+              : t("selectTime")}
           </span>
         </div>
 
@@ -92,7 +96,7 @@ const BookingDetails = () => {
               icon="mdi-golf"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            <strong className="dark:text-gray-200">Golfers:</strong>{" "}
+            <strong className="dark:text-gray-200">{t("golfers")}:</strong>{" "}
             {bookingDetails.numberOfGolfers || 1}
           </span>
           <span className="text-gray-700 dark:text-gray-300 mt-2 text-sm sm:text-medium flex items-center gap-2">
@@ -101,7 +105,7 @@ const BookingDetails = () => {
               className="text-green-600 dark:text-green-500"
             />{" "}
             <strong className="dark:text-gray-200">
-              Accompanying Persons:
+              {t("accompanyingPersons")}:
             </strong>{" "}
             {bookingDetails.numberOfnonPlayers || 0}
           </span>
@@ -110,7 +114,7 @@ const BookingDetails = () => {
               icon="mdi-backpack"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            <strong className="dark:text-gray-200">Caddies:</strong>{" "}
+            <strong className="dark:text-gray-200">{t("caddies")}:</strong>{" "}
             {bookingDetails["Caddies"] || 0}
           </span>
           <span className="text-gray-700 dark:text-gray-300 mt-2 text-sm sm:text-medium flex items-center gap-2">
@@ -118,7 +122,7 @@ const BookingDetails = () => {
               icon="mdi-car"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            <strong className="dark:text-gray-200">Golf Carts:</strong>{" "}
+            <strong className="dark:text-gray-200">{t("golfCarts")}:</strong>{" "}
             {bookingDetails["Golf Cart"] || 1}
           </span>
           <span className="text-gray-700 dark:text-gray-300 mt-2 text-sm sm:text-medium flex items-center gap-2">
@@ -126,7 +130,9 @@ const BookingDetails = () => {
               icon="mdi-food"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            <strong className="dark:text-gray-200">Food & Drinks:</strong>{" "}
+            <strong className="dark:text-gray-200">
+              {t("foodAndDrinks")}:
+            </strong>{" "}
             {bookingDetails["Food & Drinks"] || 0}
           </span>
         </div>
@@ -142,8 +148,10 @@ const BookingDetails = () => {
               icon="mdi-currency-btc"
               className="text-green-600 dark:text-green-500"
             />{" "}
-            <strong>Total Price:</strong>{" "}
-            {bookingDetails.price ? `${bookingDetails.price} THB` : "0 THB"}
+            <strong>{t("totalPrice")}:</strong>{" "}
+            {bookingDetails.price
+              ? `${bookingDetails.price} ${t("thb")}`
+              : `0 ${t("thb")}`}
           </span>
         </div>
       </Card>

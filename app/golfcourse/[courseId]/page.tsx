@@ -10,6 +10,7 @@ import GolfFeesTable from "@/app/components/golf-fee-table";
 import { usePlaceholderGolfCourseImageLink } from "@/app/lib/general";
 import AnimatedLoading from "@/app/components/animated-loading";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 // Placeholder data for the golf course
 const placeholderGolfCourse = {
   golfCourseId: 1,
@@ -51,6 +52,7 @@ const placeholderGolfCourse = {
 };
 
 const CoursePage = () => {
+  const { t } = useLanguage();
   const { courseId, setBookingDetails } = useProgress(); //currentStep, canAccess,
   const [golfCourse, setGolfCourse] = useState<any | null>();
   const [selectedHole, setSelectedHole] = useState<string | null>(null);
@@ -117,13 +119,15 @@ const CoursePage = () => {
       <div className="flex flex-wrap gap-2 sm:gap-4 hole">
         <div className="flex items-center ">
           <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-500 text-green-500 dark:border-green-400 dark:text-green-400 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
-            Holes:{" "}
+            {t("holes")}
+            {": "}
             {golfCourse.numberOfHoles || placeholderGolfCourse.numberOfHoles}
           </span>
         </div>
         <div className="flex items-center">
           <span className="px-2 sm:px-4 py-1 sm:py-2 border border-green-600 text-green-600 dark:border-green-500 dark:text-green-500 text-xs sm:text-sm font-semibold rounded-full shadow-sm">
-            Par:{" "}
+            {t("par")}
+            {": "}
             {golfCourse.golfCoursePar || placeholderGolfCourse.golfCoursePar}
           </span>
         </div>
@@ -158,7 +162,7 @@ const CoursePage = () => {
             alt="Golf course"
           />
           <h2 className="text-l font-semibold text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 pb-2">
-            Outward Holes
+            {t("outwardHoles")}
           </h2>
         </div>
         <div className="h-auto w-[48%] space-y-3">
@@ -169,7 +173,7 @@ const CoursePage = () => {
             alt="Golf course"
           />
           <h2 className="text-l font-semibold text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 pb-2">
-            Inward Holes
+            {t("inwardHoles")}
           </h2>
         </div>
       </div>
@@ -178,7 +182,7 @@ const CoursePage = () => {
       <div className="space-y-6">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-            Outward Holes
+            {t("outwardHoles")}
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2">
             {golfCourse.golfCourseHoles[0].Row.map((hole: any, index: any) => {
@@ -210,7 +214,7 @@ const CoursePage = () => {
                       )
                     }
                   >
-                    Hole {hole}
+                    {t("hole")} {hole}
                   </button>
                 );
               }
@@ -254,11 +258,11 @@ const CoursePage = () => {
               setSelectedHole(combinedData);
             }}
           >
-            View All Outward Holes
+            {t("viewAllOutwardHoles")}
           </button>
 
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 mt-6">
-            Inward Holes
+            {t("inwardHoles")}
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2">
             {golfCourse.golfCourseHoles[0].Row.map((hole: any, index: any) => {
@@ -286,7 +290,7 @@ const CoursePage = () => {
                       )
                     }
                   >
-                    Hole {hole}
+                    {t("hole")} {hole}
                   </button>
                 );
               }
@@ -330,14 +334,14 @@ const CoursePage = () => {
               setSelectedHole(combinedData);
             }}
           >
-            View All Inward Holes
+            {t("viewAllInwardHoles")}
           </button>
         </div>
 
         {selectedHole && (
           <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-              Hole Details
+              {t("holeDetails")}
             </h4>
             <p className="text-gray-700 dark:text-gray-300">{selectedHole}</p>
           </div>
@@ -347,7 +351,7 @@ const CoursePage = () => {
       {/* Notes Section */}
       <div className="space-y-3">
         <h3 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-          Golf Course Notes
+          {t("golfCourseNotes")}
         </h3>
         {golfCourse.golfCourseNotes && golfCourse.golfCourseNotes.length > 0 ? (
           <ul className="list-disc pl-5 space-y-1 text-base md:text-lg text-gray-700 dark:text-gray-300">
@@ -359,7 +363,7 @@ const CoursePage = () => {
           </ul>
         ) : (
           <p className="text-base md:text-lg text-gray-700 dark:text-gray-300">
-            No notes available.
+            {t("noNotesAvailable")}
           </p>
         )}
         <div className="pt-4 md:hidden">

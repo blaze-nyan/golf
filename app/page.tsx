@@ -8,7 +8,11 @@ import Faq from "./components/faq";
 import Hero from "./components/hero";
 import CardReview from "@/app/components/card-review";
 //tour
-import { createHomeTour } from "@/app/lib/advance-tour-service";
+import {
+  createHomeTour,
+  setTranslationFunction,
+} from "@/app/lib/advance-tour-service";
+import { useLanguage } from "./contexts/LanguageContext";
 interface User {
   name: string;
   avatar: string;
@@ -25,6 +29,7 @@ interface ReviewProps {
 export default function Home(): JSX.Element {
   // State for theme/hydration
   const [mounted, setMounted] = useState(false);
+  const { t } = useLanguage();
 
   // Refs for animation targets
   const heroRef = useRef<HTMLDivElement>(null);
@@ -79,6 +84,9 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     if (!mounted) return;
 
+    // Set the translation function for the tour service
+    setTranslationFunction(t);
+
     // Check if user has seen the tour before
     const hasSeenTour = localStorage.getItem("hasSeenHomeTour");
     if (!hasSeenTour) {
@@ -91,7 +99,7 @@ export default function Home(): JSX.Element {
         return () => clearTimeout(tourTimeout);
       }
     }
-  }, [mounted]);
+  }, [mounted, t]);
 
   // Consolidate animations into a single timeline where possible
   useEffect(() => {
@@ -213,7 +221,7 @@ export default function Home(): JSX.Element {
           ref={reviewsRef}
           className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-6 sm:mb-8 text-gray-800 dark:text-gray-100 transition-colors duration-300"
         >
-          What Our Customers Say
+          {t("whatOurCustomersSay")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Multiple review cards with staggered animation */}

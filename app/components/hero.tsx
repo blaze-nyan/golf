@@ -6,6 +6,7 @@ import { WeatherWidget } from "./weather/weather-widget";
 import Link from "next/link";
 import { Button } from "@heroui/button";
 import { useTheme } from "next-themes";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface DayForecast {
   day: string;
@@ -17,6 +18,7 @@ const Hero: React.FC = () => {
   // State for theme/hydration
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
 
   // Create refs for animating elements
   const heroSectionRef = useRef<HTMLElement>(null);
@@ -126,9 +128,7 @@ const Hero: React.FC = () => {
         </div>
 
         <p className="text-center font-normal text-base sm:text-lg leading-6 sm:leading-7 text-gray-700 dark:text-gray-300 max-w-[466px] px-6">
-          Streamline your golf experience with Splash Golf Club&apos;s intuitive
-          online booking platform. Enjoy real-time tee time availability, secure
-          member access, and a hassle-free reservation process.
+          {t("welcomeMessage")}
         </p>
 
         <div className="flex justify-center space-x-6">
@@ -166,7 +166,7 @@ const Hero: React.FC = () => {
                 </span>
               }
             >
-              Book a Tee Time
+              {t("bookTeeTime")}
             </Button>
           </div>
         </div>
@@ -190,12 +190,12 @@ const Hero: React.FC = () => {
               : "bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent"
           }`}
         >
-          Plan Your Week Ahead on the Course
+          {t("forecast")}
         </h2>
         <p className="text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 mt-2 sm:mt-3 mx-auto">
-          Stay updated with the weather forecast for the next week.
+          {t("forecastDesc")}
         </p>
-        <div className="mt-4 sm:mt-6 overflow-x-auto  pb-4">
+        <div className="mt-4 sm:mt-6 overflow-x-auto pb-4">
           <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 pt-4 w-[300px] sm:w-full">
             {weekForecast.map((day, index) => (
               <div

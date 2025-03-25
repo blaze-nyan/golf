@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Button, Input, Checkbox, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import axios from "axios";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 interface SignupFormProps {
   onProceedToVerification: (userData: {
@@ -19,6 +20,7 @@ interface SignupFormProps {
 export default function SignupForm({
   onProceedToVerification,
 }: SignupFormProps) {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [error, setError] = useState("");
@@ -49,13 +51,13 @@ export default function SignupForm({
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
+      setError(t("passwordsMismatch"));
       return;
     }
 
     // Validate terms agreement
     if (!formData.agreeToTerms) {
-      setError("Please agree to the Terms and Privacy Policy");
+      setError(t("agreeToTermsError"));
       return;
     }
 
@@ -68,9 +70,7 @@ export default function SignupForm({
       });
 
       if (checkResponse.data.exists) {
-        setError(
-          `An account with email ${formData.email} already exists. Please log in instead.`
-        );
+        setError(t("emailAlreadyExists", { email: formData.email }));
         setIsLoading(false);
         return;
       }
@@ -89,12 +89,10 @@ export default function SignupForm({
           surname: formData.surname,
         });
       } else {
-        setError("Failed to send verification code. Please try again.");
+        setError(t("verificationSendFailed"));
       }
     } catch (err: any) {
-      setError(
-        err.response?.data?.error || "An error occurred. Please try again."
-      );
+      setError(err.response?.data?.error || t("generalError"));
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +101,7 @@ export default function SignupForm({
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
-        <p className="pb-4 text-center text-3xl font-semibold">Sign Up</p>
+        <p className="pb-4 text-center text-3xl font-semibold">{t("signUp")}</p>
 
         {error && (
           <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
@@ -112,10 +110,10 @@ export default function SignupForm({
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <Input
             isRequired
-            label="First Name"
+            label={t("firstName")}
             labelPlacement="outside"
             name="firstName"
-            placeholder="Enter your First Name"
+            placeholder={t("enterFirstName")}
             type="text"
             variant="bordered"
             value={formData.firstName}
@@ -124,10 +122,10 @@ export default function SignupForm({
           />
           <Input
             isRequired
-            label="Surname"
+            label={t("surname")}
             labelPlacement="outside"
             name="surname"
-            placeholder="Enter your Surname"
+            placeholder={t("enterSurname")}
             type="text"
             variant="bordered"
             value={formData.surname}
@@ -136,10 +134,10 @@ export default function SignupForm({
           />
           <Input
             isRequired
-            label="Email"
+            label={t("email")}
             labelPlacement="outside"
             name="email"
-            placeholder="Enter your email"
+            placeholder={t("enterEmail")}
             type="email"
             variant="bordered"
             value={formData.email}
@@ -163,10 +161,10 @@ export default function SignupForm({
                 )}
               </button>
             }
-            label="Password"
+            label={t("password")}
             labelPlacement="outside"
             name="password"
-            placeholder="Enter your password"
+            placeholder={t("enterPassword")}
             type={isVisible ? "text" : "password"}
             variant="bordered"
             value={formData.password}
@@ -190,10 +188,10 @@ export default function SignupForm({
                 )}
               </button>
             }
-            label="Confirm Password"
+            label={t("confirmPassword")}
             labelPlacement="outside"
             name="confirmPassword"
-            placeholder="Confirm your password"
+            placeholder={t("confirmYourPassword")}
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
             value={formData.confirmPassword}
@@ -209,22 +207,22 @@ export default function SignupForm({
             onChange={handleInputChange}
             disabled={isLoading}
           >
-            I agree with the&nbsp;
+            {t("iAgreeWithThe")}&nbsp;
             <Link href="#" size="sm">
-              Terms
+              {t("terms")}
             </Link>
-            &nbsp; and&nbsp;
+            &nbsp;{t("and")}&nbsp;
             <Link href="#" size="sm">
-              Privacy Policy
+              {t("privacyPolicy")}
             </Link>
           </Checkbox>
           <Button color="primary" type="submit" isLoading={isLoading}>
-            {isLoading ? "Processing..." : "Sign Up"}
+            {isLoading ? t("processing") : t("signUp")}
           </Button>
         </form>
         <p className="text-center text-small">
           <Link href="/auth/login" size="sm">
-            Already have an account? Log In
+            {t("alreadyHaveAccount")}
           </Link>
         </p>
       </div>

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardBody, Tooltip, Spinner } from "@heroui/react";
 import { Cloud, Sun, CloudRain, Wind, CloudLightning } from "lucide-react";
 import { getWeather } from "@/app/lib/weather-api";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface WeatherData {
   temperature: number;
@@ -16,18 +17,6 @@ interface WeatherData {
   visibility: number;
   uvIndex: number;
 }
-
-// Mock data
-// const mockWeather: WeatherData = {
-//   temperature: 28,
-//   condition: "sunny",
-//   humidity: 65,
-//   windSpeed: 12,
-//   windDirection: "NE",
-//   precipitation: 0,
-//   visibility: 10, // in km
-//   uvIndex: 7,
-// };
 
 const WeatherIcon = ({
   condition,
@@ -52,6 +41,7 @@ export function WeatherWidget() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   const getPlayabilityStatus = (currentWeather: WeatherData) => {
     if (currentWeather.condition === "stormy")
@@ -107,7 +97,7 @@ export function WeatherWidget() {
             </div>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Playing Conditions</p>
+            <p className="text-sm text-gray-500">{t("playingConditions")}</p>
             <p className={`font-medium ${playability.color}`}>
               {playability.status}
             </p>

@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Button, Input, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import axios from "axios";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 enum ForgotPasswordStep {
   EMAIL_INPUT = "email_input",
@@ -14,6 +15,7 @@ enum ForgotPasswordStep {
 }
 
 export default function ForgotPasswordForm() {
+  const { t } = useLanguage();
   const [step, setStep] = useState<ForgotPasswordStep>(
     ForgotPasswordStep.EMAIL_INPUT
   );
@@ -56,7 +58,7 @@ export default function ForgotPasswordForm() {
         }, 1000);
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to send verification code");
+      setError(err.response?.data?.error || t("failedToSendCode"));
     } finally {
       setIsLoading(false);
     }
@@ -83,11 +85,11 @@ export default function ForgotPasswordForm() {
           setClientId(userResponse.data.clientId);
           setStep(ForgotPasswordStep.NEW_PASSWORD);
         } else {
-          setError("Could not find your account");
+          setError(t("accountNotFound"));
         }
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to verify code");
+      setError(err.response?.data?.error || t("failedToVerifyCode"));
     } finally {
       setIsLoading(false);
     }
@@ -98,12 +100,12 @@ export default function ForgotPasswordForm() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords don't match");
+      setError(t("passwordsMismatch"));
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("passwordTooShort"));
       return;
     }
 
@@ -118,10 +120,10 @@ export default function ForgotPasswordForm() {
       if (response.data.success) {
         setStep(ForgotPasswordStep.SUCCESS);
       } else {
-        setError("Failed to reset password");
+        setError(t("failedToResetPassword"));
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to reset password");
+      setError(err.response?.data?.error || t("failedToResetPassword"));
     } finally {
       setIsLoading(false);
     }
@@ -140,11 +142,10 @@ export default function ForgotPasswordForm() {
         {step === ForgotPasswordStep.EMAIL_INPUT && (
           <>
             <p className="pb-4 text-center text-3xl font-semibold">
-              Forgot Password
+              {t("forgotPassword")}
             </p>
             <p className="text-center text-gray-500 dark:text-gray-400 mb-2">
-              Enter your email address and we&apos;ll send you a verification
-              code to reset your password.
+              {t("forgotPasswordInstructions")}
             </p>
 
             {error && (
@@ -154,10 +155,10 @@ export default function ForgotPasswordForm() {
             <Form className="flex flex-col gap-4" onSubmit={handleSendOTP}>
               <Input
                 isRequired
-                label="Email"
+                label={t("email")}
                 labelPlacement="outside"
                 name="email"
-                placeholder="Enter your email"
+                placeholder={t("enterEmail")}
                 type="email"
                 variant="bordered"
                 value={email}
@@ -170,12 +171,12 @@ export default function ForgotPasswordForm() {
                 type="submit"
                 isLoading={isLoading}
               >
-                {isLoading ? "Sending..." : "Send Verification Code"}
+                {isLoading ? t("sending") : t("sendVerificationCode")}
               </Button>
 
               <p className="text-center text-small">
                 <Link href="/auth/login" size="sm">
-                  Remember your password? Log In
+                  {t("rememberPasswordLogin")}
                 </Link>
               </p>
             </Form>
@@ -185,11 +186,10 @@ export default function ForgotPasswordForm() {
         {step === ForgotPasswordStep.OTP_VERIFICATION && (
           <>
             <p className="pb-4 text-center text-3xl font-semibold">
-              Verify Email
+              {t("verifyEmail")}
             </p>
             <p className="text-center text-gray-600 dark:text-gray-300 mb-2">
-              We&apos;ve sent a verification code to{" "}
-              <span className="font-semibold">{email}</span>
+              {t("codeSentTo")} <span className="font-semibold">{email}</span>
             </p>
 
             {error && (
@@ -199,18 +199,17 @@ export default function ForgotPasswordForm() {
             {/* Developer helper text - remove in production */}
             {devOtp && (
               <div className="text-center text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                Developer Mode: Use code{" "}
-                <span className="font-bold">{devOtp}</span>
+                {t("developerMode")} <span className="font-bold">{devOtp}</span>
               </div>
             )}
 
             <Form className="flex flex-col gap-4" onSubmit={handleVerifyOTP}>
               <Input
                 isRequired
-                label="Verification Code"
+                label={t("verificationCode")}
                 labelPlacement="outside"
                 name="otp"
-                placeholder="Enter the 6-digit code"
+                placeholder={t("enter6DigitCode")}
                 variant="bordered"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
@@ -223,7 +222,7 @@ export default function ForgotPasswordForm() {
                 type="submit"
                 isLoading={isLoading}
               >
-                {isLoading ? "Verifying..." : "Verify Code"}
+                {isLoading ? t("verifying") : t("verifyCode")}
               </Button>
 
               <div className="flex justify-between items-center">
@@ -234,8 +233,8 @@ export default function ForgotPasswordForm() {
                   className="text-green-600"
                 >
                   {countdown > 0
-                    ? `Resend in ${formatTime(countdown)}`
-                    : "Resend Code"}
+                    ? t("resendInTime", { time: formatTime(countdown) })
+                    : t("resendCode")}
                 </Button>
 
                 <Button
@@ -243,7 +242,7 @@ export default function ForgotPasswordForm() {
                   onPress={() => setStep(ForgotPasswordStep.EMAIL_INPUT)}
                   className="text-green-600"
                 >
-                  Change Email
+                  {t("changeEmail")}
                 </Button>
               </div>
             </Form>
@@ -253,10 +252,10 @@ export default function ForgotPasswordForm() {
         {step === ForgotPasswordStep.NEW_PASSWORD && (
           <>
             <p className="pb-4 text-center text-3xl font-semibold">
-              Reset Password
+              {t("resetPassword")}
             </p>
             <p className="text-center text-gray-600 dark:text-gray-300 mb-2">
-              Create a new password for your account
+              {t("createNewPassword")}
             </p>
 
             {error && (
@@ -269,10 +268,10 @@ export default function ForgotPasswordForm() {
             >
               <Input
                 isRequired
-                label="New Password"
+                label={t("newPassword")}
                 labelPlacement="outside"
                 name="password"
-                placeholder="Enter new password"
+                placeholder={t("enterNewPassword")}
                 type="password"
                 variant="bordered"
                 value={password}
@@ -282,10 +281,10 @@ export default function ForgotPasswordForm() {
 
               <Input
                 isRequired
-                label="Confirm Password"
+                label={t("confirmPassword")}
                 labelPlacement="outside"
                 name="confirmPassword"
-                placeholder="Confirm new password"
+                placeholder={t("confirmNewPassword")}
                 type="password"
                 variant="bordered"
                 value={confirmPassword}
@@ -298,7 +297,7 @@ export default function ForgotPasswordForm() {
                 type="submit"
                 isLoading={isLoading}
               >
-                {isLoading ? "Resetting..." : "Reset Password"}
+                {isLoading ? t("resetting") : t("resetPassword")}
               </Button>
             </Form>
           </>
@@ -312,17 +311,16 @@ export default function ForgotPasswordForm() {
                 className="h-8 w-8 text-green-600 dark:text-green-400"
               />
             </div>
-            <p className="text-xl font-semibold">Password Reset Successfully</p>
+            <p className="text-xl font-semibold">{t("passwordResetSuccess")}</p>
             <p className="text-center text-gray-600 dark:text-gray-300">
-              Your password has been reset. You can now log in with your new
-              password.
+              {t("passwordResetSuccessMessage")}
             </p>
             <Button
               as={Link}
               href="/auth/login"
               className="w-full bg-green-600 text-white"
             >
-              Go to Login
+              {t("goToLogin")}
             </Button>
           </div>
         )}

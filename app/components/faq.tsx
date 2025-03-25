@@ -3,41 +3,37 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Accordion, AccordionItem } from "@heroui/react";
 import gsap from "gsap";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Faq() {
   const [mounted, setMounted] = useState(false);
+  const { t } = useLanguage();
 
   // Refs for animation
   const titleRef = useRef<HTMLHeadingElement>(null);
   const accordionRef = useRef<HTMLDivElement>(null);
-  // const accordionItemRefs = useRef<(HTMLElement | null)[]>([]);
 
-  // FAQ content
-  const contents = [
+  // FAQ content with FLAT translation keys
+  const getContents = () => [
     {
-      label: "Why can't I book a tee time without an account?",
-      answer:
-        "Our golf club requires all users to register before booking to ensure a seamless experience and track reservations properly. Guest or visitor bookings are not allowed for simplicity.",
+      label: t("faqAccountRequiredQuestion"),
+      answer: t("faqAccountRequiredAnswer"),
     },
     {
-      label: "Can I reschedule my booking?",
-      answer:
-        "No rescheduling, and refunds are not allowed once a booking is confirmed. Please make sure to check your availability before finalizing your reservation.",
+      label: t("faqRescheduleQuestion"),
+      answer: t("faqRescheduleAnswer"),
     },
     {
-      label: "Where can I find my booking details?",
-      answer:
-        "You can find all your booking details by clicking on the 'Profile' button, going to your Account, and scrolling down to the 'Bookings' section. This will display all your past and upcoming reservations.",
+      label: t("faqBookingDetailsQuestion"),
+      answer: t("faqBookingDetailsAnswer"),
     },
     {
-      label: "How can I know if my desired tee time is available?",
-      answer:
-        "You can check available tee times by navigating to the 'Book Tee Time' section. If a tee time is already booked by another user, it will be locked and unavailable for selection. Only available slots will be shown for booking.",
+      label: t("faqTeeTimeAvailabilityQuestion"),
+      answer: t("faqTeeTimeAvailabilityAnswer"),
     },
     {
-      label: "Can I book golf lessons or instructors through the website?",
-      answer:
-        "No, our website does not offer online booking for golf lessons or instructors. However, when you arrive at the golf course, you can check in at the reception counter, where you may be able to arrange for an instructor based on availability.",
+      label: t("faqGolfLessonsQuestion"),
+      answer: t("faqGolfLessonsAnswer"),
     },
   ];
 
@@ -132,10 +128,12 @@ export default function Faq() {
     return <div></div>;
   }
 
+  const contents = getContents();
+
   return (
     <div ref={accordionRef}>
       <h2 ref={titleRef} className="text-center text-2xl font-bold mb-6">
-        FAQs
+        {t("faqTitle")}
       </h2>
       <Accordion className="faq-accordion">
         {contents.map((content) => (

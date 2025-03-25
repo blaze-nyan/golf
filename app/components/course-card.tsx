@@ -4,9 +4,11 @@
 import React, { useState, useEffect } from "react";
 import { Card, Image, CardBody } from "@heroui/react";
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
+import { useLanguage } from "../contexts/LanguageContext";
 //tour
 import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
 import { logger } from "@/app/lib/logger";
+
 interface CourseCardProps {
   course: any;
   ready: boolean;
@@ -15,14 +17,16 @@ interface CourseCardProps {
 export default function CourseCard({ course, ready }: CourseCardProps) {
   const image = usePlaceholderGolfCourseImageLink();
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useLanguage();
 
+  // Get description from course or use fallback
   const description =
-    course.golfCourseDescription ||
-    "Nestled in the heart of lush greenery, Hackathon Golf Course offers an exceptional golfing experience for players of all skill levels. This 18-hole, par-72 championship course is designed to challenge and inspire, featuring strategically placed bunkers, rolling fairways, and scenic water hazards. \n\nWith a picturesque landscape and meticulously maintained greens, golfers can enjoy a serene yet competitive round of golf...";
+    course.golfCourseDescription || t("defaultCourseDescription");
 
   // Check if description is long enough to potentially need truncation
   // This is a simple heuristic - if text is over 200 chars, assume it might overflow
   const isLongDescription = description.length > 200;
+
   useEffect(() => {
     if (!ready) return; // Ensure data is loaded and component is mounted
     if (ready) {
@@ -53,10 +57,10 @@ export default function CourseCard({ course, ready }: CourseCardProps) {
           <h2 className="text-3xl font-medium">{course.golfCourseName}</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="border border-green-500 text-green-500 px-3 py-1 rounded-full text-sm">
-              <strong>Holes:</strong> {course.numberOfHoles}
+              <strong>{t("holes")}:</strong> {course.numberOfHoles}
             </span>
             <span className="border border-green-600 text-green-600 px-3 py-1 rounded-full text-sm">
-              <strong>Par:</strong> {course.golfCoursePar}
+              <strong>{t("par")}:</strong> {course.golfCoursePar}
             </span>
           </div>
           <div className="relative flex-grow overflow-hidden">
@@ -73,7 +77,7 @@ export default function CourseCard({ course, ready }: CourseCardProps) {
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-green-500 hover:text-green-600 mt-1 font-medium"
               >
-                {isExpanded ? "See less" : "See more..."}
+                {isExpanded ? t("seeLess") : t("seeMore")}
               </button>
             )}
           </div>

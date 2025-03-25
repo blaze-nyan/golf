@@ -31,6 +31,7 @@ import {
   getClientImage,
 } from "@/app/lib/api";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 import { fetchData } from "@/app/lib/api-placeholder-db";
 
@@ -68,6 +69,7 @@ type Communication = {
 };
 
 export default function ProfilePage() {
+  const { t } = useLanguage();
   //decryptcliendId
   const params = useParams();
   const router = useRouter();
@@ -102,8 +104,8 @@ export default function ProfilePage() {
 
   const [phoneData, setPhoneData] = useState<Communication>({
     "Communication ID": 0,
-    "Communication Detail": "No Phone Number Set",
-    Description: "Telephone Number",
+    "Communication Detail": t("noPhoneSet"),
+    Description: t("telephoneNumber"),
     "Communication Type": "C",
     Priority: "2",
     "Record Marked Deleted": false,
@@ -111,27 +113,27 @@ export default function ProfilePage() {
   });
   const [emailData, setEmailData] = useState<Communication>({
     "Communication ID": 0,
-    "Communication Detail": "No Email Set",
-    Description: "Email",
+    "Communication Detail": t("noEmailSet"),
+    Description: t("email"),
     "Communication Type": "M",
     Priority: "5",
     "Record Marked Deleted": false,
     "Status List": [],
   });
 
-  const titles = ["Mr", "Mrs", "Ms", "Dr", "Prof"];
+  const titles = [t("mr"), t("mrs"), t("ms"), t("dr"), t("prof")];
   const genders = [
     {
       value: "U",
-      label: "Unspecified",
+      label: t("unspecified"),
     },
     {
       value: "M",
-      label: "Male",
+      label: t("male"),
     },
     {
       value: "F",
-      label: "Female",
+      label: t("female"),
     },
   ];
 
@@ -293,7 +295,7 @@ export default function ProfilePage() {
 
         setBookingData(filteredBookings);
       } catch (err) {
-        setError("Failed to load profile data");
+        setError(t("failedToLoadProfile"));
         logger.error("Error:", err);
       } finally {
         setIsLoading(false);
@@ -310,7 +312,8 @@ export default function ProfilePage() {
     await sleep(1000);
     const bookings = await fetchData("bookings");
     const filteredBookings = bookings.filter(
-      (booking: { clientID: any }) => String(booking.clientID) === String(clientId)
+      (booking: { clientID: any }) =>
+        String(booking.clientID) === String(clientId)
     );
     closeBookingModal();
     setBookingData(filteredBookings);
@@ -354,7 +357,7 @@ export default function ProfilePage() {
 
       // Clear after 3s
     } catch (err) {
-      setError("Failed to upload image");
+      setError(t("failedToUploadImage"));
       logger.error(err);
     } finally {
       setIsUploading(false); // Stop the uploading state
@@ -395,7 +398,7 @@ export default function ProfilePage() {
       !toastShownRef.current // Ensure it's not shown before
     ) {
       addToast({
-        title: "Invalid email will not be saved.",
+        title: t("invalidEmailNotSaved"),
         color: "danger",
       });
       toastShownRef.current = true; // Prevent future toasts
@@ -416,7 +419,7 @@ export default function ProfilePage() {
       !toastPhoneShowRef.current // Ensure it's not shown before
     ) {
       addToast({
-        title: "Invalid phonenumber will not be saved.",
+        title: t("invalidPhoneNotSaved"),
         color: "danger",
       });
       toastPhoneShowRef.current = true; // Prevent future toasts
@@ -483,12 +486,12 @@ export default function ProfilePage() {
       setIsEditing(false);
 
       addToast({
-        title: "Profile updated successfully!",
+        title: t("profileUpdatedSuccess"),
         color: "success",
       });
       // Clear after 3s
     } catch (err) {
-      setError("Failed to update profile");
+      setError(t("failedToUpdateProfile"));
       logger.error(err);
     } finally {
       setIsSaving(false);
@@ -507,7 +510,7 @@ export default function ProfilePage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <p className="text-gray-800 dark:text-gray-200">
-          Failed to load profile
+          {t("failedToLoadProfile")}
         </p>
       </div>
     );
@@ -546,9 +549,9 @@ export default function ProfilePage() {
               <div className="mt-4">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   <strong className="text-gray-600 dark:text-gray-300">
-                    Company:
+                    {t("company")}:
                   </strong>{" "}
-                  {profileData["Company"] || "Not specified"}
+                  {profileData["Company"] || t("notSpecified")}
                 </p>
               </div>
             </div>
@@ -559,7 +562,7 @@ export default function ProfilePage() {
         <Card className="md:col-span-2 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardHeader className="flex justify-between items-center px-1 py-2">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              Profile Details
+              {t("profileDetails")}
             </h3>
             <Button
               color={isEditing ? "success" : "primary"}
@@ -581,7 +584,7 @@ export default function ProfilePage() {
                   : ""
               }
             >
-              {isEditing ? (isSaving ? "Saving..." : "Save") : "Edit"}
+              {isEditing ? (isSaving ? t("saving") : t("save")) : t("edit")}
             </Button>
           </CardHeader>
           <CardBody className="gap-4">
@@ -589,7 +592,7 @@ export default function ProfilePage() {
               {isEditing ? (
                 <>
                   <Select
-                    label="Title"
+                    label={t("title")}
                     defaultSelectedKeys={[profileData["Title"]]}
                     onChange={handleInputChange("Title")}
                   >
@@ -600,7 +603,7 @@ export default function ProfilePage() {
                     ))}
                   </Select>
                   <Select
-                    label="Gender"
+                    label={t("gender")}
                     defaultSelectedKeys={[profileData["Gender"]]}
                     disabled={!isEditing}
                     onChange={handleInputChange("Gender")}
@@ -612,32 +615,32 @@ export default function ProfilePage() {
                     ))}
                   </Select>
                   <Input
-                    label="First Name"
+                    label={t("firstName")}
                     defaultValue={profileData["First Name"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("First Name")}
                   />
                   <Input
-                    label="Surname"
+                    label={t("surname")}
                     defaultValue={profileData["Surname"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("Surname")}
                   />
                   <Input
-                    label="Given Name"
+                    label={t("givenName")}
                     defaultValue={profileData["Given Name"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("Given Name")}
                   />
                   <Input
-                    label="Company"
+                    label={t("company")}
                     defaultValue={profileData["Company"]}
                     isReadOnly={!isEditing}
                     onChange={handleInputChange("Company")}
                   />
                   <>
                     <Input
-                      label="Email"
+                      label={t("email")}
                       defaultValue={emailData["Communication Detail"]}
                       isReadOnly={!isEditing}
                       onChange={handleEmailChange}
@@ -646,7 +649,7 @@ export default function ProfilePage() {
 
                   <>
                     <Input
-                      label="Phone Number"
+                      label={t("phoneNumber")}
                       defaultValue={phoneData["Communication Detail"]}
                       isReadOnly={!isEditing}
                       onChange={handlePhoneChange}
@@ -656,40 +659,40 @@ export default function ProfilePage() {
               ) : (
                 <>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Title</span>
-                    {profileData["Title"] || "N/A"}
+                    <span>{t("title")}</span>
+                    {profileData["Title"] || t("na")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Gender</span>
+                    <span>{t("gender")}</span>
                     {profileData["Gender"] === "M"
-                      ? "Male"
+                      ? t("male")
                       : profileData["Gender"] === "F"
-                      ? "Female"
-                      : "Unspecified"}
+                      ? t("female")
+                      : t("unspecified")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>First Name</span>
-                    {profileData["First Name"] || "N/A"}
+                    <span>{t("firstName")}</span>
+                    {profileData["First Name"] || t("na")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Surname</span>
-                    {profileData["Surname"] || "N/A"}
+                    <span>{t("surname")}</span>
+                    {profileData["Surname"] || t("na")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Given Name</span>
-                    {profileData["Given Name"] || "N/A"}
+                    <span>{t("givenName")}</span>
+                    {profileData["Given Name"] || t("na")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Company</span>
-                    {profileData["Company"] || "N/A"}
+                    <span>{t("company")}</span>
+                    {profileData["Company"] || t("na")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Email</span>
-                    {emailData["Communication Detail"] || "N/A"}
+                    <span>{t("email")}</span>
+                    {emailData["Communication Detail"] || t("na")}
                   </p>
                   <p className=" bg-default-100 text-default-700 px-3 py-2 rounded-lg flex flex-col justify-center text-sm">
-                    <span>Phone Number</span>
-                    {phoneData["Communication Detail"] || "N/A"}
+                    <span>{t("phoneNumber")}</span>
+                    {phoneData["Communication Detail"] || t("na")}
                   </p>
                 </>
               )}
@@ -703,30 +706,32 @@ export default function ProfilePage() {
         <Card className="md:col-span-3 p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardHeader className="px-1 py-2">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              Bookings
+              {t("bookings")}
             </h3>
           </CardHeader>
           <CardBody>
             <div className="overflow-x-auto w-full">
               {/* Header Row */}
               <div className="grid grid-cols-3 md:grid-cols-6 gap-4 font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-3 rounded-md shadow-sm">
-                <div className="text-xs sm:text-sm">Course Name</div>
+                <div className="text-xs sm:text-sm">{t("courseName")}</div>
                 <div className="text-xs sm:text-sm hidden md:block">
-                  Location
+                  {t("location")}
                 </div>
-                <div className="text-xs sm:text-sm">Date</div>
-                <div className="text-xs sm:text-sm">Time</div>
+                <div className="text-xs sm:text-sm">{t("date")}</div>
+                <div className="text-xs sm:text-sm">{t("time")}</div>
                 <div className="text-xs sm:text-sm hidden md:block">
-                  Golfers
+                  {t("golfers")}
                 </div>
-                <div className="text-xs sm:text-sm hidden md:block">Status</div>
+                <div className="text-xs sm:text-sm hidden md:block">
+                  {t("status")}
+                </div>
               </div>
 
               {/* Booking Data Rows or No Data Message */}
               {bookingData.length === 0 ? (
                 <>
                   <div className="text-center text-gray-500 dark:text-gray-400 py-5">
-                    No Booking Available
+                    {t("noBookingAvailable")}
                   </div>
                   <div className="text-center">
                     <Button
@@ -735,7 +740,7 @@ export default function ProfilePage() {
                       color="primary"
                       className="mt-2"
                     >
-                      Go to Golf Courses
+                      {t("goToGolfCourses")}
                     </Button>
                   </div>
                 </>
@@ -781,30 +786,32 @@ export default function ProfilePage() {
         <Card className="md:col-span-3 p-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <CardHeader className="px-1 py-2">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              Account Information
+              {t("accountInformation")}
             </h3>
           </CardHeader>
           <CardBody>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
               <div>
                 <p className="text-small text-gray-500 dark:text-gray-400">
-                  Member Since
+                  {t("memberSince")}
                 </p>
                 <p className="text-gray-800 dark:text-gray-200">
-                  March 2025
+                  {t("march2025")}
                 </p>
               </div>
               <div>
                 <p className="text-small text-gray-500 dark:text-gray-400">
-                  Last Login
+                  {t("lastLogin")}
                 </p>
-                <p className="text-gray-800 dark:text-gray-200">Today</p>
+                <p className="text-gray-800 dark:text-gray-200">{t("today")}</p>
               </div>
               <div>
                 <p className="text-small text-gray-500 dark:text-gray-400">
-                  Status
+                  {t("status")}
                 </p>
-                <p className="text-green-600 dark:text-green-400">Active</p>
+                <p className="text-green-600 dark:text-green-400">
+                  {t("active")}
+                </p>
               </div>
             </div>
           </CardBody>
@@ -822,7 +829,7 @@ export default function ProfilePage() {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalContent className="bg-white dark:bg-gray-800">
             <ModalHeader className="text-gray-800 dark:text-gray-100">
-              Upload Profile Picture
+              {t("uploadProfilePicture")}
             </ModalHeader>
             <ModalBody>
               <Input
@@ -835,7 +842,7 @@ export default function ProfilePage() {
                 <div className="mt-4 flex justify-center">
                   <Image
                     src={previewUrl}
-                    alt="Preview"
+                    alt={t("preview")}
                     width={500}
                     height={500}
                     className="max-h-48 rounded object-cover border border-gray-200 dark:border-gray-600"
@@ -850,7 +857,7 @@ export default function ProfilePage() {
                 onPress={onClose}
                 className="dark:text-gray-300 dark:hover:text-white"
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button
                 color="primary"
@@ -858,7 +865,7 @@ export default function ProfilePage() {
                 isLoading={isUploading}
                 className="bg-green-600 dark:bg-green-700 text-white"
               >
-                Upload
+                {t("upload")}
               </Button>
             </ModalFooter>
           </ModalContent>

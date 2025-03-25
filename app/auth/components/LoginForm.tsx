@@ -8,10 +8,12 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { fetchData } from "@/app/lib/api-placeholder-db";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 // import { setClientId } from "@/app/lib/auth";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -77,10 +79,10 @@ export default function LoginForm() {
           router.replace("/profile");
         }
       } else {
-        setError("Login failed - no client ID received");
+        setError(t("loginFailedNoClientId"));
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Login failed. Please try again.");
+      setError(err.response?.data?.error || t("loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -89,7 +91,7 @@ export default function LoginForm() {
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
-        <p className="pb-4 text-center text-3xl font-semibold">Log In</p>
+        <p className="pb-4 text-center text-3xl font-semibold">{t("logIn")}</p>
 
         {error && (
           <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
@@ -102,10 +104,10 @@ export default function LoginForm() {
         >
           <Input
             isRequired
-            label="Email"
+            label={t("email")}
             labelPlacement="outside"
             name="email"
-            placeholder="Enter your email"
+            placeholder={t("enterEmail")}
             type="email"
             variant="bordered"
             value={formData.email}
@@ -130,10 +132,10 @@ export default function LoginForm() {
                 )}
               </button>
             }
-            label="Password"
+            label={t("password")}
             labelPlacement="outside"
             name="password"
-            placeholder="Enter your password"
+            placeholder={t("enterPassword")}
             type={isVisible ? "text" : "password"}
             variant="bordered"
             value={formData.password}
@@ -148,14 +150,14 @@ export default function LoginForm() {
               onChange={handleInputChange}
               disabled={isLoading}
             >
-              Remember me
+              {t("rememberMe")}
             </Checkbox>
             <Link
               className="text-default-500"
               href="/auth/forgot-password"
               size="sm"
             >
-              Forgot password?
+              {t("forgotPassword")}
             </Link>
           </div>
           <Button
@@ -164,12 +166,12 @@ export default function LoginForm() {
             type="submit"
             isLoading={isLoading}
           >
-            {isLoading ? "Logging in..." : "Log In"}
+            {isLoading ? t("loggingIn") : t("logIn")}
           </Button>
         </Form>
         <p className="text-center text-small">
           <Link href="/auth/signup" size="sm">
-            Create an account
+            {t("createAccount")}
           </Link>
         </p>
       </div>

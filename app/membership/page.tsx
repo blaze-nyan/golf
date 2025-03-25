@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,21 +12,39 @@ import {
   DropdownItem,
 } from "@heroui/react";
 import { Selection } from "@heroui/react";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 // Placeholder images
 const membershipImage = "/membership.webp";
 
-// Membership options
-const membershipOptions = [
-  { key: "basic", label: "Basic Membership", price: "$500/year" },
-  { key: "premium", label: "Premium Membership", price: "$1000/year" },
-  { key: "vip", label: "VIP Membership", price: "$2000/year" },
-];
-
 export default function MembershipPage() {
+  const { t } = useLanguage();
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedMembership, setSelectedMembership] = useState("");
-  const [selectedLabel, setSelectedLabel] = useState("Select Membership");
+  // Remove initial translation from useState
+  const [selectedLabel, setSelectedLabel] = useState("");
+
+  // Update the label whenever language changes
+  useEffect(() => {
+    if (!selectedMembership) {
+      setSelectedLabel(t("selectMembership"));
+    } else {
+      // Find the option and update the label with the new translation
+      const option = membershipOptions.find(
+        (option) => option.key === selectedMembership
+      );
+      if (option) {
+        setSelectedLabel(`${option.label} - ${option.price}`);
+      }
+    }
+  }, [t, selectedMembership]); // Depend on both t and selectedMembership
+
+  // Membership options with translations - must be inside the component to access t
+  const membershipOptions = [
+    { key: "basic", label: t("basicMembership"), price: t("basicPrice") },
+    { key: "premium", label: t("premiumMembership"), price: t("premiumPrice") },
+    { key: "vip", label: t("vipMembership"), price: t("vipPrice") },
+  ];
 
   const handleSelectionChange = (keys: Selection) => {
     setSelectedKeys(keys);
@@ -46,7 +64,7 @@ export default function MembershipPage() {
       }
     } else {
       setSelectedMembership("");
-      setSelectedLabel("Select Membership");
+      setSelectedLabel(t("selectMembership"));
     }
   };
 
@@ -55,11 +73,10 @@ export default function MembershipPage() {
       {/* Section for introduction */}
       <div className="text-center mb-8 max-w-2xl">
         <h2 className="text-2xl md:text-3xl font-semibold mb-4 dark:text-white">
-          Become a Member
+          {t("becomeMember")}
         </h2>
         <p className="dark:text-gray-300 text-gray-700 px-4 md:px-0">
-          Join our exclusive golf club and enjoy special privileges, including
-          discounted tee times, access to private events, and much more.
+          {t("membershipIntroDescription")}
         </p>
       </div>
 
@@ -68,7 +85,7 @@ export default function MembershipPage() {
         <div className="overflow-hidden rounded-lg shadow-md dark:shadow-primary-500/20 transition-transform duration-300 hover:scale-105 mb-6">
           <Image
             src={membershipImage}
-            alt="Food"
+            alt={t("membershipImageAlt")}
             width={800}
             height={600}
             className="w-full h-64 object-cover"
@@ -76,7 +93,7 @@ export default function MembershipPage() {
           />
         </div>
         <h3 className="text-xl font-semibold mb-4 dark:text-white">
-          Choose Your Membership
+          {t("chooseYourMembership")}
         </h3>
 
         {/* HeroUI Dropdown */}
@@ -92,7 +109,7 @@ export default function MembershipPage() {
             </Button>
           </DropdownTrigger>
           <DropdownMenu
-            aria-label="Membership Options"
+            aria-label={t("membershipOptions")}
             selectedKeys={selectedKeys}
             onSelectionChange={handleSelectionChange}
             selectionMode="single"
@@ -126,58 +143,58 @@ export default function MembershipPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 w-full max-w-3xl">
         <div className="p-4 rounded-lg dark:bg-gray-800 bg-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
           <h4 className="font-semibold mb-2 dark:text-white text-center">
-            Basic
+            {t("basicTitle")}
           </h4>
           <ul className="space-y-2">
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Standard access to golf course</span>
+              <span>{t("basicFeature1")}</span>
             </li>
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Member discounts</span>
+              <span>{t("basicFeature2")}</span>
             </li>
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Basic club facilities</span>
+              <span>{t("basicFeature3")}</span>
             </li>
           </ul>
         </div>
         <div className="p-4 rounded-lg dark:bg-gray-800 bg-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
           <h4 className="font-semibold mb-2 dark:text-white text-center">
-            Premium
+            {t("premiumTitle")}
           </h4>
           <ul className="space-y-2">
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Priority booking</span>
+              <span>{t("premiumFeature1")}</span>
             </li>
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Access to exclusive events</span>
+              <span>{t("premiumFeature2")}</span>
             </li>
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Guest passes included</span>
+              <span>{t("premiumFeature3")}</span>
             </li>
           </ul>
         </div>
         <div className="p-4 rounded-lg dark:bg-gray-800 bg-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
           <h4 className="font-semibold mb-2 dark:text-white text-center">
-            VIP
+            {t("vipTitle")}
           </h4>
           <ul className="space-y-2">
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Unlimited course access</span>
+              <span>{t("vipFeature1")}</span>
             </li>
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Private locker & storage</span>
+              <span>{t("vipFeature2")}</span>
             </li>
             <li className="flex items-center dark:text-gray-300">
               <Icon icon="mdi:check" className="text-primary-500 mr-2" />
-              <span>Personal golf instructor</span>
+              <span>{t("vipFeature3")}</span>
             </li>
           </ul>
         </div>
@@ -192,7 +209,7 @@ export default function MembershipPage() {
             className="flex items-center gap-2 px-6 py-3 font-medium transition-all duration-200 dark:bg-primary-600 dark:hover:bg-primary-500 dark:text-white shadow-md hover:shadow-lg"
             endContent={<Icon icon="mdi:arrow-right" className="text-lg" />}
           >
-            Register Now
+            {t("registerNow")}
           </Button>
         </Link>
       )}
@@ -204,7 +221,7 @@ export default function MembershipPage() {
           className="flex items-center gap-2 dark:text-gray-300 hover:dark:text-white transition-colors"
           endContent={<Icon icon="mdi:arrow-right" className="text-lg" />}
         >
-          Learn More About Membership Benefits
+          {t("learnMoreAboutMembership")}
         </Button>
       </Link>
     </div>

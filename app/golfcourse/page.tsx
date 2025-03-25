@@ -2,14 +2,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
 import Link from "next/link";
 import { getGolfCourses } from "@/app/lib/api";
 // components
 import CourseCard from "../components/course-card";
 import AnimatedLoading from "../components/animated-loading";
-import { createGolfCourseTour } from "@/app/lib/advance-tour-service";
+import {
+  createGolfCourseTour,
+  setTranslationFunction,
+} from "@/app/lib/advance-tour-service";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
+
 interface GolfCourse {
   golfCourseId: number;
   golfCourseName: string;
@@ -26,9 +30,9 @@ interface GolfCourse {
 }
 
 export default function GolfCoursesPage() {
+  const { t } = useLanguage();
   const [courses, setCourses] = useState<GolfCourse[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // State to track if courses are still loading
-  //data ready or not
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -37,8 +41,8 @@ export default function GolfCoursesPage() {
 
         const comingSoonCourse: GolfCourse = {
           golfCourseId: -1,
-          golfCourseName: "Coming Soon...",
-          golfCourseDescription: "New exciting course on the way!",
+          golfCourseName: t("comingSoon"),
+          golfCourseDescription: t("newExcitingCourseOnTheWay"),
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -52,8 +56,8 @@ export default function GolfCoursesPage() {
 
         const comingSoonCourse1: GolfCourse = {
           golfCourseId: 123,
-          golfCourseName: "The Highland Links",
-          golfCourseDescription: "Coming soon...",
+          golfCourseName: t("highlandLinks"),
+          golfCourseDescription: t("comingSoon"),
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -67,8 +71,8 @@ export default function GolfCoursesPage() {
 
         const comingSoonCourse2: GolfCourse = {
           golfCourseId: -134,
-          golfCourseName: "Sunset Bay Golf Club",
-          golfCourseDescription: "Coming soon...",
+          golfCourseName: t("sunsetBayGolfClub"),
+          golfCourseDescription: t("comingSoon"),
           golfCourseFeeStockId: 0,
           allowCrossOver: false,
           numberOfHoles: 18,
@@ -95,39 +99,33 @@ export default function GolfCoursesPage() {
     };
 
     fetchCourses();
-  }, []);
+  }, [t]);
+
   useEffect(() => {
     if (loading) return;
 
-    const handleLoad = () => {
-      const tour = createGolfCourseTour();
-      if (tour) tour.drive();
-    };
+    // Set the translation function for the tour service
+    setTranslationFunction(t);
 
-    window.addEventListener("load", handleLoad);
-
-    return () => window.removeEventListener("load", handleLoad);
-  }, [loading]);
+    // Create and start the tour
+    const tour = createGolfCourseTour();
+    if (tour) {
+      const tourTimeout = setTimeout(() => {
+        tour.drive();
+      }, 500);
+      return () => clearTimeout(tourTimeout);
+    }
+  }, [loading, t]);
 
   return (
     <div className="flex flex-col items-center justify-center my-10 mx-5 mb-20 gap-4 ">
       {/* Section for explanation about golf courses */}
       <section className="text-center mb-5 max-w-4xl">
         <h2 className="text-4xl font-semibold text-green-400">
-          Discover Our Golf Courses
+          {t("discoverOurGolfCourses")}
         </h2>
-        <p className="text-lg  mt-3">
-          We offer a wide selection of beautifully designed golf courses that
-          cater to players of all skill levels. Whether you are looking for a
-          challenging championship course or a relaxing day on the links, our
-          courses promise an unforgettable experience. Our facilities include
-          stunning fairways, state-of-the-art driving ranges, and clubhouses
-          equipped with everything you need for a great round of golf.
-        </p>
-        <p className="text-lg  mt-3">
-          Explore our courses below and find the perfect course for your next
-          round!
-        </p>
+        <p className="text-lg mt-3">{t("golfCoursesDescription")}</p>
+        <p className="text-lg mt-3">{t("exploreCoursesPrompt")}</p>
       </section>
 
       {/* Loading state */}
