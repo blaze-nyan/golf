@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Icon } from "@iconify/react";
 import { WeatherWidget } from "./weather/weather-widget";
 import Link from "next/link";
@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
   // State for theme/hydration
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Create refs for animating elements
   const heroSectionRef = useRef<HTMLElement>(null);
@@ -29,19 +29,72 @@ const Hero: React.FC = () => {
   const forecastHeadingRef = useRef<HTMLHeadingElement>(null);
   const dayCardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Weather forecast data - simplified generation
-  const weekForecast: DayForecast[] = Array.from({ length: 7 }, (_, i) => ({
-    day: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i],
-    temp: Math.floor(18 + Math.random() * 7),
-    condition: ["Sunny", "Cloudy", "Rainy", "Partly Cloudy"][
-      Math.floor(Math.random() * 4)
-    ],
-  }));
+  // Reset day cards ref when language changes to ensure animation happens again
+  useEffect(() => {
+    dayCardsRef.current = [];
+  }, [language]);
+
+  // Weather forecast data - using useCallback to ensure translations update
+  const generateForecast = useCallback(() => {
+    const days = [
+      t("mon"),
+      t("tue"),
+      t("wed"),
+      t("thu"),
+      t("fri"),
+      t("sat"),
+      t("sun"),
+    ];
+
+    const conditions = [t("sunny"), t("cloudy"), t("rainy"), t("partlyCloudy")];
+
+    // Generate random but stable temperatures for the week
+    // Use a stable seed (e.g., day index) for consistent temps across language changes
+    return Array.from({ length: 7 }, (_, i) => {
+      // Use i as a stable seed for the random temperature
+      const tempSeed = (i * 397) % 7; // Simple hash function
+      const tempValue = 18 + tempSeed;
+
+      // Use another stable seed for condition
+      const conditionSeed = (i * 269) % 4; // Different hash to avoid patterns
+
+      return {
+        day: days[i],
+        temp: tempValue,
+        condition: conditions[conditionSeed],
+      };
+    });
+  }, [t]); // Only regenerate when t changes (language changes)
+
+  // State for forecast data
+  const [weekForecast, setWeekForecast] = useState<DayForecast[]>([]);
+
+  // Update forecast when language changes
+  useEffect(() => {
+    if (mounted) {
+      // Force regeneration on language change
+      setWeekForecast(generateForecast());
+    }
+  }, [language, generateForecast, mounted]);
 
   // Handle hydration properly
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Initial data generation after mounting
+  useEffect(() => {
+    if (mounted) {
+      setWeekForecast(generateForecast());
+    }
+  }, [mounted, generateForecast]);
+
+  // Add a day card to the refs array
+  const addToDayCardRefs = (el: HTMLDivElement | null) => {
+    if (el && !dayCardsRef.current.includes(el)) {
+      dayCardsRef.current.push(el);
+    }
+  };
 
   // Load GSAP only on client side when component is mounted
   useEffect(() => {
@@ -52,17 +105,16 @@ const Hero: React.FC = () => {
       const gsapModule = await import("gsap");
       const gsap = gsapModule.default || gsapModule;
 
-      // Simple fade-in animation for main elements instead of complex animations
-      const elements = [
+      // Simple fade-in animation for main elements INCLUDING day cards
+      const mainElements = [
         headingRef.current,
         ctaRef.current,
         weatherWidgetRef.current,
         forecastHeadingRef.current,
-        ...dayCardsRef.current.filter(Boolean),
       ];
 
-      // Simple staggered fade-in
-      elements.forEach((el, index) => {
+      // Simple staggered fade-in for main elements
+      mainElements.forEach((el, index) => {
         if (!el) return;
 
         gsap.fromTo(
@@ -78,6 +130,27 @@ const Hero: React.FC = () => {
         );
       });
 
+      // Add a slight delay before animating day cards for a staggered effect
+      setTimeout(() => {
+        // Animation for day cards
+        dayCardsRef.current.forEach((el, index) => {
+          if (!el) return;
+
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 15, scale: 0.95 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.4,
+              delay: 0.07 * index, // slightly faster stagger than main elements
+              ease: "back.out(1.2)",
+            }
+          );
+        });
+      }, 300); // small delay after main elements
+
       // Simple animation for CTA icon - uses less CPU
       if (ctaIconRef.current) {
         gsap.to(ctaIconRef.current, {
@@ -91,18 +164,7 @@ const Hero: React.FC = () => {
     };
 
     loadGsap();
-
-    // No need for complex scroll animations or expensive listeners
-  }, [mounted]);
-
-  // Add a day card to the refs array
-  const addToDayCardRefs = (el: HTMLDivElement | null) => {
-    if (el && !dayCardsRef.current.includes(el)) {
-      dayCardsRef.current.push(el);
-    }
-  };
-
-  const headingText = "Always Ready Just Like Your Best Swing";
+  }, [mounted, language]); // Add language dependency to re-run animations on language change
 
   // Return empty div if not mounted yet to prevent hydration mismatch
   if (!mounted) {
@@ -123,8 +185,7 @@ const Hero: React.FC = () => {
               : "bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent"
           }`}
         >
-          {/* Use a simpler heading without character-by-character animation */}
-          <span>{headingText}</span>
+          <span>{t("heroHeading")}</span>
         </div>
 
         <p className="text-center font-normal text-base sm:text-lg leading-6 sm:leading-7 text-gray-700 dark:text-gray-300 max-w-[466px] px-6">
@@ -140,7 +201,7 @@ const Hero: React.FC = () => {
               className="relative text-blue-600 dark:text-green-400 hover:text-blue-700 dark:hover:text-green-500 transition-all duration-300 
           after:absolute after:left-0 after:bottom-[-2px] after:h-[2px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full focus:after:w-full active:scale-95"
             >
-              Get Our App
+              {t("getOurApp")}
             </Button>
           </div>
           <div ref={ctaRef} className="book-tee-time">
@@ -199,7 +260,7 @@ const Hero: React.FC = () => {
           <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-3 pt-4 w-[300px] sm:w-full">
             {weekForecast.map((day, index) => (
               <div
-                key={day.day}
+                key={`forecast-day-${index}`}
                 ref={addToDayCardRefs}
                 className={`
                   bg-white dark:bg-gray-800 
@@ -208,6 +269,7 @@ const Hero: React.FC = () => {
                   p-3 sm:p-4 min-w-[40px] w-[102px] sm:w-24 flex-shrink-0 
                   transition-all duration-300
                   cursor-pointer
+                  opacity-0
                   ${index === 0 ? "border-l-green-500 border-l-4" : ""}
                 `}
               >

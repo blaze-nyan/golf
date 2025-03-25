@@ -330,5 +330,48 @@
 
   "priority": "Priority",
   "noMembershipAvailable": "No Membership Available",
-  "goToMemberships": "Go to Memberships"
+  "goToMemberships": "Go to Memberships",
+
+  "unsafe": "Unsafe",
+  "notRecommended": "Not Recommended",
+  "poor": "Poor",
+  "challenging": "Challenging",
+  "good": "Good",
+  "failedToLoadWeather": "Failed to load weather data",
+
+  "sunny": "Sunny",
+  "cloudy": "Cloudy",
+  "rainy": "Rainy",
+  "stormy": "Stormy",
+  "windy": "Windy",
+  "wind": "Wind",
+  "humidity": "Humidity",
+  "visibility": "Visibility",
+  "km": "km",
+  "kmh": "km/h",
+  "N": "N",
+  "NE": "NE",
+  "E": "E",
+  "SE": "SE",
+  "S": "S",
+  "SW": "SW",
+  "W": "W",
+  "NW": "NW",
+  "windTooltip": "Strong winds can affect ball trajectory",
+  "humidityTooltip": "High humidity can affect grip and ball distance",
+  "visibilityTooltip": "Affects course visibility and shot planning",
+  "highWindWarning": "High winds may affect ball flight and club selection",
+  "heroHeading": "Always Ready Just Like Your Best Swing",
+
+  "getOurApp": "Get Our App",
+
+  "mon": "Mon",
+  "tue": "Tue",
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "sun": "Sun",
+
+  "partlyCloudy": "Partly Cloudy"
 }
