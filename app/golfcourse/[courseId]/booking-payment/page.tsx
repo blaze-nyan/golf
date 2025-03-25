@@ -26,6 +26,7 @@ import AnimatedLoading from "@/app/components/animated-loading";
 import ExpiryDateInput from "@/app/components/ExpiryDateInput";
 import { logger } from "@/app/lib/logger";
 import { useLanguage } from "@/app/contexts/LanguageContext";
+import { getClientInfo, sendBookingEmail } from "@/app/lib/api";
 
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
@@ -53,6 +54,22 @@ const page = () => {
     onClose: onErrorClose,
   } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false); // Loading state
+
+  const sendEmail = async () => {
+    if (bookingDetails.clientID) {
+      try {
+        const clientInfo = await getClientInfo(Number(bookingDetails.clientID));
+        const result = getEmail(clientInfo["Communication List"]);
+        if (result != null) {
+          sendBookingEmail(result, bookingDetails);
+        }
+      } catch (error) {
+        console.error("Error fetching client info:", error);
+      }
+    } else {
+      console.log("Client ID is not available in booking details.");
+    }
+  };
 
   // Monitor screen size and panel visibility
   useEffect(() => {
@@ -129,6 +146,17 @@ const page = () => {
     return true;
   };
 
+  const getEmail = (commList: any) => {
+
+    for (const comm of commList) {
+      if (comm["Communication Type"] === "M") {
+        return comm["Communication Detail"];
+      }
+    }
+    return null;
+
+  }
+
   const handleSubmit = () => {
     if (validateCreditCard()) {
       onOpen(); // Open the success modal on successful payment
@@ -136,6 +164,7 @@ const page = () => {
       postData("bookings", bookingDetails);
       setIsLoading(true); // Show loading spinner
       setTimeout(() => {
+        sendEmail();
         setIsLoading(false); // Simulate loading completion after a delay
       }, 3000); // 3 seconds delay to simulate loading time
     }
