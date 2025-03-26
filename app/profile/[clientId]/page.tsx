@@ -49,12 +49,20 @@ import AnimatedLoading from "@/app/components/animated-loading";
 
 interface ProfileData {
   "Client ID": number;
+  "Client Code": string;
   Title: string;
   "First Name": string;
   Surname: string;
   "Given Name": string;
   Company: string;
   Gender: string;
+  "Birth Date": number;
+  Language: string;
+  Nationality: string;
+  "Passport Number": string;
+  "ID Number": string;
+  "Passport or ID": string;
+  Designation: string;
   "Communication List": Array<any>;
 }
 
@@ -86,7 +94,6 @@ export default function ProfilePage() {
   const clientId = decryptData(decodedClientId_);
   logger.log("After decryption (Decrypted clientId):", clientId);
 
-  ///////////////////////////////////////////////////
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -101,6 +108,16 @@ export default function ProfilePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+
+  // Email verification states
+  const [originalEmail, setOriginalEmail] = useState<string>("");
+  const [newEmail, setNewEmail] = useState<string | null>(null);
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationError, setVerificationError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResendingCode, setIsResendingCode] = useState(false);
+  const [countdownTime, setCountdownTime] = useState(0); // For resend button countdown
 
   const [phoneData, setPhoneData] = useState<Communication>({
     "Communication ID": 0,
@@ -168,6 +185,13 @@ export default function ProfilePage() {
 
   const [isOpenBookings, setIsOpenBookings] = useState(false);
 
+  // Format countdown time as MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
   useEffect(() => {
     // Only run this code on the client side
     if (typeof window !== "undefined") {
@@ -211,6 +235,23 @@ export default function ProfilePage() {
       }
     }
   }, []);
+
+  // Countdown timer effect for resend button
+  useEffect(() => {
+    if (countdownTime <= 0) return;
+
+    const timer = setInterval(() => {
+      setCountdownTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [countdownTime]);
 
   const openBookingModal = (booking: any) => {
     setSelectedBooking(booking);
@@ -282,6 +323,7 @@ export default function ProfilePage() {
 
         if (result.emailComm !== null) {
           setEmailData(result.emailComm);
+          setOriginalEmail(result.emailComm["Communication Detail"]);
         }
 
         if (result.telephoneComm !== null) {
@@ -383,28 +425,47 @@ export default function ProfilePage() {
         });
       }
     };
+  const checkEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      const response = await axios.post("/api/check-email-exists", { email });
+      return response.data.exists;
+    } catch (err) {
+      logger.error("Error checking if email exists:", err);
+      return false; // Assume email doesn't exist if there's an error
+    }
+  };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = event.target.value;
+  const handleEmailChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const enteredEmail = event.target.value;
 
+    // If email is different from original, store it as newEmail
+    if (enteredEmail !== originalEmail) {
+      setNewEmail(enteredEmail);
+    } else {
+      setNewEmail(null);
+    }
+
+    // Update the display value
     setEmailData((prev: any) => ({
       ...prev,
-      "Communication Detail": newEmail,
+      "Communication Detail": enteredEmail,
     }));
 
     if (
-      !isValidEmail(emailData["Communication Detail"]) &&
+      !isValidEmail(enteredEmail) &&
       isEditing &&
       !toastShownRef.current // Ensure it's not shown before
     ) {
       addToast({
         title: t("invalidEmailNotSaved"),
         color: "danger",
+        timeout: 5000, // Ensure toast stays visible long enough
       });
       toastShownRef.current = true; // Prevent future toasts
     }
   };
-
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPhone = event.target.value;
 
@@ -451,7 +512,9 @@ export default function ProfilePage() {
         }
       }
 
-      if (emailData) {
+      // Only update email in the Communication List if we're not in the process of verification
+      // and the email hasn't changed, or if we're not in edit mode
+      if (emailData && (!newEmail || !isEditing)) {
         if (isValidEmail(emailData["Communication Detail"])) {
           // If the email is valid, update the Communication List with the email data
           setProfileData((prev: any) => ({
@@ -475,26 +538,296 @@ export default function ProfilePage() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phoneData, emailData]);
+  }, [phoneData, emailData, isEditing]);
 
+  // Handle save
   const handleSave = async () => {
     if (!profileData) return;
 
+    // Start loading state at the beginning of the save process
     setIsSaving(true);
+
+    try {
+      // Check if email has changed and is valid
+      if (newEmail && isValidEmail(newEmail) && newEmail !== originalEmail) {
+        // Check if email already exists - now with loading state shown
+        const emailExists = await checkEmailExists(newEmail);
+
+        if (emailExists) {
+          // Create a complete message
+          const message = `${t("emailBelongsToAnotherAccount")}: ${newEmail}`;
+
+          // Show toast but don't exit loading state yet
+          addToast({
+            title: t("emailAlreadyExistsProfile"),
+            description: message,
+            color: "danger",
+            timeout: 5000,
+          });
+
+          // End loading state and return
+          setIsSaving(false);
+          return;
+        }
+
+        // Email is valid and not already in use, proceed with verification
+        try {
+          // No need to set isSaving to true again since it's already true
+
+          // Send verification code to the new email
+          const response = await axios.post("/api/verify-email", {
+            email: newEmail,
+          });
+
+          if (response.data.success) {
+            // If in development mode, you might have access to the OTP
+            if (response.data.otp) {
+              logger.log(
+                "DEV MODE - Email verification code:",
+                response.data.otp
+              );
+            }
+
+            // Start countdown for resend button (2 minutes)
+            setCountdownTime(120);
+
+            // Open verification modal
+            setIsVerificationModalOpen(true);
+            setVerificationCode("");
+            setVerificationError("");
+
+            // Show toast notification
+            addToast({
+              title: t("verificationCodeSent"),
+              description: t("pleaseCheckYourNewEmail"),
+              color: "success",
+              timeout: 5000,
+            });
+          } else {
+            setError(t("failedToSendVerificationCode"));
+            addToast({
+              title: t("failedToSendVerificationCode"),
+              color: "danger",
+              timeout: 5000,
+            });
+          }
+        } catch (err) {
+          logger.error("Error sending verification email:", err);
+          setError(t("failedToSendVerificationCode"));
+          addToast({
+            title: t("failedToSendVerificationCode"),
+            color: "danger",
+            timeout: 5000,
+          });
+        } finally {
+          setIsSaving(false);
+        }
+        return;
+      }
+
+      // If email hasn't changed or isn't valid, proceed with normal save
+      // No need to set isSaving(true) again as it's already true
+      await proceedWithSave();
+    } catch (error) {
+      // Handle any unexpected errors
+      logger.error("Error during save process:", error);
+      setError(t("errorSavingProfile"));
+      addToast({
+        title: t("errorSavingProfile"),
+        description: t("profileUpdateFailed"),
+        color: "danger",
+        timeout: 5000,
+      });
+    } finally {
+      // Ensure we reset loading state if we exit early
+      setIsSaving(false);
+    }
+  };
+
+  // Function for the actual saving of profile data
+  const proceedWithSave = async () => {
+    if (!profileData) return;
+
+    // Don't set isSaving(true) here since it's already set in handleSave
     try {
       await updateClientInfo(profileData);
       setIsEditing(false);
 
+      // Clear email verification state
+      setNewEmail(null);
+
+      // Show success toast notification with action to ensure it appears
       addToast({
         title: t("profileUpdatedSuccess"),
+        description: t("profileSavedSuccessfully"),
         color: "success",
+        timeout: 5000,
       });
-      // Clear after 3s
     } catch (err) {
       setError(t("failedToUpdateProfile"));
       logger.error(err);
+
+      // Show error toast notification with action to ensure it appears
+      addToast({
+        title: t("errorSavingProfile"),
+        description: t("profileUpdateFailed"),
+        color: "danger",
+        timeout: 5000,
+      });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  // Verify email code
+  const verifyEmail = async () => {
+    if (!newEmail || !verificationCode || !profileData) {
+      setVerificationError(t("verificationCodeRequired"));
+      return;
+    }
+
+    setIsVerifying(true);
+    setVerificationError("");
+
+    try {
+      const response = await axios.put("/api/verify-email", {
+        email: newEmail,
+        otp: verificationCode,
+      });
+
+      if (response.data.success) {
+        // Email verified successfully
+        logger.log("Email verification successful");
+
+        // Find the existing email communication in the list
+        const updatedCommList = [...profileData["Communication List"]];
+        const existingEmailIndex = updatedCommList.findIndex(
+          (comm) => comm["Communication Type"] === "M"
+        );
+
+        if (existingEmailIndex >= 0) {
+          // Update existing email communication
+          updatedCommList[existingEmailIndex] = {
+            ...updatedCommList[existingEmailIndex],
+            "Communication Detail": newEmail,
+          };
+
+          // Important: Update the emailData for display
+          setEmailData({
+            ...updatedCommList[existingEmailIndex],
+            "Communication Detail": newEmail,
+          });
+        } else {
+          // Create new email communication if none exists
+          const newEmailComm = {
+            "Communication ID": 0, // ID will be assigned by the API
+            "Communication Detail": newEmail,
+            Description: "Email",
+            "Communication Type": "M",
+            Priority: "5",
+            "Record Marked Deleted": false,
+            "Status List": [],
+          };
+
+          updatedCommList.push(newEmailComm);
+          setEmailData(newEmailComm);
+        }
+
+        // Update profileData with new Communication List
+        const updatedProfileData = {
+          ...profileData,
+          "Communication List": updatedCommList,
+        };
+
+        // Set this as the new profile data
+        setProfileData(updatedProfileData);
+
+        // Set this as the new original email
+        setOriginalEmail(newEmail);
+
+        // Close verification modal
+        setIsVerificationModalOpen(false);
+
+        // Clear verification state
+        setNewEmail(null);
+        setVerificationCode("");
+
+        // Call the API to update the profile with the new email
+        try {
+          setIsSaving(true);
+
+          // Save the updated profile with the new email
+          await updateClientInfo(updatedProfileData);
+          setIsEditing(false);
+
+          // Show success toast notification with action to ensure it appears
+          addToast({
+            title: t("profileUpdatedSuccess"),
+            description: t("emailUpdatedSuccessfully"),
+            color: "success",
+            timeout: 5000,
+          });
+        } catch (saveError) {
+          logger.error("Error saving profile with new email:", saveError);
+          addToast({
+            title: t("errorSavingProfile"),
+            description: t("profileUpdateFailed"),
+            color: "danger",
+            timeout: 5000,
+          });
+        } finally {
+          setIsSaving(false);
+        }
+      } else {
+        setVerificationError(t("invalidVerificationCode"));
+      }
+    } catch (err) {
+      logger.error("Error verifying email:", err);
+      setVerificationError(t("failedToVerifyEmail"));
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  // Resend verification code
+  const resendVerificationCode = async () => {
+    if (!newEmail || countdownTime > 0) return;
+
+    setIsResendingCode(true);
+    setVerificationError("");
+
+    try {
+      const response = await axios.post("/api/verify-email", {
+        email: newEmail,
+      });
+
+      if (response.data.success) {
+        // If in development mode, you might have access to the OTP
+        if (response.data.otp) {
+          logger.log(
+            "DEV MODE - Resent email verification code:",
+            response.data.otp
+          );
+        }
+
+        // Start countdown for resend button (2 minutes)
+        setCountdownTime(120);
+
+        // Show success toast notification with action to ensure it appears
+        addToast({
+          title: t("verificationCodeResent"),
+          description: t("pleaseCheckYourNewEmail"),
+          color: "success",
+          timeout: 5000,
+        });
+      } else {
+        setVerificationError(t("failedToResendVerificationCode"));
+      }
+    } catch (err) {
+      logger.error("Error resending verification code:", err);
+      setVerificationError(t("failedToResendVerificationCode"));
+    } finally {
+      setIsResendingCode(false);
     }
   };
 
@@ -905,7 +1238,7 @@ export default function ProfilePage() {
             <ModalBody>
               <Input
                 type="file"
-                accept="image/png"
+                accept="image/png, image/jpeg"
                 onChange={handleFileSelect}
                 disabled={isUploading}
                 className="h-12"
@@ -938,6 +1271,134 @@ export default function ProfilePage() {
                 className="bg-green-600 dark:bg-green-700 text-white h-12 px-6"
               >
                 {t("upload")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        {/* Email Verification Modal */}
+        <Modal
+          isOpen={isVerificationModalOpen}
+          onClose={() => {
+            setIsVerificationModalOpen(false);
+            // Revert the displayed email to original
+            setEmailData((prev: any) => ({
+              ...prev,
+              "Communication Detail": originalEmail,
+            }));
+            setNewEmail(null);
+          }}
+          className="sm:max-w-md w-[90%] mx-auto"
+        >
+          <ModalContent className="bg-white dark:bg-gray-800 p-4">
+            <ModalHeader className="flex flex-col gap-1 text-center">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                {t("verifyYourNewEmail")}
+              </h2>
+            </ModalHeader>
+            <ModalBody>
+              <div className="flex flex-col items-center gap-4">
+                {/* Email verification icon */}
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-600 dark:text-green-400"
+                  >
+                    <path d="M22 7.81v10.438c0 .76-.616 1.375-1.375 1.375h-17.25c-.76 0-1.375-.616-1.375-1.375V7.81l10 5.625 10-5.625Z" />
+                    <path d="m2 7.81 10-5.625 10 5.625" />
+                  </svg>
+                </div>
+
+                <p className="text-sm mb-1 text-center text-gray-600 dark:text-gray-300">
+                  {t("verificationCodeSentTo")}
+                </p>
+                <p className="font-semibold text-gray-800 dark:text-gray-100 mb-3">
+                  {newEmail}
+                </p>
+
+                {verificationError && (
+                  <div className="bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg w-full text-center">
+                    {verificationError}
+                  </div>
+                )}
+
+                <Input
+                  type="text"
+                  label={t("verificationCode")}
+                  placeholder={t("enterVerificationCode")}
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  disabled={isVerifying}
+                  variant="bordered"
+                  className="w-full"
+                  size="lg"
+                />
+
+                <Button
+                  variant="light"
+                  color="primary"
+                  className="w-full text-green-600 dark:text-green-400"
+                  onPress={resendVerificationCode}
+                  disabled={isResendingCode || countdownTime > 0}
+                  startContent={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                      <path d="M16 21h5v-5" />
+                    </svg>
+                  }
+                >
+                  {isResendingCode
+                    ? t("sending")
+                    : countdownTime > 0
+                    ? `${t("resendCodeIn")} ${formatTime(countdownTime)}`
+                    : t("resendCode")}
+                </Button>
+              </div>
+            </ModalBody>
+            <ModalFooter className="flex justify-center gap-3 pt-2 pb-4">
+              <Button
+                color="danger"
+                variant="flat"
+                onPress={() => {
+                  setIsVerificationModalOpen(false);
+                  // Revert the displayed email to original
+                  setEmailData((prev: any) => ({
+                    ...prev,
+                    "Communication Detail": originalEmail,
+                  }));
+                  setNewEmail(null);
+                }}
+                className="w-1/2"
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                color="primary"
+                onPress={verifyEmail}
+                isLoading={isVerifying}
+                className="bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white w-1/2"
+              >
+                {isVerifying ? t("verifying") : t("verify")}
               </Button>
             </ModalFooter>
           </ModalContent>

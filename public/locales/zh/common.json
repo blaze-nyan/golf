@@ -371,5 +371,33 @@
   "sat": "周六",
   "sun": "周日",
 
-  "partlyCloudy": "局部多云"
+  "partlyCloudy": "局部多云",
+  "verifyNewEmail": "验证新电子邮箱",
+  "verificationCodeSentTo": "验证码已发送至",
+  "enterVerificationCode": "请输入验证码",
+
+  "verify": "验证",
+  "invalidVerificationCode": "验证码无效，请重试",
+  "failedToVerifyEmail": "验证电子邮箱失败，请重试",
+  "failedToSendVerificationCode": "发送验证码失败，请重试",
+  "verificationCodeResent": "验证码已成功重新发送",
+  "emailVerifiedAndUpdated": "电子邮箱已成功验证并更新",
+  "verifyYourNewEmail": "验证您的新邮箱",
+
+  "verificationCodeRequired": "验证码必填",
+
+  "resendCodeIn": "可在以下时间后重新发送",
+
+  "emailVerifiedAndProfileUpdated": "邮箱已验证，个人资料更新成功",
+
+  "failedToResendVerificationCode": "重新发送验证码失败，请重试",
+  "emailUpdatedSuccessfully": "您的邮箱已成功更新",
+  "profileSavedSuccessfully": "您的个人资料已成功保存",
+  "errorSavingProfile": "保存个人资料时出错",
+  "profileUpdateFailed": "更新个人资料失败，请重试",
+
+  "emailAlreadyExistsProfile": "邮箱已存在",
+  "emailBelongsToAnotherAccount": "该邮箱地址已与其他账户关联",
+  "verificationCodeSent": "验证码已发送",
+  "pleaseCheckYourNewEmail": "请查看您的新邮箱收件箱获取验证码"
 }
