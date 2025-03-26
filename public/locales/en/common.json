@@ -403,5 +403,6 @@
   "profileUpdateFailed": "Failed to update your profile. Please try again.",
   "verifyYourEmail": "Verify Your Email",
 
-  "verifyAndCreateAccount": "Verify & Create Account"
+  "verifyAndCreateAccount": "Verify & Create Account",
+  "getETicket": "Get E-Ticket"
 }

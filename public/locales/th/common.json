@@ -404,5 +404,6 @@
   "pleaseCheckYourNewEmail": "โปรดตรวจสอบกล่องจดหมายของอีเมลใหม่ของคุณเพื่อดูรหัสยืนยัน",
   "verifyYourEmail": "ยืนยันอีเมลของคุณ",
 
-  "verifyAndCreateAccount": "ยืนยันและสร้างบัญชี"
+  "verifyAndCreateAccount": "ยืนยันและสร้างบัญชี",
+  "getETicket": "รับ E-Ticket"
 }
