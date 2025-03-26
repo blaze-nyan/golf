@@ -15,18 +15,21 @@ export function NextButton({ disabled = false, hideBackButton = false }) {
   const [isBackLoading, setIsBackLoading] = useState(false);
 
   const handleNext = async () => {
-    if (disabled || isNextLoading || isBackLoading) return;
+    if (isNextLoading || isBackLoading) return;
 
     setIsNextLoading(true);
     try {
       // Complete current step
       completeStep(currentStep);
 
-      // Move to next step if not on last step
-      if (currentStep < STEPS.length - 1) {
-        const nextStep = STEPS[currentStep + 1];
+      // We need to ensure all state/context is updated before navigating
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Navigate immediately
+      // Use router.replace instead of push to prevent going back
+      if (window.location.pathname.includes("booking-payment")) {
+        router.replace(`/golfcourse/${courseId}`);
+      } else if (currentStep < STEPS.length - 1) {
+        const nextStep = STEPS[currentStep + 1];
         router.push(nextStep.path(courseId));
       }
     } catch (error) {
