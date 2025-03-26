@@ -100,7 +100,7 @@ const CoursePage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[300px]">
+      <div className="h-full w-full flex justify-center items-center min-h-[300px]">
         <AnimatedLoading />
       </div>
     );
