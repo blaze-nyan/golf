@@ -154,8 +154,16 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     setMaxCompletedStep(step);
   };
 
-  const canAccess = (step: number) => {
-    return step <= maxCompletedStep + 1;
+  const canAccess = (stepIndex: number) => {
+    // Always allow access to completed steps, except after payment success
+    if (currentStep === STEPS.length - 1) {
+      // If we're on the success/confirmation page
+      // Only allow navigation to the current step (success page)
+      return stepIndex === currentStep;
+    }
+
+    // Normal access logic for other cases
+    return stepIndex <= currentStep || stepIndex <= maxCompletedStep;
   };
 
   return (

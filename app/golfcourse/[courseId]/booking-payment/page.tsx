@@ -3,8 +3,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 //components
-import { NextButton } from "@/app/golfcourse/components/NextButton";
+
 import { useProgress } from "../../context/progress-context";
 import {
   Card,
@@ -29,7 +31,14 @@ import { useLanguage } from "@/app/contexts/LanguageContext";
 import { getClientInfo, sendBookingEmail } from "@/app/lib/api";
 
 const page = () => {
-  const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
+  const {
+    bookingDetails,
+    setBookingDetails,
+    courseId,
+    STEPS,
+    currentStep,
+    completeStep,
+  } = useProgress(); // Access bookingDetails from context
   const [paymentType, setPaymentType] = useState<"prepayment" | "fullPayment">(
     "fullPayment"
   );
@@ -47,13 +56,14 @@ const page = () => {
   const [cardHolderName, setCardHolderName] = useState("");
 
   // Modal state
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen } = useDisclosure();
   const {
     isOpen: errorModalOpen,
     onOpen: onErrorOpen,
     onClose: onErrorClose,
   } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isContinueLoading, setIsContinueLoading] = useState(false);
 
   const sendEmail = async () => {
     if (bookingDetails.clientID) {
@@ -147,15 +157,13 @@ const page = () => {
   };
 
   const getEmail = (commList: any) => {
-
     for (const comm of commList) {
       if (comm["Communication Type"] === "M") {
         return comm["Communication Detail"];
       }
     }
     return null;
-
-  }
+  };
 
   const handleSubmit = () => {
     if (validateCreditCard()) {
@@ -169,6 +177,41 @@ const page = () => {
       }, 3000); // 3 seconds delay to simulate loading time
     }
   };
+
+  const router = useRouter();
+
+  // Set up back button navigation handler and prevent going back to payment page
+  useEffect(() => {
+    if (isOpen && !isLoading) {
+      // Define the course page URL
+      const coursePageUrl = `/golfcourse/${courseId}`;
+
+      // Function to handle browser back button
+      const handleBackNavigation = () => {
+        // Stop the default back navigation
+        window.history.pushState(null, "", window.location.href);
+
+        // Navigate to course page instead
+        router.replace(coursePageUrl);
+      };
+
+      // Listen for back button
+      window.addEventListener("popstate", handleBackNavigation);
+
+      // Replace the current history entry with the current URL to ensure we can intercept the back navigation
+      window.history.pushState(null, "", window.location.href);
+
+      // Also hijack hardware back buttons by continuously setting up a state we can intercept
+      const intervalId = setInterval(() => {
+        window.history.pushState(null, "", window.location.href);
+      }, 300);
+
+      return () => {
+        window.removeEventListener("popstate", handleBackNavigation);
+        clearInterval(intervalId);
+      };
+    }
+  }, [isOpen, isLoading, courseId, router]);
 
   return (
     <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300 w-full mx-auto h-full">
@@ -254,9 +297,14 @@ const page = () => {
             <Input
               type="text"
               value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
+              onChange={(e) => {
+                // Allow only numbers
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                setCardNumber(value);
+              }}
               className="w-full"
               maxLength={16}
+              inputMode="numeric"
               placeholder={t("cardNumberPlaceholder")}
             />
           </div>
@@ -281,9 +329,14 @@ const page = () => {
               <Input
                 type="text"
                 value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
+                onChange={(e) => {
+                  // Allow only numbers
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  setCvv(value);
+                }}
                 className="w-full"
                 maxLength={3}
+                inputMode="numeric"
                 placeholder="CVV"
               />
             </div>
@@ -297,7 +350,11 @@ const page = () => {
             <Input
               type="text"
               value={cardHolderName}
-              onChange={(e) => setCardHolderName(e.target.value)}
+              onChange={(e) => {
+                // Allow only letters, spaces, and some special characters like hyphen, apostrophe
+                const value = e.target.value.replace(/[^a-zA-Z\s'-]/g, "");
+                setCardHolderName(value);
+              }}
               className="w-full"
               placeholder={t("cardholderNamePlaceholder")}
             />
@@ -313,7 +370,13 @@ const page = () => {
       </Card>
 
       {/* Modal for Payment Success */}
-      <Modal isOpen={isOpen} onClose={onClose} size="sm">
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {}} // Empty function to disable automatic closing
+        size="sm"
+        isDismissable={false} // Prevents closing on backdrop click
+        hideCloseButton // Removes the X button
+      >
         <ModalContent className="dark:bg-gray-800">
           <ModalHeader className="text-center dark:text-gray-100">
             {t("payment")}
@@ -330,7 +393,32 @@ const page = () => {
             )}
           </ModalBody>
           <ModalFooter className="flex justify-center">
-            {!isLoading && <NextButton />}
+            {!isLoading && (
+              <Button
+                color="primary"
+                onPress={() => {
+                  // Show loading state on button
+                  setIsContinueLoading(true);
+
+                  // Complete current step
+                  completeStep(currentStep);
+
+                  // Navigate to next step after a short delay
+                  setTimeout(() => {
+                    if (currentStep < STEPS.length - 1) {
+                      const nextStep = STEPS[currentStep + 1];
+                      // Use window.location for a guaranteed page refresh that will bypass any React quirks
+                      window.location.href = nextStep.path(courseId);
+                    }
+                  }, 800);
+                }}
+                isLoading={isContinueLoading}
+                isDisabled={isContinueLoading}
+                className="px-5 h-12 min-w-[120px] bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+              >
+                {t("continue")}
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

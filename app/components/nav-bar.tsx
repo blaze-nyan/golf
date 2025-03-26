@@ -53,6 +53,8 @@ export default function NavBar(props: NavbarProps) {
         }),
         wrapper: "w-full justify-center",
         item: "hidden md:flex",
+        // Keep the size but make sure it doesn't override other styles
+        toggle: "min-w-12 min-h-12 text-default-500",
       }}
       height="60px"
       isMenuOpen={isMenuOpen}
@@ -111,14 +113,21 @@ export default function NavBar(props: NavbarProps) {
         <NavbarItem className="flex md:hidden !items-center">
           <LanguageSwitcher />
         </NavbarItem>
-        <NavbarMenuToggle className="text-default-400 burger-menu" />
+        {/* Improved menu toggle with larger touch target */}
+        <div className="flex items-center justify-center w-14 h-14 -mr-2">
+          <NavbarMenuToggle
+            className="text-default-400 burger-menu w-full h-full flex items-center justify-center p-3"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          />
+        </div>
       </div>
 
       <NavbarMenu className="top-[calc(var(--navbar-height)_-_1px)] max-h-fit bg-default-200/50 pb-6 pt-6 shadow-medium backdrop-blur-md backdrop-saturate-150 dark:bg-default-100/50">
+        {/* Regular menu items first */}
         {links.map(({ href, label }) => (
           <NavbarMenuItem key={`${href}-${label}`}>
             <Link
-              className="mb-2 w-full text-default-500"
+              className="mb-2 w-full text-default-500 p-3 rounded-md hover:bg-default-100 dark:hover:bg-default-200/30 flex items-center"
               href={href}
               size="md"
             >
@@ -128,12 +137,11 @@ export default function NavBar(props: NavbarProps) {
           </NavbarMenuItem>
         ))}
 
-        {/* No need for language switcher here anymore */}
-
+        {/* Profile or login */}
         {checkClientId() ? (
           <NavbarMenuItem>
             <Link
-              className="mb-2 w-full text-default-500 mobile-profile"
+              className="mb-2 w-full text-default-500 mobile-profile p-3 rounded-md hover:bg-default-100 dark:hover:bg-default-200/30 flex items-center"
               href={`/profile`}
               size="md"
             >
@@ -142,11 +150,52 @@ export default function NavBar(props: NavbarProps) {
           </NavbarMenuItem>
         ) : (
           <NavbarMenuItem>
-            <Button fullWidth as={NextLink} href="/auth/login" variant="faded">
+            <Button
+              fullWidth
+              as={NextLink}
+              href="/auth/login"
+              variant="faded"
+              className="h-12 px-5 py-3 mt-2 mb-3"
+            >
               {t("login")}
             </Button>
           </NavbarMenuItem>
         )}
+
+        {/* Theme switcher at the bottom with icon hints */}
+        <div className="flex justify-center items-center mt-6 mb-2">
+          <div className="p-2 rounded-full bg-default-100/70 dark:bg-default-200/20 flex items-center">
+            <span className="text-yellow-500 dark:text-yellow-400 mr-2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            <ThemeSwitcher />
+            <span className="text-blue-500 dark:text-blue-400 ml-2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+          </div>
+        </div>
       </NavbarMenu>
     </Navbar>
   );
