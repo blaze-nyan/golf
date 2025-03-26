@@ -405,5 +405,18 @@
   "verifyYourEmail": "ยืนยันอีเมลของคุณ",
 
   "verifyAndCreateAccount": "ยืนยันและสร้างบัญชี",
-  "getETicket": "รับ E-Ticket"
+  "getETicket": "รับ E-Ticket",
+  "bookingReference": "รหัสการจอง",
+  "eTicket": "อี-ทิคเก็ต",
+  "golfBooking": "การจองกอล์ฟ",
+  "confirmed": "ยืนยันแล้ว",
+  "dateAndTime": "วันและเวลา",
+  "prepaymentNote": "ชำระเงินล่วงหน้า 30% แล้ว ยอดคงเหลือชำระที่สนาม",
+  "fullPaymentNote": "ชำระเงินเต็มจำนวนแล้ว เพียงแสดงอี-ทิคเก็ตที่สนาม",
+  "scanForETicket": "สแกนอี-ทิคเก็ต",
+  "eTicketRequiredAtReception": "ต้องแสดงอี-ทิคเก็ตนี้ที่แผนกต้อนรับเพื่อเช็คอิน",
+  "printETicket": "พิมพ์อี-ทิคเก็ต",
+  "myBookings": "การจองของฉัน",
+  "eTicketInstruction": "กรุณาแสดงอี-ทิคเก็ตนี้ที่แผนกต้อนรับของสนามเพื่อเช็คอิน",
+  "arriveEarly": "แนะนำให้มาถึงก่อนเวลาทีออฟ 30 นาที"
 }

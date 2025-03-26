@@ -404,5 +404,18 @@
   "verifyYourEmail": "Verify Your Email",
 
   "verifyAndCreateAccount": "Verify & Create Account",
-  "getETicket": "Get E-Ticket"
+  "getETicket": "Get E-Ticket",
+  "bookingReference": "Booking Reference",
+  "eTicket": "E-Ticket",
+  "golfBooking": "Golf Booking",
+  "confirmed": "Confirmed",
+  "dateAndTime": "Date & Time",
+  "prepaymentNote": "30% prepayment has been made. Remaining balance to be paid at the course.",
+  "fullPaymentNote": "Full payment has been made. Just show your e-ticket at the course.",
+  "scanForETicket": "Scan For E-Ticket",
+  "eTicketRequiredAtReception": "This e-ticket is required at reception for check-in",
+  "printETicket": "Print E-Ticket",
+  "myBookings": "My Bookings",
+  "eTicketInstruction": "Please show this e-ticket at the course reception for check-in",
+  "arriveEarly": "We recommend arriving 30 minutes before your tee time"
 }
