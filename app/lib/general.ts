@@ -1,7 +1,8 @@
 import { getClientId } from "./auth";
 
-export const checkClientId = (): string | null => {
-  return getClientId();
+// Return a boolean instead of string|null to avoid conditional rendering issues
+export const checkClientId = (): boolean => {
+  return !!getClientId();
 };
 
 export const checkClientProfilePicture = (): string | null => {
