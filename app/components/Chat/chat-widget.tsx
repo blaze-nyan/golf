@@ -1,7 +1,7 @@
 "use client";
 import getAiResponse from "@/app/lib/getAiResponse";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MessageCircle, X, Maximize, Minimize, Send, Mic } from "lucide-react";
+import { MessageCircle, X, Maximize, Minimize, Send, Mic, EarthIcon } from "lucide-react";
 import { Button } from "@heroui/button";
 import { logger } from "@/app/lib/logger";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
@@ -17,43 +17,39 @@ interface Language {
 }
 
 const supportedLanguages: Language[] = [
-  { code: "en-US", name: "English (US)" },
-  { code: "en-GB", name: "English (UK)" },
-  { code: "es-ES", name: "Spanish (Spain)" },
-  { code: "es-MX", name: "Spanish (Mexico)" },
-  { code: "fr-FR", name: "French (France)" },
-  { code: "fr-CA", name: "French (Canada)" },
-  { code: "de-DE", name: "German (Germany)" },
-  { code: "it-IT", name: "Italian (Italy)" },
-  { code: "pt-PT", name: "Portuguese (Portugal)" },
-  { code: "pt-BR", name: "Portuguese (Brazil)" },
-  { code: "ja-JP", name: "Japanese (Japan)" },
-  { code: "zh-CN", name: "Chinese (Mandarin, Simplified)" },
-  { code: "zh-TW", name: "Chinese (Mandarin, Traditional)" },
-  { code: "ko-KR", name: "Korean (South Korea)" },
-  { code: "ru-RU", name: "Russian (Russia)" },
-  { code: "ar-SA", name: "Arabic (Saudi Arabia)" },
-  { code: "hi-IN", name: "Hindi (India)" },
-  { code: "bn-BD", name: "Bengali (Bangladesh)" },
-  { code: "ta-IN", name: "Tamil (India)" },
-  { code: "te-IN", name: "Telugu (India)" },
-  { code: "mr-IN", name: "Marathi (India)" },
-  { code: "tr-TR", name: "Turkish (Turkey)" },
-  { code: "vi-VN", name: "Vietnamese (Vietnam)" },
-  { code: "th-TH", name: "Thai (Thailand)" },
-  { code: "nl-NL", name: "Dutch (Netherlands)" },
-  { code: "sv-SE", name: "Swedish (Sweden)" },
-  { code: "no-NO", name: "Norwegian (Norway)" },
-  { code: "da-DK", name: "Danish (Denmark)" },
-  { code: "fi-FI", name: "Finnish (Finland)" },
-  { code: "pl-PL", name: "Polish (Poland)" },
-  { code: "cs-CZ", name: "Czech (Czech Republic)" },
-  { code: "sk-SK", name: "Slovak (Slovakia)" },
-  { code: "hu-HU", name: "Hungarian (Hungary)" },
-  { code: "el-GR", name: "Greek (Greece)" },
-  { code: "he-IL", name: "Hebrew (Israel)" },
-  { code: "id-ID", name: "Indonesian (Indonesia)" },
-  { code: "ms-MY", name: "Malay (Malaysia)" },
+  { code: "th-TH", name: "Thai" },
+  { code: "en-US", name: "English" },
+  { code: "id-ID", name: "Indonesian" },
+  { code: "ko-KR", name: "Korean" },
+  { code: "ja-JP", name: "Japanese" },
+  { code: "zh-CN", name: "Chinese" },
+  { code: "es-ES", name: "Spanish" },
+  { code: "fr-FR", name: "French" },
+  { code: "de-DE", name: "German" },
+  { code: "it-IT", name: "Italian" },
+  { code: "pt-PT", name: "Portuguese" },
+  { code: "zh-CN", name: "Chinese" },
+  { code: "ru-RU", name: "Russian" },
+  { code: "ar-SA", name: "Arabic" },
+  { code: "hi-IN", name: "Hindi" },
+  { code: "bn-BD", name: "Bengali" },
+  { code: "ta-IN", name: "Tamil" },
+  { code: "te-IN", name: "Telugu" },
+  { code: "mr-IN", name: "Marathi" },
+  { code: "tr-TR", name: "Turkish" },
+  { code: "vi-VN", name: "Vietnamese" },
+  { code: "nl-NL", name: "Dutch" },
+  { code: "sv-SE", name: "Swedish" },
+  { code: "no-NO", name: "Norwegian" },
+  { code: "da-DK", name: "Danish" },
+  { code: "fi-FI", name: "Finnish" },
+  { code: "pl-PL", name: "Polish" },
+  { code: "cs-CZ", name: "Czech" },
+  { code: "sk-SK", name: "Slovak" },
+  { code: "hu-HU", name: "Hungarian" },
+  { code: "el-GR", name: "Greek" },
+  { code: "he-IL", name: "Hebrew" },
+  { code: "ms-MY", name: "Malay" },
 ];
 
 const quickReplies = [
@@ -69,11 +65,11 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("en-US"); // Default language
+  const [selectedLanguage, setSelectedLanguage] = useState("en-US");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const isVoiceInputRef = useRef(false); // UseRef to track voice input
+  const isVoiceInputRef = useRef(false);
   const size = { width: 320, height: 480 };
 
   const {
@@ -86,12 +82,8 @@ export function ChatWidget() {
   const [hasStartedSpeaking, setHasStartedSpeaking] = useState(false);
   const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Audio objects for notification sounds
   const startSound = useRef(new Audio("/startnoti.mp3"));
   const stopSound = useRef(new Audio("/stopnoti.mp3"));
-
-  // Speech synthesis setup
-  const synth = useRef(window.speechSynthesis);
 
   const golfCourseData = {
     name: "Hackathon",
@@ -179,24 +171,35 @@ export function ChatWidget() {
   };
 
   const speakResponse = useCallback(
-    (text: string) => {
-      if (synth.current.speaking) {
-        synth.current.cancel();
-      }
+    async (text: string) => {
+      try {
+        console.log("Fetching /api/tts with:", { text, languageCode: selectedLanguage });
+        const response = await fetch("/api/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text,
+            languageCode: selectedLanguage,
+          }),
+        });
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLanguage; // Use selected language
-      utterance.volume = 1.0;
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-
-      utterance.onerror = (event) => {
-        if (event.error !== "interrupted") {
-          logger.error("Speech synthesis error:", event.error);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch audio from server: ${response.status}`);
         }
-      };
 
-      synth.current.speak(utterance);
+        const { audioContent }: { audioContent: string } = await response.json();
+        console.log("Audio content received:", audioContent.substring(0, 50));
+        const audio = new Audio(`data:audio/mp3;base64,${audioContent}`);
+        audio.play();
+      } catch (error) {
+        console.error("Error with Google Cloud TTS:", error);
+        setMessages((prev) => [
+          ...prev,
+          { type: "bot" as const, content: "Audio is not support this language" },
+        ]);
+      }
     },
     [selectedLanguage]
   );
@@ -222,10 +225,10 @@ export function ChatWidget() {
 
         setMessages((prev) => [...prev, botMessage]);
         if (isVoiceInputRef.current) {
-          speakResponse(botMessageContent); // Speak only for voice input
+          speakResponse(botMessageContent);
         }
         setIsLoading(false);
-        isVoiceInputRef.current = false; // Reset after processing
+        isVoiceInputRef.current = false;
         return;
       }
 
@@ -237,7 +240,7 @@ export function ChatWidget() {
 
         setMessages((prev) => [...prev, botMessage]);
         if (isVoiceInputRef.current) {
-          speakResponse(finalText); // Speak only for voice input
+          speakResponse(finalText);
         }
       } catch (error) {
         logger.error("Error fetching AI response:", error);
@@ -246,11 +249,11 @@ export function ChatWidget() {
 
         setMessages((prev) => [...prev, botMessage]);
         if (isVoiceInputRef.current) {
-          speakResponse(errorMessage); // Speak only for voice input
+          speakResponse(errorMessage);
         }
       } finally {
         setIsLoading(false);
-        isVoiceInputRef.current = false; // Reset after processing
+        isVoiceInputRef.current = false;
       }
     },
     [inputMessage, isLoading, speakResponse]
@@ -313,7 +316,7 @@ export function ChatWidget() {
             await stopSound.current.play().catch((err) =>
               console.error("Error playing stop sound:", err)
             );
-            isVoiceInputRef.current = true; // Set to true for voice input
+            isVoiceInputRef.current = true;
             const trimmedTranscript = transcript.trim();
             if (trimmedTranscript) {
               await handleSendMessage(trimmedTranscript);
@@ -349,15 +352,15 @@ export function ChatWidget() {
     } else {
       resetTranscript();
       setInputMessage("");
-      SpeechRecognition.startListening({ continuous: true, language: selectedLanguage }); // Match recognition to selected language
+      SpeechRecognition.startListening({ continuous: true, language: selectedLanguage });
       startSound.current.play().catch((err) => console.error("Error playing start sound:", err));
-      isVoiceInputRef.current = true; // Enable voice input tracking when mic is clicked
+      isVoiceInputRef.current = true;
     }
   };
 
   const quickmessage = (reply: string) => {
     setInputMessage(reply);
-    isVoiceInputRef.current = false; // Text input
+    isVoiceInputRef.current = false;
     handleSendMessage(reply);
   };
 
@@ -381,12 +384,12 @@ export function ChatWidget() {
           <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-100 dark:bg-gray-800">
             <h3 className="font-medium text-gray-800 dark:text-gray-100">Golf Assistant</h3>
             <div className="flex gap-2 items-center">
-              {/* Language Selection Dropdown */}
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
                 className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm max-w-[150px]"
               >
+                <EarthIcon/>
                 {supportedLanguages.map((lang) => (
                   <option key={lang.code} value={lang.code}>
                     {lang.name}
@@ -489,7 +492,7 @@ export function ChatWidget() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    isVoiceInputRef.current = false; // Text input
+                    isVoiceInputRef.current = false;
                     handleSendMessage();
                   }
                 }}
@@ -499,7 +502,7 @@ export function ChatWidget() {
               />
               <button
                 onClick={() => {
-                  isVoiceInputRef.current = false; // Text input
+                  isVoiceInputRef.current = false;
                   handleSendMessage();
                 }}
                 disabled={isLoading || !inputMessage.trim()}

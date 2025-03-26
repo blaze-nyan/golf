@@ -27,8 +27,8 @@ const languageMap: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  const body = await req.json(); // Parse the body once
-  console.log("Request received:", req.method, body); // Log the parsed body
+  const body = await req.json();
+  console.log("Request received:", req.method, body);
 
   const { text } = body as { text?: string };
   console.log("Request body text:", text);
