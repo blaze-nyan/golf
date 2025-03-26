@@ -1,7 +1,7 @@
 "use client";
 import getAiResponse from "@/app/lib/getAiResponse";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MessageCircle, X, Maximize, Minimize, Send, Mic, EarthIcon } from "lucide-react";
+import { MessageCircle, X, Maximize, Minimize, Send, Mic, Globe } from "lucide-react";
 import { Button } from "@heroui/button";
 import { logger } from "@/app/lib/logger";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
@@ -28,7 +28,6 @@ const supportedLanguages: Language[] = [
   { code: "de-DE", name: "German" },
   { code: "it-IT", name: "Italian" },
   { code: "pt-PT", name: "Portuguese" },
-  { code: "zh-CN", name: "Chinese" },
   { code: "ru-RU", name: "Russian" },
   { code: "ar-SA", name: "Arabic" },
   { code: "hi-IN", name: "Hindi" },
@@ -389,7 +388,6 @@ export function ChatWidget() {
                 onChange={(e) => setSelectedLanguage(e.target.value)}
                 className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm max-w-[150px]"
               >
-                <EarthIcon/>
                 {supportedLanguages.map((lang) => (
                   <option key={lang.code} value={lang.code}>
                     {lang.name}
