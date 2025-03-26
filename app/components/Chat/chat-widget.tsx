@@ -27,6 +27,7 @@ export function ChatWidget() {
   const [isVoiceInput, setIsVoiceInput] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null); // New ref for the input field
   const size = { width: 320, height: 480 };
 
   const {
@@ -118,7 +119,6 @@ export function ChatWidget() {
       lowerQuestion.includes("tee time") ||
       lowerQuestion.includes("reservation")
     ) {
-      // Updated to use plain URLs without Markdown syntax
       return "To book a tee time, please visit https://ta-golf.netlify.app/auth/login to log in, then go to https://ta-golf.netlify.app/golfcourse to make your booking.";
     }
 
@@ -191,6 +191,20 @@ export function ChatWidget() {
     }
   }, [browserSupportsSpeechRecognition]);
 
+  // Sync transcript with inputMessage while listening
+  useEffect(() => {
+    if (listening && transcript) {
+      setInputMessage(transcript);
+    }
+  }, [transcript, listening]);
+
+  // Scroll input to the end when transcript updates
+  useEffect(() => {
+    if (listening && inputRef.current) {
+      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+    }
+  }, [transcript, listening]);
+
   useEffect(() => {
     if (listening) {
       if (transcript && !hasStartedSpeaking) {
@@ -207,14 +221,13 @@ export function ChatWidget() {
 
         silenceTimeoutRef.current = setTimeout(() => {
           SpeechRecognition.stopListening();
-          setInputMessage(transcript);
           setIsVoiceInput(true);
           if (transcript.trim()) {
             handleSendMessage(transcript);
           }
           resetTranscript();
           setHasStartedSpeaking(false);
-        }, 1000); // 2-second silence timeout for quick response
+        }, 2000); // 2-second silence timeout
       }
     }
 
@@ -234,6 +247,8 @@ export function ChatWidget() {
         clearTimeout(silenceTimeoutRef.current);
       }
     } else {
+      resetTranscript(); // Clear any previous transcript
+      setInputMessage(""); // Clear input field when starting
       SpeechRecognition.startListening({ continuous: true, language: "en-US" });
     }
   };
@@ -317,8 +332,7 @@ export function ChatWidget() {
                   >
                     {message.type === "bot"
                       ? message.content.split(" ").map((word, idx) => {
-                          const isUrl =
-                            word.startsWith("http://") || word.startsWith("https://");
+                          const isUrl = word.startsWith("http://") || word.startsWith("https://");
                           return isUrl ? (
                             <a
                               key={idx}
@@ -355,6 +369,7 @@ export function ChatWidget() {
                 <Mic className={`h-6 w-6 ${listening ? "animate-pulse" : ""}`} />
               </button>
               <input
+                ref={inputRef} // Attach ref to input
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
@@ -365,7 +380,7 @@ export function ChatWidget() {
                   }
                 }}
                 placeholder="Type a message..."
-                className="flex-1 px-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800"
+                className="flex-1 px-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-x-auto whitespace-nowrap"
                 disabled={isLoading}
               />
               <button
