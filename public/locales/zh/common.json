@@ -402,5 +402,19 @@
   "pleaseCheckYourNewEmail": "请查看您的新邮箱收件箱获取验证码",
   "verifyYourEmail": "验证您的邮箱",
 
-  "verifyAndCreateAccount": "验证并创建账户"
+  "verifyAndCreateAccount": "验证并创建账户",
+  "getETicket": "获取 E-Ticket",
+  "bookingReference": "预订参考号",
+  "eTicket": "电子票",
+  "golfBooking": "高尔夫预订",
+  "confirmed": "已确认",
+  "dateAndTime": "日期和时间",
+  "prepaymentNote": "已支付30%预付款。剩余余额在球场支付。",
+  "fullPaymentNote": "已全额付款。只需在球场出示您的电子票。",
+  "scanForETicket": "扫描电子票",
+  "eTicketRequiredAtReception": "办理入场手续时需要此电子票",
+  "printETicket": "打印电子票",
+  "myBookings": "我的预订",
+  "eTicketInstruction": "请在球场接待处出示此电子票办理入场手续",
+  "arriveEarly": "我们建议您在开球时间前30分钟到达"
 }

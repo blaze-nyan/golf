@@ -416,7 +416,7 @@ const page = () => {
                 isDisabled={isContinueLoading}
                 className="px-5 h-12 min-w-[120px] bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
               >
-                {t("continue")}
+                {t("getETicket")}
               </Button>
             )}
           </ModalFooter>
