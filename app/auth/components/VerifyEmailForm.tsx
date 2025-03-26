@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Button, Input, Link } from "@heroui/react";
 import axios from "axios";
 import { addToast } from "@heroui/toast";
+import { useLanguage } from "@/app/contexts/LanguageContext";
 
 interface VerifyEmailFormProps {
   onVerificationComplete: (email: string) => void;
@@ -14,6 +15,7 @@ interface VerifyEmailFormProps {
 export default function VerifyEmailForm({
   onVerificationComplete,
 }: VerifyEmailFormProps) {
+  const { t } = useLanguage();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -21,7 +23,6 @@ export default function VerifyEmailForm({
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const [devOtp, setDevOtp] = useState<string | null>(null); // For development testing
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,15 +37,15 @@ export default function VerifyEmailForm({
 
       if (checkResponse.data.exists) {
         // Create the error message with the actual email properly interpolated
-        const errorText = `An account with this email ${email} already exists. Please log in instead.`;
+        const errorText = t("emailAlreadyExists").replace("{{email}}", email);
 
         // Set the error state with the proper message
         setError(errorText);
 
-        // Also show a toast with the same message - using literal string not variable
+        // Also show a toast with the same message
         addToast({
-          title: "Email Already Exists",
-          description: errorText, // Now properly includes the email
+          title: t("emailAlreadyExistsProfile"),
+          description: errorText,
           color: "danger",
           timeout: 5000,
         });
@@ -60,11 +61,6 @@ export default function VerifyEmailForm({
       const response = await axios.post("/api/verify-email", { email });
 
       if (response.data.success) {
-        // Store OTP if in development mode (makes testing easier)
-        if (response.data.otp) {
-          setDevOtp(response.data.otp);
-        }
-
         setStep("otp");
 
         // Start countdown for resend button (2 minutes)
@@ -80,7 +76,7 @@ export default function VerifyEmailForm({
         }, 1000);
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to send verification code");
+      setError(err.response?.data?.error || t("failedToSendVerificationCode"));
       setIsCheckingEmail(false);
       setIsLoading(false);
     } finally {
@@ -106,7 +102,7 @@ export default function VerifyEmailForm({
         onVerificationComplete(email);
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to verify code");
+      setError(err.response?.data?.error || t("failedToVerifyEmail"));
     } finally {
       setIsLoading(false);
     }
@@ -123,7 +119,7 @@ export default function VerifyEmailForm({
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <p className="pb-4 text-center text-3xl font-semibold">
-          {step === "email" ? "Verify Your Email" : "Enter Verification Code"}
+          {step === "email" ? t("verifyYourEmail") : t("enterVerificationCode")}
         </p>
 
         {error && (
@@ -134,10 +130,10 @@ export default function VerifyEmailForm({
           <form className="flex flex-col gap-4" onSubmit={handleSendOTP}>
             <Input
               isRequired
-              label="Email"
+              label={t("email")}
               labelPlacement="outside"
               name="email"
-              placeholder="Enter your email"
+              placeholder={t("enterEmail")}
               type="email"
               variant="bordered"
               value={email}
@@ -151,39 +147,31 @@ export default function VerifyEmailForm({
               isLoading={isLoading || isCheckingEmail}
             >
               {isCheckingEmail
-                ? "Checking..."
+                ? t("checking")
                 : isLoading
-                ? "Sending..."
-                : "Send Verification Code"}
+                ? t("sending")
+                : t("sendVerificationCode")}
             </Button>
 
             <p className="text-center text-small">
               <Link href="/auth/login" size="sm">
-                Already have an account? Log In
+                {t("alreadyHaveAccount")}
               </Link>
             </p>
           </form>
         ) : (
           <form className="flex flex-col gap-4" onSubmit={handleVerifyOTP}>
             <div className="text-center text-gray-600 dark:text-gray-300 mb-2">
-              We&apos;ve sent a verification code to{" "}
+              {t("verificationCodeSentTo")}{" "}
               <span className="font-semibold">{email}</span>
             </div>
 
-            {/* Developer helper text - remove in production */}
-            {devOtp && (
-              <div className="text-center text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                Developer Mode: Use code{" "}
-                <span className="font-bold">{devOtp}</span>
-              </div>
-            )}
-
             <Input
               isRequired
-              label="Verification Code"
+              label={t("verificationCode")}
               labelPlacement="outside"
               name="otp"
-              placeholder="Enter the 6-digit code"
+              placeholder={t("enter6DigitCode")}
               variant="bordered"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -196,7 +184,7 @@ export default function VerifyEmailForm({
               type="submit"
               isLoading={isLoading}
             >
-              {isLoading ? "Verifying..." : "Verify Code"}
+              {isLoading ? t("verifying") : t("verifyCode")}
             </Button>
 
             <div className="flex justify-between items-center">
@@ -207,8 +195,8 @@ export default function VerifyEmailForm({
                 className="text-green-600"
               >
                 {countdown > 0
-                  ? `Resend in ${formatTime(countdown)}`
-                  : "Resend Code"}
+                  ? `${t("resendCodeIn")} ${formatTime(countdown)}`
+                  : t("resendCode")}
               </Button>
 
               <Button
@@ -216,7 +204,7 @@ export default function VerifyEmailForm({
                 onPress={() => setStep("email")}
                 className="text-green-600"
               >
-                Change Email
+                {t("changeEmail")}
               </Button>
             </div>
           </form>

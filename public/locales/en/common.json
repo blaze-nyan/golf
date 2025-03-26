@@ -400,5 +400,8 @@
   "emailUpdatedSuccessfully": "Your email has been updated successfully",
   "profileSavedSuccessfully": "Your profile has been saved successfully",
   "errorSavingProfile": "Error Saving Profile",
-  "profileUpdateFailed": "Failed to update your profile. Please try again."
+  "profileUpdateFailed": "Failed to update your profile. Please try again.",
+  "verifyYourEmail": "Verify Your Email",
+
+  "verifyAndCreateAccount": "Verify & Create Account"
 }

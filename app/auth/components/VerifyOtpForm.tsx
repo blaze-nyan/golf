@@ -7,6 +7,8 @@ import { Button, Input, Link } from "@heroui/react";
 import axios from "axios";
 import { sendWelcomeEmail, signUp } from "@/app/lib/api";
 import { logger } from "@/app/lib/logger";
+import { useLanguage } from "@/app/contexts/LanguageContext";
+
 interface VerifyOtpFormProps {
   email: string;
   userData: {
@@ -23,6 +25,7 @@ export default function VerifyOtpForm({
   userData,
   onVerificationComplete,
 }: VerifyOtpFormProps) {
+  const { t } = useLanguage();
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -105,10 +108,9 @@ export default function VerifyOtpForm({
 
         const signupResponse = await signUp(userData);
 
-
         if (signupResponse.success) {
           // Account created successfully and email is sent
-          sendWelcomeEmail(email, userData.firstName+" "+userData.surname)
+          sendWelcomeEmail(email, userData.firstName + " " + userData.surname);
           onVerificationComplete();
         } else {
           setError("Failed to create account. Please try again.");
@@ -134,11 +136,11 @@ export default function VerifyOtpForm({
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
         <p className="pb-4 text-center text-3xl font-semibold">
-          Verify Your Email
+          {t("verifyYourEmail")}
         </p>
 
         <div className="text-center text-gray-600 dark:text-gray-300 mb-2">
-          We&apos;ve sent a verification code to{" "}
+          {t("verificationCodeSentTo")}{" "}
           <span className="font-semibold">{email}</span>
         </div>
 
@@ -149,17 +151,17 @@ export default function VerifyOtpForm({
         {/* Developer helper text - remove in production */}
         {devOtp && (
           <div className="text-center text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 p-2 rounded">
-            Developer Mode: Use code <span className="font-bold">{devOtp}</span>
+            {t("developerMode")}: <span className="font-bold">{devOtp}</span>
           </div>
         )}
 
         <form className="flex flex-col gap-4" onSubmit={handleVerifyOTP}>
           <Input
             isRequired
-            label="Verification Code"
+            label={t("verificationCode")}
             labelPlacement="outside"
             name="otp"
-            placeholder="Enter the 6-digit code"
+            placeholder={t("enter6DigitCode")}
             variant="bordered"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
@@ -172,7 +174,7 @@ export default function VerifyOtpForm({
             type="submit"
             isLoading={isLoading}
           >
-            {isLoading ? "Verifying..." : "Verify & Create Account"}
+            {isLoading ? t("verifying") : t("verifyAndCreateAccount")}
           </Button>
 
           <div className="flex justify-between items-center">
@@ -183,12 +185,12 @@ export default function VerifyOtpForm({
               className="text-green-600"
             >
               {countdown > 0
-                ? `Resend in ${formatTime(countdown)}`
-                : "Resend Code"}
+                ? `${t("resendCodeIn")} ${formatTime(countdown)}`
+                : t("resendCode")}
             </Button>
 
             <Link href="/auth/signup" className="text-green-600">
-              Change Email
+              {t("changeEmail")}
             </Link>
           </div>
         </form>

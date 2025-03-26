@@ -401,5 +401,8 @@
   "emailAlreadyExistsProfile": "อีเมลนี้มีอยู่ในระบบแล้ว",
   "emailBelongsToAnotherAccount": "อีเมลนี้ถูกเชื่อมโยงกับบัญชีอื่นแล้ว",
   "verificationCodeSent": "ส่งรหัสยืนยันแล้ว",
-  "pleaseCheckYourNewEmail": "โปรดตรวจสอบกล่องจดหมายของอีเมลใหม่ของคุณเพื่อดูรหัสยืนยัน"
+  "pleaseCheckYourNewEmail": "โปรดตรวจสอบกล่องจดหมายของอีเมลใหม่ของคุณเพื่อดูรหัสยืนยัน",
+  "verifyYourEmail": "ยืนยันอีเมลของคุณ",
+
+  "verifyAndCreateAccount": "ยืนยันและสร้างบัญชี"
 }
