@@ -24,10 +24,10 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isVoiceInput, setIsVoiceInput] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null); // New ref for the input field
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isVoiceInputRef = useRef(false); // UseRef to track voice input
   const size = { width: 320, height: 480 };
 
   const {
@@ -39,6 +39,13 @@ export function ChatWidget() {
 
   const [hasStartedSpeaking, setHasStartedSpeaking] = useState(false);
   const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Audio objects for notification sounds
+  const startSound = useRef(new Audio("/startnoti.mp3"));
+  const stopSound = useRef(new Audio("/stopnoti.mp3"));
+
+  // Speech synthesis setup
+  const synth = useRef(window.speechSynthesis);
 
   const golfCourseData = {
     name: "Hackathon",
@@ -125,48 +132,80 @@ export function ChatWidget() {
     return null;
   };
 
-  const handleSendMessage = useCallback(async (messageToSend?: string) => {
-    const message = messageToSend || inputMessage;
-    if (!message.trim() || isLoading) return;
-
-    const userMessage: ChatMessage = { type: "user", content: message };
-    setMessages((prev) => [...prev, userMessage]);
-    setInputMessage("");
-    setIsLoading(true);
-
-    console.log("Handling message:", message, "Is voice input:", isVoiceInput);
-
-    const responsePlaceholder = getResponsePlaceholder(message);
-
-    if (responsePlaceholder) {
-      const botMessageContent =
-        removeAsterisks(responsePlaceholder) || "I'm sorry, I couldn't understand that.";
-      const botMessage: ChatMessage = { type: "bot", content: botMessageContent };
-
-      setMessages((prev) => [...prev, botMessage]);
-      setIsLoading(false);
-      setIsVoiceInput(false);
-      return;
+  const speakResponse = useCallback((text: string) => {
+    if (synth.current.speaking) {
+      synth.current.cancel();
     }
 
-    try {
-      const aiResponse = await getAiResponse(message);
-      const responseText = aiResponse[0]?.text || "I'm sorry, I couldn't understand that.";
-      const finalText = removeAsterisks(responseText);
-      const botMessage: ChatMessage = { type: "bot", content: finalText };
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.volume = 1.0;
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
 
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      logger.error("Error fetching AI response:", error);
-      const errorMessage = "Error retrieving response. Please try again.";
-      const botMessage: ChatMessage = { type: "bot", content: errorMessage };
+    utterance.onerror = (event) => {
+      if (event.error !== "interrupted") {
+        logger.error("Speech synthesis error:", event.error);
+      }
+    };
 
-      setMessages((prev) => [...prev, botMessage]);
-    } finally {
-      setIsLoading(false);
-      setIsVoiceInput(false);
-    }
-  }, [inputMessage, isLoading, isVoiceInput]);
+    synth.current.speak(utterance);
+  }, []);
+
+  const handleSendMessage = useCallback(
+    async (messageToSend?: string) => {
+      const message = messageToSend || inputMessage;
+      if (!message.trim() || isLoading) return;
+
+      const userMessage: ChatMessage = { type: "user", content: message };
+      setMessages((prev) => [...prev, userMessage]);
+      setInputMessage("");
+      setIsLoading(true);
+
+      console.log("Handling message:", message, "Is voice input:", isVoiceInputRef.current);
+
+      const responsePlaceholder = getResponsePlaceholder(message);
+
+      if (responsePlaceholder) {
+        const botMessageContent =
+          removeAsterisks(responsePlaceholder) || "I'm sorry, I couldn't understand that.";
+        const botMessage: ChatMessage = { type: "bot", content: botMessageContent };
+
+        setMessages((prev) => [...prev, botMessage]);
+        if (isVoiceInputRef.current) {
+          speakResponse(botMessageContent); // Speak only for voice input
+        }
+        setIsLoading(false);
+        isVoiceInputRef.current = false; // Reset after processing
+        return;
+      }
+
+      try {
+        const aiResponse = await getAiResponse(message);
+        const responseText = aiResponse[0]?.text || "I'm sorry, I couldn't understand that.";
+        const finalText = removeAsterisks(responseText);
+        const botMessage: ChatMessage = { type: "bot", content: finalText };
+
+        setMessages((prev) => [...prev, botMessage]);
+        if (isVoiceInputRef.current) {
+          speakResponse(finalText); // Speak only for voice input
+        }
+      } catch (error) {
+        logger.error("Error fetching AI response:", error);
+        const errorMessage = "Error retrieving response. Please try again.";
+        const botMessage: ChatMessage = { type: "bot", content: errorMessage };
+
+        setMessages((prev) => [...prev, botMessage]);
+        if (isVoiceInputRef.current) {
+          speakResponse(errorMessage); // Speak only for voice input
+        }
+      } finally {
+        setIsLoading(false);
+        isVoiceInputRef.current = false; // Reset after processing
+      }
+    },
+    [inputMessage, isLoading, speakResponse]
+  );
 
   useEffect(() => {
     setIsClient(true);
@@ -191,14 +230,12 @@ export function ChatWidget() {
     }
   }, [browserSupportsSpeechRecognition]);
 
-  // Sync transcript with inputMessage while listening
   useEffect(() => {
     if (listening && transcript) {
       setInputMessage(transcript);
     }
   }, [transcript, listening]);
 
-  // Scroll input to the end when transcript updates
   useEffect(() => {
     if (listening && inputRef.current) {
       inputRef.current.scrollLeft = inputRef.current.scrollWidth;
@@ -206,6 +243,8 @@ export function ChatWidget() {
   }, [transcript, listening]);
 
   useEffect(() => {
+    let previousTranscript = transcript;
+
     if (listening) {
       if (transcript && !hasStartedSpeaking) {
         setHasStartedSpeaking(true);
@@ -214,21 +253,32 @@ export function ChatWidget() {
         }
       }
 
-      if (hasStartedSpeaking && transcript) {
+      if (hasStartedSpeaking) {
         if (silenceTimeoutRef.current) {
           clearTimeout(silenceTimeoutRef.current);
         }
 
-        silenceTimeoutRef.current = setTimeout(() => {
-          SpeechRecognition.stopListening();
-          setIsVoiceInput(true);
-          if (transcript.trim()) {
-            handleSendMessage(transcript);
+        silenceTimeoutRef.current = setTimeout(async () => {
+          if (transcript === previousTranscript && transcript.trim()) {
+            SpeechRecognition.stopListening();
+            await stopSound.current.play().catch((err) =>
+              console.error("Error playing stop sound:", err)
+            );
+            isVoiceInputRef.current = true; // Set to true for voice input
+            const trimmedTranscript = transcript.trim();
+            if (trimmedTranscript) {
+              await handleSendMessage(trimmedTranscript);
+            }
+            resetTranscript();
+            setHasStartedSpeaking(false);
           }
-          resetTranscript();
-          setHasStartedSpeaking(false);
-        }, 2000); // 2-second silence timeout
+        }, 1000);
       }
+
+      previousTranscript = transcript;
+    } else if (!listening && hasStartedSpeaking) {
+      setHasStartedSpeaking(false);
+      resetTranscript();
     }
 
     return () => {
@@ -241,21 +291,24 @@ export function ChatWidget() {
   const toggleListening = () => {
     if (listening) {
       SpeechRecognition.stopListening();
+      stopSound.current.play().catch((err) => console.error("Error playing stop sound:", err));
       setHasStartedSpeaking(false);
       resetTranscript();
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current);
       }
     } else {
-      resetTranscript(); // Clear any previous transcript
-      setInputMessage(""); // Clear input field when starting
+      resetTranscript();
+      setInputMessage("");
       SpeechRecognition.startListening({ continuous: true, language: "en-US" });
+      startSound.current.play().catch((err) => console.error("Error playing start sound:", err));
+      isVoiceInputRef.current = true; // Enable voice input tracking when mic is clicked
     }
   };
 
   const quickmessage = (reply: string) => {
     setInputMessage(reply);
-    setIsVoiceInput(false);
+    isVoiceInputRef.current = false; // Text input
     handleSendMessage(reply);
   };
 
@@ -369,13 +422,13 @@ export function ChatWidget() {
                 <Mic className={`h-6 w-6 ${listening ? "animate-pulse" : ""}`} />
               </button>
               <input
-                ref={inputRef} // Attach ref to input
+                ref={inputRef}
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    setIsVoiceInput(false);
+                    isVoiceInputRef.current = false; // Text input
                     handleSendMessage();
                   }
                 }}
@@ -385,7 +438,7 @@ export function ChatWidget() {
               />
               <button
                 onClick={() => {
-                  setIsVoiceInput(false);
+                  isVoiceInputRef.current = false; // Text input
                   handleSendMessage();
                 }}
                 disabled={isLoading || !inputMessage.trim()}
