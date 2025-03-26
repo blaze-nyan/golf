@@ -72,8 +72,8 @@ const CoursePage = () => {
     };
 
     fetchCourses();
-  }, [courseId]);  
-  
+  }, [courseId]);
+
   const getClientId = () => {
     const localId = window.localStorage.getItem("clientId");
     if (localId) return localId;
@@ -83,7 +83,6 @@ const CoursePage = () => {
 
     return null;
   };
-
 
   useEffect(() => {
     if (golfCourse) {
@@ -101,7 +100,7 @@ const CoursePage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[300px]">
+      <div className="h-full w-full flex justify-center items-center min-h-[300px]">
         <AnimatedLoading />
       </div>
     );
