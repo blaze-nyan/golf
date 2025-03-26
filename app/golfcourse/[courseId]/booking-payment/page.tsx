@@ -3,6 +3,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
 //components
 import { NextButton } from "@/app/golfcourse/components/NextButton";
 import { useProgress } from "../../context/progress-context";
@@ -147,15 +148,13 @@ const page = () => {
   };
 
   const getEmail = (commList: any) => {
-
     for (const comm of commList) {
       if (comm["Communication Type"] === "M") {
         return comm["Communication Detail"];
       }
     }
     return null;
-
-  }
+  };
 
   const handleSubmit = () => {
     if (validateCreditCard()) {
@@ -330,7 +329,7 @@ const page = () => {
             )}
           </ModalBody>
           <ModalFooter className="flex justify-center">
-            {!isLoading && <NextButton />}
+            {!isLoading && <NextButton hideBackButton={true} />}
           </ModalFooter>
         </ModalContent>
       </Modal>
