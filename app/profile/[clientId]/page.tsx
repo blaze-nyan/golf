@@ -905,7 +905,7 @@ export default function ProfilePage() {
             <ModalBody>
               <Input
                 type="file"
-                accept="image/png, image/jpeg"
+                accept="image/png"
                 onChange={handleFileSelect}
                 disabled={isUploading}
                 className="h-12"

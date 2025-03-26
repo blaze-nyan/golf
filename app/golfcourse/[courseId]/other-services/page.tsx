@@ -27,11 +27,18 @@ const page = () => {
   const [disableNext, setDisableNext] = useState(false);
   const { t } = useLanguage();
 
+  const getClientId = () => {
+    const localId = window.localStorage.getItem("clientId");
+    if (localId) return localId;
+
+    const sessionId = window.sessionStorage.getItem("clientId");
+    if (sessionId) return sessionId;
+
+    return null;
+  };
+
   useEffect(() => {
-    const clientID =
-      typeof window !== "undefined"
-        ? window.sessionStorage.getItem("clientId")
-        : null;
+    const clientID = getClientId();
     setBookingDetails((prevBookingDetails: any) => ({
       ...prevBookingDetails,
       clientID: clientID,
