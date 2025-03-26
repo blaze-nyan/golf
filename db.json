@@ -24,10 +24,7 @@
       "Golf Cart": 2,
       "Caddies": 0,
       "Food & Drinks": 0,
-      "Golfer Names": [
-        "Aung Nyan Lin",
-        "Grimace"
-      ],
+      "Golfer Names": ["Aung Nyan Lin", "Grimace"],
       "status": "cancelled",
       "paymentType": "prepayment",
       "paid": 600,
@@ -48,10 +45,7 @@
       "Golf Cart": 2,
       "Caddies": 0,
       "Food & Drinks": 0,
-      "Golfer Names": [
-        "Aung Nyan Lin",
-        "Test"
-      ],
+      "Golfer Names": ["Aung Nyan Lin", "Test"],
       "status": "cancelled",
       "paymentType": "fullPayment",
       "paid": 1800,
@@ -72,10 +66,7 @@
       "Golf Cart": 4,
       "Caddies": 2,
       "Food & Drinks": 2,
-      "Golfer Names": [
-        "Aung Nyan Lin",
-        "Gragas"
-      ],
+      "Golfer Names": ["Aung Nyan Lin", "Gragas"],
       "status": "cancelled",
       "paymentType": "prepayment",
       "paid": 1260,
@@ -96,14 +87,312 @@
       "Golf Cart": 2,
       "Caddies": 0,
       "Food & Drinks": 0,
-      "Golfer Names": [
-        "Htin",
-        "Blaze"
-      ],
+      "Golfer Names": ["Htin", "Blaze"],
       "status": "prepaid",
       "paymentType": "prepayment",
       "paid": 540,
       "price": 1800
+    }
+  ],
+  "members": [
+    {
+      "id": "1001",
+      "membershipId": "MEM-2023-001",
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "phone": "+66891234567",
+      "membershipType": "Premium",
+      "joinDate": "2023-01-15T00:00:00Z",
+      "expiryDate": "2026-01-15T00:00:00Z",
+      "status": "active",
+      "notes": "VIP member, prefers early morning tee times",
+      "recentBookings": [
+        {
+          "id": "5001",
+          "courseName": "Hackathon Golf Course",
+          "date": "2025-03-20T08:30:00Z"
+        },
+        {
+          "id": "4987",
+          "courseName": "Hackathon Golf Course",
+          "date": "2025-03-15T09:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "1002",
+      "membershipId": "MEM-2023-045",
+      "name": "Sarah Johnson",
+      "email": "sarah.j@example.com",
+      "phone": "+66812345678",
+      "membershipType": "Basic",
+      "joinDate": "2023-03-10T00:00:00Z",
+      "expiryDate": "2024-03-10T00:00:00Z",
+      "status": "expired",
+      "notes": "Interested in upgrading to Premium membership",
+      "recentBookings": []
+    },
+    {
+      "id": "1003",
+      "membershipId": "MEM-2024-103",
+      "name": "David Lee",
+      "email": "david.lee@example.com",
+      "phone": "+66832345678",
+      "membershipType": "VIP",
+      "joinDate": "2024-02-01T00:00:00Z",
+      "expiryDate": "2029-02-01T00:00:00Z",
+      "status": "active",
+      "notes": "Corporate membership, includes 4 family members",
+      "recentBookings": [
+        {
+          "id": "5010",
+          "courseName": "Hackathon Golf Course",
+          "date": "2025-03-22T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "id": "1004",
+      "membershipId": "MEM-2024-127",
+      "name": "Emily Wong",
+      "email": "emily.wong@example.com",
+      "phone": "+66823456789",
+      "membershipType": "Premium",
+      "joinDate": "2024-03-01T00:00:00Z",
+      "expiryDate": "2027-03-01T00:00:00Z",
+      "status": "active",
+      "notes": "Professional golfer, prefers afternoon tee times",
+      "recentBookings": [
+        {
+          "id": "5015",
+          "courseName": "Hackathon Golf Course",
+          "date": "2025-03-23T14:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "1005",
+      "membershipId": "MEM-2022-089",
+      "name": "Michael Chen",
+      "email": "m.chen@example.com",
+      "phone": "+66943456789",
+      "membershipType": "Basic",
+      "joinDate": "2022-08-15T00:00:00Z",
+      "expiryDate": "2025-04-15T00:00:00Z",
+      "status": "active",
+      "notes": "",
+      "recentBookings": []
+    },
+    {
+      "id": "1006",
+      "membershipId": "MEM-2024-156",
+      "name": "Jessica Brown",
+      "email": "j.brown@example.com",
+      "phone": "+66854567890",
+      "membershipType": "Premium",
+      "joinDate": "2024-03-10T00:00:00Z",
+      "expiryDate": "2027-03-10T00:00:00Z",
+      "status": "pending",
+      "notes": "Waiting for payment confirmation",
+      "recentBookings": []
+    }
+  ],
+  "staff": [
+    {
+      "id": "2001",
+      "name": "Somchai Jaidee",
+      "email": "somchai.j@splashgolf.com",
+      "phone": "+66891234567",
+      "role": "caddie",
+      "hireDate": "2022-05-10T00:00:00Z",
+      "status": "active",
+      "address": "123 Golf Lane, Pathum Thani",
+      "experienceLevel": "Senior",
+      "rating": 4.8,
+      "tripsThisMonth": 24,
+      "earningsThisMonth": 12000,
+      "notes": "Excellent English skills, very popular with international guests"
+    },
+    {
+      "id": "2002",
+      "name": "Pranee Suksai",
+      "email": "pranee.s@splashgolf.com",
+      "phone": "+66812345678",
+      "role": "caddie",
+      "hireDate": "2023-01-15T00:00:00Z",
+      "status": "active",
+      "address": "456 Green Avenue, Pathum Thani",
+      "experienceLevel": "Junior",
+      "rating": 4.2,
+      "tripsThisMonth": 18,
+      "earningsThisMonth": 9000,
+      "notes": "Fast learner, working on improving English skills"
+    },
+    {
+      "id": "2003",
+      "name": "Suwit Chaiyarat",
+      "email": "suwit.c@splashgolf.com",
+      "phone": "+66823456789",
+      "role": "cart staff",
+      "hireDate": "2022-03-01T00:00:00Z",
+      "status": "active",
+      "address": "789 Fairway Road, Pathum Thani",
+      "notes": "Very reliable, punctual, handles maintenance well"
+    },
+    {
+      "id": "2004",
+      "name": "Nuanphan Somwang",
+      "email": "nuanphan.s@splashgolf.com",
+      "phone": "+66834567890",
+      "role": "manager",
+      "hireDate": "2021-10-15T00:00:00Z",
+      "status": "active",
+      "address": "321 Golf Club Road, Pathum Thani",
+      "notes": "Manages caddie team, excellent at resolving guest issues"
+    },
+    {
+      "id": "2005",
+      "name": "Thaksin Phromma",
+      "email": "thaksin.p@splashgolf.com",
+      "phone": "+66845678901",
+      "role": "caddie",
+      "hireDate": "2022-08-01T00:00:00Z",
+      "status": "on leave",
+      "address": "654 Bunker Street, Pathum Thani",
+      "experienceLevel": "Intermediate",
+      "rating": 4.5,
+      "tripsThisMonth": 10,
+      "earningsThisMonth": 5000,
+      "notes": "On medical leave until April 15"
+    },
+    {
+      "id": "2006",
+      "name": "Ratana Wongchai",
+      "email": "ratana.w@splashgolf.com",
+      "phone": "+66856789012",
+      "role": "admin",
+      "hireDate": "2021-06-01T00:00:00Z",
+      "status": "active",
+      "address": "987 Clubhouse Road, Pathum Thani",
+      "notes": "Handles all system administration and bookings"
+    },
+    {
+      "id": "2007",
+      "name": "Apirak Suthep",
+      "email": "apirak.s@splashgolf.com",
+      "phone": "+66867890123",
+      "role": "cart staff",
+      "hireDate": "2023-02-15T00:00:00Z",
+      "status": "active",
+      "address": "753 Fairway Circle, Pathum Thani",
+      "notes": "Part-time, works weekends and holidays"
+    },
+    {
+      "id": "2008",
+      "name": "Malee Sawaeng",
+      "email": "malee.s@splashgolf.com",
+      "phone": "+66878901234",
+      "role": "caddie",
+      "hireDate": "2022-11-01T00:00:00Z",
+      "status": "active",
+      "address": "246 Green Village, Pathum Thani",
+      "experienceLevel": "Senior",
+      "rating": 4.9,
+      "tripsThisMonth": 26,
+      "earningsThisMonth": 13000,
+      "notes": "Top-rated caddie, fluent in English, Japanese and Chinese"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "3001",
+      "type": "booking",
+      "title": "Booking Confirmation: John Smith",
+      "recipient": "john.smith@example.com",
+      "message": "Your booking for March 23, 2025 at 10:00 AM has been confirmed.",
+      "date": "2025-03-22T14:30:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3002",
+      "type": "payment",
+      "title": "Payment Confirmation: #8035",
+      "recipient": "john.smith@example.com",
+      "message": "Your payment of 2000 THB for booking #8035 has been received.",
+      "date": "2025-03-22T14:35:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3003",
+      "type": "booking",
+      "title": "Booking Reminder: Emily Wong",
+      "recipient": "emily.wong@example.com",
+      "message": "Reminder: Your tee time is tomorrow at 2:00 PM.",
+      "date": "2025-03-22T16:00:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3004",
+      "type": "system",
+      "title": "System Maintenance Alert",
+      "recipient": "staff@splashgolf.com",
+      "message": "The booking system will be down for maintenance from 2:00 AM to 4:00 AM on March 26.",
+      "date": "2025-03-24T09:00:00Z",
+      "status": "scheduled"
+    },
+    {
+      "id": "3005",
+      "type": "payment",
+      "title": "Payment Failed: Jessica Brown",
+      "recipient": "j.brown@example.com",
+      "message": "Your payment for membership renewal failed. Please update your payment information.",
+      "date": "2025-03-21T10:15:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3006",
+      "type": "membership",
+      "title": "Membership Renewal: Sarah Johnson",
+      "recipient": "sarah.j@example.com",
+      "message": "Your membership expired on March 10, 2024. Renew now to continue enjoying benefits.",
+      "date": "2025-03-15T09:00:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3007",
+      "type": "system",
+      "title": "System Update Completed",
+      "recipient": "staff@splashgolf.com",
+      "message": "The system update has been completed successfully. New features include improved booking notifications.",
+      "date": "2025-03-18T06:30:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3008",
+      "type": "booking",
+      "title": "Booking Canceled: Michael Chen",
+      "recipient": "m.chen@example.com",
+      "message": "Your booking for March 19, 2025 has been canceled as requested. A refund will be processed within 3-5 business days.",
+      "date": "2025-03-17T14:15:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3009",
+      "type": "membership",
+      "title": "New VIP Member: David Lee",
+      "recipient": "staff@splashgolf.com",
+      "message": "David Lee has upgraded to VIP membership. Please prepare welcome package.",
+      "date": "2025-02-01T10:00:00Z",
+      "status": "sent"
+    },
+    {
+      "id": "3010",
+      "type": "payment",
+      "title": "Payment Reminder: Jessica Brown",
+      "recipient": "j.brown@example.com",
+      "message": "This is a reminder that your membership payment is due in 3 days.",
+      "date": "2025-03-25T08:00:00Z",
+      "status": "scheduled"
     }
   ]
 }

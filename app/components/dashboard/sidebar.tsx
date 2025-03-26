@@ -9,6 +9,7 @@ import {
   Users,
   Menu,
   X,
+  Bell,
   CircleDollarSign,
 } from "lucide-react";
 import Link from "next/link";
@@ -32,14 +33,24 @@ const menuItems = [
     path: "/dashboard/bookings",
   },
   {
-    name: "Users",
+    name: "Members",
     icon: <Users size={20} />,
-    path: "/dashboard/users",
+    path: "/dashboard/members",
+  },
+  {
+    name: "Staff",
+    icon: <Users size={20} />,
+    path: "/dashboard/staff",
   },
   {
     name: "Revenue",
     icon: <CircleDollarSign size={20} />,
-    path: "/dashboard/analytics",
+    path: "/dashboard/analytics/revenue",
+  },
+  {
+    name: "Notifications",
+    icon: <Bell size={20} />,
+    path: "/dashboard/notifications",
   },
 ];
 
