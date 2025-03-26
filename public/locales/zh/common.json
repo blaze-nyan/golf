@@ -399,5 +399,8 @@
   "emailAlreadyExistsProfile": "邮箱已存在",
   "emailBelongsToAnotherAccount": "该邮箱地址已与其他账户关联",
   "verificationCodeSent": "验证码已发送",
-  "pleaseCheckYourNewEmail": "请查看您的新邮箱收件箱获取验证码"
+  "pleaseCheckYourNewEmail": "请查看您的新邮箱收件箱获取验证码",
+  "verifyYourEmail": "验证您的邮箱",
+
+  "verifyAndCreateAccount": "验证并创建账户"
 }
