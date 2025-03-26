@@ -238,6 +238,33 @@ export async function getRecentGolfersForClient(ClientID: string) {
   return response.data.payload;
 }
 
+export async function sendWelcomeEmail(email: string, name: string) {
+  await fetch("/api/welcome-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      name,
+    }),
+  });
+}
+
+export async function sendBookingEmail(email: string, bookingData: Map<string, unknown>) {
+  await fetch("/api/booking-creation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      bookingData,
+    }),
+  });
+}
+
+
 //Get Golf Bookings For Client Request
 //Gets all bookings of a client of the same booking status from X day to Y day
 export async function getGolfBookingsForClient(

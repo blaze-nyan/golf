@@ -24,7 +24,7 @@ import { getClientInfo } from "@/app/lib/api";
 
 const page = () => {
   const { setBookingDetails, bookingDetails } = useProgress();
-  const [disableNext, setDisableNext] = useState(true);
+  const [disableNext, setDisableNext] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
