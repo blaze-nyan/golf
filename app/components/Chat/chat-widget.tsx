@@ -1,7 +1,7 @@
 "use client";
 import getAiResponse from "@/app/lib/getAiResponse";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MessageCircle, X, Maximize, Minimize, Send, Mic, MicOff, Globe } from "lucide-react";
+import { MessageCircle, X, Maximize, Minimize, Send, Mic } from "lucide-react";
 import { Button } from "@heroui/button";
 import { logger } from "@/app/lib/logger";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
@@ -17,21 +17,6 @@ const quickReplies = [
   "Request a demo",
 ];
 
-const supportedLanguages = [
-  { code: "en-US", name: "English" },
-  { code: "es-ES", name: "Spanish" },
-  { code: "fr-FR", name: "French" },
-  { code: "de-DE", name: "German" },
-  { code: "zh-CN", name: "Chinese" },
-  { code: "ja-JP", name: "Japanese" },
-  { code: "ko-KR", name: "Korean" },
-  { code: "it-IT", name: "Italian" },
-  { code: "pt-BR", name: "Portuguese" },
-  { code: "ru-RU", name: "Russian" },
-  { code: "ar-SA", name: "Arabic" },
-  { code: "hi-IN", name: "Hindi" },
-];
-
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -39,13 +24,10 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("en-US");
   const [isVoiceInput, setIsVoiceInput] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const size = { width: 320, height: 480 };
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
   const {
     transcript,
@@ -136,64 +118,12 @@ export function ChatWidget() {
       lowerQuestion.includes("tee time") ||
       lowerQuestion.includes("reservation")
     ) {
-      return "To book a tee time, please visit [https://ta-golf.netlify.app/auth/login](https://ta-golf.netlify.app/auth/login) to log in, then go to [https://ta-golf.netlify.app/golfcourse](https://ta-golf.netlify.app/golfcourse) to make your booking.";
+      // Updated to use plain URLs without Markdown syntax
+      return "To book a tee time, please visit https://ta-golf.netlify.app/auth/login to log in, then go to https://ta-golf.netlify.app/golfcourse to make your booking.";
     }
 
     return null;
   };
-
-  const speakResponse = useCallback((text: string) => {
-    if (!("speechSynthesis" in window)) {
-      console.error("Speech Synthesis not supported");
-      return;
-    }
-
-    if (!voicesLoaded) {
-      console.warn("Voices not loaded yet, waiting...");
-      const waitForVoices = setInterval(() => {
-        const voices = window.speechSynthesis.getVoices();
-        if (voices.length > 0) {
-          setVoicesLoaded(true);
-          clearInterval(waitForVoices);
-          speakResponse(text); // Retry after voices load
-        }
-      }, 100);
-      return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = selectedLanguage;
-    utterance.volume = 1.0;
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-
-    utterance.onstart = () => {
-      console.log("Starting to speak:", text);
-      setIsSpeaking(true);
-    };
-    utterance.onend = () => {
-      console.log("Finished speaking");
-      setIsSpeaking(false);
-    };
-    utterance.onerror = (event) => {
-      console.error("Speech synthesis error:", event.error);
-      setIsSpeaking(false);
-    };
-
-    const voices = window.speechSynthesis.getVoices();
-    const matchingVoice = voices.find((voice) =>
-      voice.lang.toLowerCase().includes(selectedLanguage.split("-")[0].toLowerCase())
-    );
-    if (matchingVoice) {
-      utterance.voice = matchingVoice;
-      console.log("Using voice:", matchingVoice.name);
-    } else {
-      console.warn(`No voice found for language: ${selectedLanguage}, using default`);
-    }
-
-    window.speechSynthesis.cancel(); // Clear any previous speech
-    window.speechSynthesis.speak(utterance);
-  }, [selectedLanguage, voicesLoaded]);
 
   const handleSendMessage = useCallback(async (messageToSend?: string) => {
     const message = messageToSend || inputMessage;
@@ -214,9 +144,6 @@ export function ChatWidget() {
       const botMessage: ChatMessage = { type: "bot", content: botMessageContent };
 
       setMessages((prev) => [...prev, botMessage]);
-      if (isVoiceInput) {
-        speakResponse(botMessageContent);
-      }
       setIsLoading(false);
       setIsVoiceInput(false);
       return;
@@ -229,48 +156,20 @@ export function ChatWidget() {
       const botMessage: ChatMessage = { type: "bot", content: finalText };
 
       setMessages((prev) => [...prev, botMessage]);
-      if (isVoiceInput) {
-        speakResponse(finalText);
-      }
     } catch (error) {
       logger.error("Error fetching AI response:", error);
       const errorMessage = "Error retrieving response. Please try again.";
       const botMessage: ChatMessage = { type: "bot", content: errorMessage };
 
       setMessages((prev) => [...prev, botMessage]);
-      if (isVoiceInput) {
-        speakResponse(errorMessage);
-      }
     } finally {
       setIsLoading(false);
       setIsVoiceInput(false);
     }
-  }, [inputMessage, isLoading, isVoiceInput, speakResponse]);
-
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      console.log("Available voices:", voices);
-      if (voices.length > 0) {
-        setVoicesLoaded(true);
-      } else {
-        console.warn("No voices available yet");
-      }
-    };
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-    };
-  }, []);
+  }, [inputMessage, isLoading, isVoiceInput]);
 
   useEffect(() => {
     setIsClient(true);
-    const browserLanguage = navigator.language || "en-US";
-    const supportedLanguage = supportedLanguages.find(
-      (lang) => lang.code === browserLanguage
-    );
-    setSelectedLanguage(supportedLanguage ? supportedLanguage.code : "en-US");
   }, []);
 
   useEffect(() => {
@@ -291,19 +190,6 @@ export function ChatWidget() {
       ]);
     }
   }, [browserSupportsSpeechRecognition]);
-
-  useEffect(() => {
-    if (!("speechSynthesis" in window)) {
-      logger.error("Speech Synthesis API not supported in this browser.");
-      setMessages((prev) => [
-        ...prev,
-        {
-          type: "bot",
-          content: "Text-to-speech is not supported in this browser. Responses will be displayed as text only.",
-        },
-      ]);
-    }
-  }, []);
 
   useEffect(() => {
     if (listening) {
@@ -328,7 +214,7 @@ export function ChatWidget() {
           }
           resetTranscript();
           setHasStartedSpeaking(false);
-        }, 2000);
+        }, 1000); // 2-second silence timeout for quick response
       }
     }
 
@@ -348,7 +234,7 @@ export function ChatWidget() {
         clearTimeout(silenceTimeoutRef.current);
       }
     } else {
-      SpeechRecognition.startListening({ continuous: true, language: selectedLanguage });
+      SpeechRecognition.startListening({ continuous: true, language: "en-US" });
     }
   };
 
@@ -378,20 +264,6 @@ export function ChatWidget() {
           <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-100 dark:bg-gray-800">
             <h3 className="font-medium text-gray-800 dark:text-gray-100">Golf Assistant</h3>
             <div className="flex gap-2 items-center">
-              <div className="relative">
-                <select
-                  value={selectedLanguage}
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                  className="appearance-none bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg px-2 py-1 pr-8 text-sm focus:outline-none"
-                >
-                  {supportedLanguages.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.name}
-                    </option>
-                  ))}
-                </select>
-                <Globe className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500 dark:text-gray-400 pointer-events-none" />
-              </div>
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors"
@@ -466,9 +338,6 @@ export function ChatWidget() {
                 </div>
               ))
             )}
-            {isSpeaking && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Speaking...</p>
-            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -477,13 +346,13 @@ export function ChatWidget() {
               <button
                 onClick={toggleListening}
                 disabled={isLoading || !browserSupportsSpeechRecognition}
-                className={`p-2 rounded-lg transition-colors${
+                className={`p-2 rounded-lg transition-colors ${
                   listening
-                    ? "bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+                    ? "bg-blue-600 dark:bg-blue-700 animate-pulse"
                     : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
                 } text-white`}
               >
-                {listening ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+                <Mic className={`h-6 w-6 ${listening ? "animate-pulse" : ""}`} />
               </button>
               <input
                 type="text"
@@ -500,7 +369,7 @@ export function ChatWidget() {
                 disabled={isLoading}
               />
               <button
-                onSubmit={() => {
+                onClick={() => {
                   setIsVoiceInput(false);
                   handleSendMessage();
                 }}
@@ -510,11 +379,6 @@ export function ChatWidget() {
                 <Send className="h-6 w-6" />
               </button>
             </div>
-            {listening && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                {hasStartedSpeaking ? "Recording..." : "Waiting for you to speak..."}
-              </p>
-            )}
           </div>
         </div>
       ) : (
