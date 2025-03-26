@@ -253,9 +253,14 @@ const page = () => {
             <Input
               type="text"
               value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
+              onChange={(e) => {
+                // Allow only numbers
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                setCardNumber(value);
+              }}
               className="w-full"
               maxLength={16}
+              inputMode="numeric"
               placeholder={t("cardNumberPlaceholder")}
             />
           </div>
@@ -280,9 +285,14 @@ const page = () => {
               <Input
                 type="text"
                 value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
+                onChange={(e) => {
+                  // Allow only numbers
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  setCvv(value);
+                }}
                 className="w-full"
                 maxLength={3}
+                inputMode="numeric"
                 placeholder="CVV"
               />
             </div>
@@ -296,7 +306,11 @@ const page = () => {
             <Input
               type="text"
               value={cardHolderName}
-              onChange={(e) => setCardHolderName(e.target.value)}
+              onChange={(e) => {
+                // Allow only letters, spaces, and some special characters like hyphen, apostrophe
+                const value = e.target.value.replace(/[^a-zA-Z\s'-]/g, "");
+                setCardHolderName(value);
+              }}
               className="w-full"
               placeholder={t("cardholderNamePlaceholder")}
             />
