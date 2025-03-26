@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { Button, Input, Link } from "@heroui/react";
 import axios from "axios";
+import { addToast } from "@heroui/toast";
 
 interface VerifyEmailFormProps {
   onVerificationComplete: (email: string) => void;
@@ -34,9 +35,20 @@ export default function VerifyEmailForm({
       });
 
       if (checkResponse.data.exists) {
-        setError(
-          `An account with email ${email} already exists. Please log in instead.`
-        );
+        // Create the error message with the actual email properly interpolated
+        const errorText = `An account with this email ${email} already exists. Please log in instead.`;
+
+        // Set the error state with the proper message
+        setError(errorText);
+
+        // Also show a toast with the same message - using literal string not variable
+        addToast({
+          title: "Email Already Exists",
+          description: errorText, // Now properly includes the email
+          color: "danger",
+          timeout: 5000,
+        });
+
         setIsCheckingEmail(false);
         return;
       }

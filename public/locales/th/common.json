@@ -383,5 +383,23 @@
   "failedToVerifyEmail": "ไม่สามารถยืนยันอีเมลได้ โปรดลองอีกครั้ง",
   "failedToSendVerificationCode": "ไม่สามารถส่งรหัสยืนยันได้ โปรดลองอีกครั้ง",
   "verificationCodeResent": "ส่งรหัสยืนยันอีกครั้งเรียบร้อยแล้ว",
-  "emailVerifiedAndUpdated": "ยืนยันและอัปเดตอีเมลเรียบร้อยแล้ว"
+  "emailVerifiedAndUpdated": "ยืนยันและอัปเดตอีเมลเรียบร้อยแล้ว",
+  "verifyYourNewEmail": "ยืนยันอีเมลใหม่ของคุณ",
+
+  "verificationCodeRequired": "จำเป็นต้องใช้รหัสยืนยัน",
+
+  "resendCodeIn": "ส่งอีกครั้งใน",
+
+  "emailVerifiedAndProfileUpdated": "ยืนยันอีเมลและอัปเดตโปรไฟล์สำเร็จแล้ว",
+
+  "failedToResendVerificationCode": "ไม่สามารถส่งรหัสยืนยันอีกครั้ง โปรดลองอีกครั้ง",
+  "emailUpdatedSuccessfully": "อีเมลของคุณได้รับการอัปเดตเรียบร้อยแล้ว",
+  "profileSavedSuccessfully": "โปรไฟล์ของคุณได้รับการบันทึกเรียบร้อยแล้ว",
+  "errorSavingProfile": "เกิดข้อผิดพลาดในการบันทึกโปรไฟล์",
+  "profileUpdateFailed": "ไม่สามารถอัปเดตโปรไฟล์ของคุณได้ โปรดลองอีกครั้ง",
+
+  "emailAlreadyExistsProfile": "อีเมลนี้มีอยู่ในระบบแล้ว",
+  "emailBelongsToAnotherAccount": "อีเมลนี้ถูกเชื่อมโยงกับบัญชีอื่นแล้ว",
+  "verificationCodeSent": "ส่งรหัสยืนยันแล้ว",
+  "pleaseCheckYourNewEmail": "โปรดตรวจสอบกล่องจดหมายของอีเมลใหม่ของคุณเพื่อดูรหัสยืนยัน"
 }
