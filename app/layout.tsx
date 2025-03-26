@@ -5,9 +5,8 @@ import { Providers } from "./providers";
 import { ThemeProvider } from "next-themes";
 
 //components
-// import NavBar from "./components/NavBar";
 import AdvancedTourButton from "./components/AdvancedTourButton";
-import NavBar from "./components/nav-bar";
+import ClientNavBar from "./components/client-navbar"; // Use the client-side wrapper
 import { ChatWidget } from "@/app/components/Chat/chat-widget";
 
 const geistSans = Geist({
@@ -70,7 +69,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Providers>
-            <NavBar />
+            <ClientNavBar />
             {children}
             <ChatWidget />
             <AdvancedTourButton />
