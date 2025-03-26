@@ -371,5 +371,15 @@
   "sat": "周六",
   "sun": "周日",
 
-  "partlyCloudy": "局部多云"
+  "partlyCloudy": "局部多云",
+  "verifyNewEmail": "验证新电子邮箱",
+  "verificationCodeSentTo": "验证码已发送至",
+  "enterVerificationCode": "请输入验证码",
+
+  "verify": "验证",
+  "invalidVerificationCode": "验证码无效，请重试",
+  "failedToVerifyEmail": "验证电子邮箱失败，请重试",
+  "failedToSendVerificationCode": "发送验证码失败，请重试",
+  "verificationCodeResent": "验证码已成功重新发送",
+  "emailVerifiedAndUpdated": "电子邮箱已成功验证并更新"
 }

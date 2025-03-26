@@ -373,5 +373,15 @@
   "sat": "ส",
   "sun": "อา",
 
-  "partlyCloudy": "เมฆบางส่วน"
+  "partlyCloudy": "เมฆบางส่วน",
+  "verifyNewEmail": "ยืนยันอีเมลใหม่",
+  "verificationCodeSentTo": "รหัสยืนยันได้ถูกส่งไปที่",
+  "enterVerificationCode": "กรอกรหัสยืนยัน",
+
+  "verify": "ยืนยัน",
+  "invalidVerificationCode": "รหัสยืนยันไม่ถูกต้อง โปรดลองอีกครั้ง",
+  "failedToVerifyEmail": "ไม่สามารถยืนยันอีเมลได้ โปรดลองอีกครั้ง",
+  "failedToSendVerificationCode": "ไม่สามารถส่งรหัสยืนยันได้ โปรดลองอีกครั้ง",
+  "verificationCodeResent": "ส่งรหัสยืนยันอีกครั้งเรียบร้อยแล้ว",
+  "emailVerifiedAndUpdated": "ยืนยันและอัปเดตอีเมลเรียบร้อยแล้ว"
 }

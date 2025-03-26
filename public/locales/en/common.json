@@ -373,5 +373,15 @@
   "sat": "Sat",
   "sun": "Sun",
 
-  "partlyCloudy": "Partly Cloudy"
+  "partlyCloudy": "Partly Cloudy",
+  "verifyNewEmail": "Verify New Email",
+  "verificationCodeSentTo": "A verification code has been sent to",
+  "enterVerificationCode": "Enter the verification code",
+
+  "verify": "Verify",
+  "invalidVerificationCode": "Invalid verification code. Please try again.",
+  "failedToVerifyEmail": "Failed to verify email. Please try again.",
+  "failedToSendVerificationCode": "Failed to send verification code. Please try again.",
+  "verificationCodeResent": "Verification code resent successfully.",
+  "emailVerifiedAndUpdated": "Email verified and updated successfully."
 }
