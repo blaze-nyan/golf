@@ -26,6 +26,7 @@ import AnimatedLoading from "@/app/components/animated-loading";
 import ExpiryDateInput from "@/app/components/ExpiryDateInput";
 import { logger } from "@/app/lib/logger";
 import { useLanguage } from "@/app/contexts/LanguageContext";
+import { getClientInfo, sendBookingEmail } from "@/app/lib/api";
 
 const page = () => {
   const { bookingDetails, setBookingDetails } = useProgress(); // Access bookingDetails from context
@@ -38,7 +39,7 @@ const page = () => {
   // State to track panel visibility
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-
+  logger.log(isPanelVisible, isMobile);
   // Credit card form state
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -53,6 +54,22 @@ const page = () => {
     onClose: onErrorClose,
   } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false); // Loading state
+
+  const sendEmail = async () => {
+    if (bookingDetails.clientID) {
+      try {
+        const clientInfo = await getClientInfo(Number(bookingDetails.clientID));
+        const result = getEmail(clientInfo["Communication List"]);
+        if (result != null) {
+          sendBookingEmail(result, bookingDetails);
+        }
+      } catch (error) {
+        console.error("Error fetching client info:", error);
+      }
+    } else {
+      console.log("Client ID is not available in booking details.");
+    }
+  };
 
   // Monitor screen size and panel visibility
   useEffect(() => {
@@ -129,6 +146,17 @@ const page = () => {
     return true;
   };
 
+  const getEmail = (commList: any) => {
+
+    for (const comm of commList) {
+      if (comm["Communication Type"] === "M") {
+        return comm["Communication Detail"];
+      }
+    }
+    return null;
+
+  }
+
   const handleSubmit = () => {
     if (validateCreditCard()) {
       onOpen(); // Open the success modal on successful payment
@@ -136,25 +164,14 @@ const page = () => {
       postData("bookings", bookingDetails);
       setIsLoading(true); // Show loading spinner
       setTimeout(() => {
+        sendEmail();
         setIsLoading(false); // Simulate loading completion after a delay
       }, 3000); // 3 seconds delay to simulate loading time
     }
   };
 
   return (
-    <div
-      className={`
-        space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300
-        w-full mx-auto h-full
-        ${
-          isMobile
-            ? ""
-            : isPanelVisible
-            ? "max-w-2xl"
-            : "max-w-2xl md:max-w-3xl mx-auto"
-        }
-      `}
-    >
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 transition-all duration-300 w-full mx-auto h-full">
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2 sm:mb-3 md:mb-5">
         {t("paymentPage")}
       </h1>
@@ -164,9 +181,9 @@ const page = () => {
         <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-200">
           {t("selectPaymentType")}
         </h2>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <div className="flex gap-2 sm:gap-3 w-full">
           <Button
-            className={`w-full py-2 sm:py-2.5 text-sm sm:text-base ${
+            className={`flex-1 py-3 text-sm sm:text-base ${
               paymentType === "prepayment"
                 ? "bg-green-700 text-white dark:bg-green-600"
                 : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
@@ -176,7 +193,7 @@ const page = () => {
             {t("prepayment")}
           </Button>
           <Button
-            className={`w-full py-2 sm:py-2.5 text-sm sm:text-base ${
+            className={`flex-1 py-3 text-sm sm:text-base ${
               paymentType === "fullPayment"
                 ? "bg-green-700 text-white dark:bg-green-600"
                 : "bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
@@ -213,10 +230,10 @@ const page = () => {
             {t("creditCardDetails")}
           </h2>
         </CardHeader>
-        <CardBody className="px-3 sm:px-4 py-2 sm:py-3 space-y-3 sm:space-y-4">
+        <CardBody className="px-3 sm:px-4 py-3 sm:py-4 space-y-4">
           {/* Select Payment Method */}
           <div>
-            <label className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2 visible text-gray-700 dark:text-gray-300">
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               {t("selectPaymentMethod")}
             </label>
             <Select
@@ -288,7 +305,7 @@ const page = () => {
 
           <Button
             onPress={handleSubmit}
-            className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white mt-4 sm:mt-6 py-2"
+            className="w-full bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 text-white p-3 text-base mt-6"
           >
             {t("submitPayment")}
           </Button>

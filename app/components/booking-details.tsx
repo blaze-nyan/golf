@@ -10,20 +10,26 @@ import {
 import { usePlaceholderGolfCourseImageLink } from "../lib/general";
 import { useLanguage } from "../contexts/LanguageContext";
 
-const BookingDetails = () => {
+const BookingDetails = ({ showHeader = true }) => {
   const { bookingDetails, currentStep } = useProgress();
   const { t } = useLanguage();
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   // Helper function to determine if a section should be grayed out
   const isSectionDisabled = (step: any) => currentStep < step;
 
   return (
-    <div className="flex justify-center h-full w-full pt-5 md:pt-0">
-      <Card className="p-0 transition-transform duration-200 bg-white dark:bg-gray-800 w-full overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div className="flex justify-center w-full h-full">
+      <Card
+        className="p-0 transition-transform duration-200 bg-white dark:bg-gray-800 w-full overflow-hidden border border-gray-200 dark:border-gray-700"
+        style={{ borderRadius: isMobile ? "0" : undefined }}
+      >
         {/* Header Section */}
-        <div className="bg-green-700 dark:bg-green-800 text-white py-3 text-center">
-          <span className="font-semibold text-xl">{t("yourBooking")}</span>
-        </div>
+        {showHeader && (
+          <div className="bg-green-700 dark:bg-green-800 text-white py-3 text-center">
+            <span className="font-semibold text-xl">{t("yourBooking")}</span>
+          </div>
+        )}
 
         {/* Course Information Section */}
         <div
@@ -139,7 +145,7 @@ const BookingDetails = () => {
 
         {/* Price Section */}
         <div
-          className={`p-3 px-4 sm:px-6 border-gray-300 dark:border-gray-700 flex flex-col items-start space-y-2 ${
+          className={`p-3 px-4 sm:px-6 border-gray-300 dark:border-gray-700 flex flex-col items-start ${
             isSectionDisabled(3) ? "opacity-50 pointer-events-none" : ""
           }`}
         >

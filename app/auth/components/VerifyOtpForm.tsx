@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input, Link } from "@heroui/react";
 import axios from "axios";
-import { signUp } from "@/app/lib/api";
+import { sendWelcomeEmail, signUp } from "@/app/lib/api";
 import { logger } from "@/app/lib/logger";
 interface VerifyOtpFormProps {
   email: string;
@@ -102,10 +102,13 @@ export default function VerifyOtpForm({
 
       if (verifyResponse.data.success) {
         // OTP verified, now create the account
+
         const signupResponse = await signUp(userData);
 
+
         if (signupResponse.success) {
-          // Account created successfully
+          // Account created successfully and email is sent
+          sendWelcomeEmail(email, userData.firstName+" "+userData.surname)
           onVerificationComplete();
         } else {
           setError("Failed to create account. Please try again.");
