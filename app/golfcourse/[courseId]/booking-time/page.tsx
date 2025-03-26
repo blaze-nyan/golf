@@ -274,17 +274,20 @@ const page = () => {
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const bookings = await fetchData("bookings"); // Assuming fetchData is defined elsewhere
+      const bookings = await fetchData("bookings");
       const result = bookings.reduce(
         (
           acc: { [x: string]: any[] },
-          booking: { teeDate: any; teeTime: any }
+          booking: { teeDate: any; teeTime: any; status: string }
         ) => {
-          const { teeDate, teeTime } = booking;
-          if (!acc[teeDate]) {
-            acc[teeDate] = [];
+          const { teeDate, teeTime, status } = booking;
+          if (status !== "cancelled") {
+            if (!acc[teeDate]) {
+              acc[teeDate] = [];
+            }
+            acc[teeDate].push(teeTime);
           }
-          acc[teeDate].push(teeTime);
+
           return acc;
         },
         {}
