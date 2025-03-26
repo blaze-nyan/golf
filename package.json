@@ -10,6 +10,7 @@
     "server": "json-server -p3001 --watch db.json"
   },
   "dependencies": {
+    "@google-cloud/text-to-speech": "^6.0.1",
     "@google/generative-ai": "^0.22.0",
     "@heroui/button": "^2.2.10",
     "@heroui/navbar": "^2.2.9",
@@ -44,6 +45,7 @@
     "@iconify/react": "^5.2.0",
     "@types/crypto-js": "^4.2.2",
     "@types/gsap": "^3.0.0",
+    "@types/long": "^5.0.0",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",

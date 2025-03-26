@@ -11,6 +11,51 @@ interface ChatMessage {
   content: string;
 }
 
+interface Language {
+  code: string;
+  name: string;
+}
+
+const supportedLanguages: Language[] = [
+  { code: "en-US", name: "English (US)" },
+  { code: "en-GB", name: "English (UK)" },
+  { code: "es-ES", name: "Spanish (Spain)" },
+  { code: "es-MX", name: "Spanish (Mexico)" },
+  { code: "fr-FR", name: "French (France)" },
+  { code: "fr-CA", name: "French (Canada)" },
+  { code: "de-DE", name: "German (Germany)" },
+  { code: "it-IT", name: "Italian (Italy)" },
+  { code: "pt-PT", name: "Portuguese (Portugal)" },
+  { code: "pt-BR", name: "Portuguese (Brazil)" },
+  { code: "ja-JP", name: "Japanese (Japan)" },
+  { code: "zh-CN", name: "Chinese (Mandarin, Simplified)" },
+  { code: "zh-TW", name: "Chinese (Mandarin, Traditional)" },
+  { code: "ko-KR", name: "Korean (South Korea)" },
+  { code: "ru-RU", name: "Russian (Russia)" },
+  { code: "ar-SA", name: "Arabic (Saudi Arabia)" },
+  { code: "hi-IN", name: "Hindi (India)" },
+  { code: "bn-BD", name: "Bengali (Bangladesh)" },
+  { code: "ta-IN", name: "Tamil (India)" },
+  { code: "te-IN", name: "Telugu (India)" },
+  { code: "mr-IN", name: "Marathi (India)" },
+  { code: "tr-TR", name: "Turkish (Turkey)" },
+  { code: "vi-VN", name: "Vietnamese (Vietnam)" },
+  { code: "th-TH", name: "Thai (Thailand)" },
+  { code: "nl-NL", name: "Dutch (Netherlands)" },
+  { code: "sv-SE", name: "Swedish (Sweden)" },
+  { code: "no-NO", name: "Norwegian (Norway)" },
+  { code: "da-DK", name: "Danish (Denmark)" },
+  { code: "fi-FI", name: "Finnish (Finland)" },
+  { code: "pl-PL", name: "Polish (Poland)" },
+  { code: "cs-CZ", name: "Czech (Czech Republic)" },
+  { code: "sk-SK", name: "Slovak (Slovakia)" },
+  { code: "hu-HU", name: "Hungarian (Hungary)" },
+  { code: "el-GR", name: "Greek (Greece)" },
+  { code: "he-IL", name: "Hebrew (Israel)" },
+  { code: "id-ID", name: "Indonesian (Indonesia)" },
+  { code: "ms-MY", name: "Malay (Malaysia)" },
+];
+
 const quickReplies = [
   "Sendible features & plans",
   "I'm already a customer",
@@ -24,6 +69,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("en-US"); // Default language
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -132,25 +178,28 @@ export function ChatWidget() {
     return null;
   };
 
-  const speakResponse = useCallback((text: string) => {
-    if (synth.current.speaking) {
-      synth.current.cancel();
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.volume = 1.0;
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-
-    utterance.onerror = (event) => {
-      if (event.error !== "interrupted") {
-        logger.error("Speech synthesis error:", event.error);
+  const speakResponse = useCallback(
+    (text: string) => {
+      if (synth.current.speaking) {
+        synth.current.cancel();
       }
-    };
 
-    synth.current.speak(utterance);
-  }, []);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = selectedLanguage; // Use selected language
+      utterance.volume = 1.0;
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+
+      utterance.onerror = (event) => {
+        if (event.error !== "interrupted") {
+          logger.error("Speech synthesis error:", event.error);
+        }
+      };
+
+      synth.current.speak(utterance);
+    },
+    [selectedLanguage]
+  );
 
   const handleSendMessage = useCallback(
     async (messageToSend?: string) => {
@@ -300,7 +349,7 @@ export function ChatWidget() {
     } else {
       resetTranscript();
       setInputMessage("");
-      SpeechRecognition.startListening({ continuous: true, language: "en-US" });
+      SpeechRecognition.startListening({ continuous: true, language: selectedLanguage }); // Match recognition to selected language
       startSound.current.play().catch((err) => console.error("Error playing start sound:", err));
       isVoiceInputRef.current = true; // Enable voice input tracking when mic is clicked
     }
@@ -332,6 +381,18 @@ export function ChatWidget() {
           <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-100 dark:bg-gray-800">
             <h3 className="font-medium text-gray-800 dark:text-gray-100">Golf Assistant</h3>
             <div className="flex gap-2 items-center">
+              {/* Language Selection Dropdown */}
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm max-w-[150px]"
+              >
+                {supportedLanguages.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors"
