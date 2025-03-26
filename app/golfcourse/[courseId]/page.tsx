@@ -72,8 +72,8 @@ const CoursePage = () => {
     };
 
     fetchCourses();
-  }, [courseId]);  
-  
+  }, [courseId]);
+
   const getClientId = () => {
     const localId = window.localStorage.getItem("clientId");
     if (localId) return localId;
@@ -83,7 +83,6 @@ const CoursePage = () => {
 
     return null;
   };
-
 
   useEffect(() => {
     if (golfCourse) {
