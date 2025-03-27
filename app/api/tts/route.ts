@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-type TtsResponse = { audioContent: string };
-type ErrorResponse = { error: string };
-
 export async function POST(req: NextRequest) {
   try {
-    const { text, languageCode } = await req.json() as { text?: string; languageCode?: string };
+    const { text, languageCode } = (await req.json()) as {
+      text?: string;
+      languageCode?: string;
+    };
     console.log("Received request:", { text, languageCode });
 
     if (!text || !languageCode) {
@@ -47,11 +47,16 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Google TTS API error: ${response.status} - ${errorText}`);
+      throw new Error(
+        `Google TTS API error: ${response.status} - ${errorText}`
+      );
     }
 
     const data = (await response.json()) as { audioContent: string };
-    return NextResponse.json({ audioContent: data.audioContent }, { status: 200 });
+    return NextResponse.json(
+      { audioContent: data.audioContent },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("TTS API Error:", error);
     return NextResponse.json(
