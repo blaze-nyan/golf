@@ -8,7 +8,7 @@
     "lint": "next lint",
     "dev": "next dev --turbopack",
     "server": "json-server -p3001 --watch db.json",
-    "prebuild": "echo 'declare module \"long\";' > ./types/long.d.ts"
+    "prebuild": "node fix-types.js"
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.0.1",
