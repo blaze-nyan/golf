@@ -24,10 +24,7 @@
       "Golf Cart": 2,
       "Caddies": 0,
       "Food & Drinks": 0,
-      "Golfer Names": [
-        "Aung Nyan Lin",
-        "Grimace"
-      ],
+      "Golfer Names": ["Aung Nyan Linn", "Grimace"],
       "status": "cancelled",
       "paymentType": "prepayment",
       "paid": 600,
@@ -48,10 +45,7 @@
       "Golf Cart": 2,
       "Caddies": 0,
       "Food & Drinks": 0,
-      "Golfer Names": [
-        "Aung Nyan Lin",
-        "Test"
-      ],
+      "Golfer Names": ["Aung Nyan Lin", "Test"],
       "status": "cancelled",
       "paymentType": "fullPayment",
       "paid": 1800,
@@ -72,10 +66,7 @@
       "Golf Cart": 4,
       "Caddies": 2,
       "Food & Drinks": 2,
-      "Golfer Names": [
-        "Aung Nyan Lin",
-        "Gragas"
-      ],
+      "Golfer Names": ["Aung Nyan Lin", "Gragas"],
       "status": "cancelled",
       "paymentType": "prepayment",
       "paid": 1260,
@@ -96,10 +87,7 @@
       "Golf Cart": 2,
       "Caddies": 0,
       "Food & Drinks": 0,
-      "Golfer Names": [
-        "Htin",
-        "Blaze"
-      ],
+      "Golfer Names": ["Htin", "Blaze"],
       "status": "prepaid",
       "paymentType": "prepayment",
       "paid": 540,
