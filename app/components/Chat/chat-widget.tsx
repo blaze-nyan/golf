@@ -63,8 +63,15 @@ export function ChatWidget() {
   const [hasStartedSpeaking, setHasStartedSpeaking] = useState(false);
   const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startSound = useRef(new Audio("./startnoti.mp3"));
-  const stopSound = useRef(new Audio("./stopnoti.mp3"));
+  const startSound = useRef<HTMLAudioElement | null>(null);
+  const stopSound = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      startSound.current = new Audio("./startnoti.mp3");
+      stopSound.current = new Audio("./stopnoti.mp3");
+    }
+  }, []);
 
   const golfCourseData = {
     name: "Hackathon",
@@ -321,7 +328,7 @@ export function ChatWidget() {
           if (transcript === previousTranscript && transcript.trim()) {
             SpeechRecognition.stopListening();
             await stopSound.current
-              .play()
+              ?.play()
               .catch((err) => logger.error("Error playing stop sound:", err));
             isVoiceInputRef.current = true;
             const trimmedTranscript = transcript.trim();
@@ -351,7 +358,7 @@ export function ChatWidget() {
     if (listening) {
       SpeechRecognition.stopListening();
       stopSound.current
-        .play()
+        ?.play()
         .catch((err) => logger.error("Error playing stop sound:", err));
       setHasStartedSpeaking(false);
       resetTranscript();
@@ -366,7 +373,7 @@ export function ChatWidget() {
         language: selectedLanguage,
       });
       startSound.current
-        .play()
+        ?.play()
         .catch((err) => logger.error("Error playing start sound:", err));
       isVoiceInputRef.current = true;
     }
