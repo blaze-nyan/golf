@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npm run build"
+  command = "node fix-types.js && npm run build"
   publish = ".next"
 
 [build.environment]
