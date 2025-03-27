@@ -417,5 +417,6 @@
   "printETicket": "Print E-Ticket",
   "myBookings": "My Bookings",
   "eTicketInstruction": "Please show this e-ticket at the course reception for check-in",
-  "arriveEarly": "We recommend arriving 30 minutes before your tee time"
+  "arriveEarly": "We recommend arriving 30 minutes before your tee time",
+  "back": "Back"
 }

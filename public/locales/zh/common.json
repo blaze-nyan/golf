@@ -416,5 +416,6 @@
   "printETicket": "打印电子票",
   "myBookings": "我的预订",
   "eTicketInstruction": "请在球场接待处出示此电子票办理入场手续",
-  "arriveEarly": "我们建议您在开球时间前30分钟到达"
+  "arriveEarly": "我们建议您在开球时间前30分钟到达",
+  "back": "返回"
 }
