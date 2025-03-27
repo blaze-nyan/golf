@@ -102,37 +102,57 @@ const page = () => {
     // Check if we're on mobile
     const isMobile = window.innerWidth < 768;
 
-    // First, try to scroll to make sure the e-ticket is visible
+    // Add a class to the ticket element to highlight it before printing
     const ticketElement = document.querySelector(".card-to-print");
     if (ticketElement) {
-      ticketElement.scrollIntoView({ behavior: "auto", block: "center" });
+      // For mobile, make sure we're scrolled to see the ticket
+      ticketElement.scrollIntoView({ behavior: "auto", block: "start" });
+
+      // Add a highlight class temporarily
+      ticketElement.classList.add("printing-highlight");
+
+      // Remove it after a short delay
+      setTimeout(() => {
+        ticketElement.classList.remove("printing-highlight");
+      }, 1000);
     }
 
     // Apply print-specific class to body
     document.body.classList.add("printing-eticket");
 
-    // Add a temporary meta viewport tag for better mobile printing
-    let metaTag = null;
+    // Mobile-specific optimizations
+    let metaTag: HTMLMetaElement | null = null;
     if (isMobile) {
+      // Create and add meta viewport tag for better mobile printing
       metaTag = document.createElement("meta");
       metaTag.name = "viewport";
       metaTag.content =
         "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
       document.head.appendChild(metaTag);
-    }
 
-    // Small timeout to ensure CSS changes are applied
-    setTimeout(() => {
-      window.print();
-
-      // Remove the class and meta tag after printing
+      // For mobile, add extra delay to ensure layout is ready
       setTimeout(() => {
-        document.body.classList.remove("printing-eticket");
-        if (isMobile && metaTag) {
-          document.head.removeChild(metaTag);
-        }
-      }, 500);
-    }, 100);
+        window.print();
+
+        // Remove classes and meta tag after printing
+        setTimeout(() => {
+          document.body.classList.remove("printing-eticket");
+          if (metaTag) {
+            document.head.removeChild(metaTag);
+          }
+        }, 800);
+      }, 300);
+    } else {
+      // For desktop, shorter delay is fine
+      setTimeout(() => {
+        window.print();
+
+        // Remove the class after printing
+        setTimeout(() => {
+          document.body.classList.remove("printing-eticket");
+        }, 500);
+      }, 100);
+    }
   };
 
   // Add print styles
@@ -154,7 +174,7 @@ const page = () => {
         
         /* Create a clean slate for our ticket */
         body {
-          background-color: gray !important;
+          background-color: white !important;
           height: auto !important;
           overflow: visible !important;
         }
@@ -164,29 +184,76 @@ const page = () => {
           visibility: visible !important;
         }
         
-        /* Position the ticket correctly for printing */
-        .card-to-print {
-          position: absolute !important;
-          left: 0 !important;
-          top: 0 !important;
-          width: calc(100% - 20mm) !important; /* Account for page margins */
-          height: auto !important;
-          margin: 10mm !important; /* Match page margins for spacing */
-          box-shadow: none !important;
-          overflow: visible !important;
-          border-radius: 10px;
+        /* Mobile-specific print styling */
+        @media screen and (max-width: 768px) {
+          /* Position the ticket for mobile printing - maintain vertical layout */
+          .card-to-print {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: calc(100% - 20mm) !important;
+            height: auto !important;
+            margin: 10mm !important;
+            box-shadow: none !important;
+            border-radius: 10px !important;
+            overflow: visible !important;
+            transform: none !important;
+          }
+          
+          /* Ensure the mobile layout is preserved when printing */
+          .md\\:flex {
+            display: block !important;
+          }
+          
+          .md\\:w-1\\/3, .md\\:w-2\\/3 {
+            width: 100% !important;
+          }
+          
+          /* Ensure the barcode is clearly visible */
+          .bg-white.rounded-lg.p-3.py-4 svg {
+            transform: scale(1.3) !important;
+            margin: 15px auto !important;
+          }
         }
         
-        /* Preserve the color scheme and styling */
+        /* Desktop-specific print styling */
+        @media screen and (min-width: 769px) {
+          /* Position the ticket correctly for printing */
+          .card-to-print {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: calc(100% - 20mm) !important;
+            height: auto !important;
+            margin: 10mm !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+            border-radius: 10px;
+          }
+          
+          /* Preserve horizontal layout on desktop */
+          .md\\:flex {
+            display: flex !important;
+          }
+          
+          .md\\:w-1\\/3 {
+            width: 33.333333% !important;
+          }
+          
+          .md\\:w-2\\/3 {
+            width: 66.666667% !important;
+          }
+        }
+        
+        /* Preserve the color scheme and styling for both */
         .bg-gradient-to-r.from-green-700.to-green-600 {
           background: linear-gradient(to right, #15803d, #16a34a) !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
           color-adjust: exact !important;
-          border-radius: 10px 0 0 10px;
         }
         
-        /* Preserve text colors */
+        /* Keep colors the same on both layouts */
         .text-white {
           color: white !important;
         }
@@ -203,6 +270,7 @@ const page = () => {
           color: #111827 !important;
         }
         
+        /* Other existing styles remain unchanged */
         .opacity-80 {
           opacity: 0.8 !important;
         }
@@ -228,19 +296,6 @@ const page = () => {
           background-color: rgba(255, 255, 255, 0.1) !important;
         }
         
-        /* Preserve layouts */
-        .md\\:flex {
-          display: flex !important;
-        }
-        
-        .md\\:w-1\\/3 {
-          width: 33.333333% !important;
-        }
-        
-        .md\\:w-2\\/3 {
-          width: 66.666667% !important;
-        }
-        
         /* Hide buttons and decorative elements */
         button, .print\\:hidden {
           display: none !important;
@@ -252,19 +307,6 @@ const page = () => {
           print-color-adjust: exact !important;
           color-adjust: exact !important;
         }
-        
-        /* Ensure barcode prints clearly */
-        .bg-white.rounded-lg.p-3.py-4 svg {
-          transform: scale(1.1) !important;
-        }
-        
-        /* Mobile-specific adjustments */
-        @media screen and (max-width: 768px) {
-          .card-to-print {
-            transform: scale(0.95) !important;
-            transform-origin: top left !important;
-          }
-        }
       }
 
       /* Special class for print preparation */
@@ -275,12 +317,6 @@ const page = () => {
 
       body.printing-eticket .card-to-print {
         box-shadow: none !important;
-      }
-
-      /* Uncomment to enable the watermark background */
-      .golf-watermark {
-        opacity: 0.03 !important;
-        pointer-events: none !important;
       }
     `;
     document.head.appendChild(style);
